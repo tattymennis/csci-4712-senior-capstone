@@ -9,6 +9,26 @@
 
 </head>
 <body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header col-lg-2"> <!-- header means first thing in nav, single entity, (Image), must be followed by the rest of the nav -->
+                <a class="navbar-brand" href="~/Home/Index"> 
+                    <img alt="TaxSlayerLogo" src="~/Images/TaxSlayerLogo.png" id=bannerlogo> <!--must resize inline here-->
+                </a>
+            </div>
+            <div class="navbar col-lg-10">
+                <!--rest of nav, each link goes in the li, recreate the navs from here-->
+                <ul class="nav navbar-nav">
+                    <li><a>Home</a></li>
+                    <li><a>Goals</a></li>
+                    <li><a>Search</a></li>
+
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+      </nav>
+        <!--
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -28,7 +48,7 @@
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="container body-content">
         @RenderBody()
         <hr />
