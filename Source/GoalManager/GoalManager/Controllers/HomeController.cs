@@ -26,5 +26,12 @@ namespace GoalManager.Controllers
 
             return View();
         }
+
+        public ActionResult MainView()
+        {
+            ViewBag.Message = "View for specific Role.";
+
+            return View();
+        }
     }
 }

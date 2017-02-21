@@ -248,9 +248,11 @@
     <Content Include="Views\Department\CreateDepartment.cshtml" />
     <Content Include="Views\Department\ModifyDepartment.cshtml" />
     <Content Include="Views\Goal\UpdateGoal.cshtml" />
+    <Content Include="Views\Home\MainView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -274,7 +276,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2573</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
