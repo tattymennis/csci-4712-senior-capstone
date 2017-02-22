@@ -2,4 +2,35 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h1>@ViewBag.Title</h1>
 
+<form method="post">
+    <div class="form-group form-horizontal">
+        <label for="name">Department Name:</label>
+        <input type="text" class="form-control" value="Accounting"/>
+        <small class="form-text text-muted">Note:All users will see this for their respective Department criterias  </small>
+    </div>
+    <div class="form-group">
+        <label for="Supervisor">Supervisor:</label>
+        <select class="form-control">
+            <option>Andrew Keller</option>
+            <option>Matthew Tennis</option>
+            <option>Miguel Morell</option>
+            <option>Mike Dowell</option>
+            <option>Donald Trump</option>
+        </select>
+        <small class="form-text text-muted">Please Select the Supervisor</small>
+    </div>
+    <div class="form-group form-horizontal">
+        <label for="Location">Location:</label>
+        <input type="text" class="form-control" value="West Wing" />
+        <small class="form-text text-muted">Please explain where this department is at.  </small>
+    </div>
+
+    <div class="form-group form-horizontal">
+        <label for="Decription">Department Description:</label>
+        <textarea type="text" class="form-control">Managing the profit-loss statements</textarea>
+        <small class="form-text text-muted">Please type decribe what the Department does </small>
+    </div>
+    <input type="submit" />
+</form>

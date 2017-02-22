@@ -4,3 +4,35 @@
 }
 
 
+<h1>@ViewBag.Title</h1>
+
+
+<form method="post">
+    <div class="form-group form-horizontal">
+        <label for="Title">Goal Title</label>
+        <input type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Category">Category</label>
+        <select class="form-control">
+            <option>Productivity</option>
+            <option>Customer Satisfaction </option>
+            <option>Self Improvement</option>
+        </select>
+        <small class="form-text text-muted">Select the Type of Goal this is.</small>
+    </div>
+    <div class="form-group form-horizontal">
+        <label for="Progress">Progress</label>
+        <input type="number" class="form-control" value="100" />
+    </div>
+
+    <div class="form-group form-horizontal">
+        <label for="">Department Description:</label>
+        <input type="date" class="form-control" />
+        <small class="form-text text-muted">Deadline of the Goal</small>
+    </div>
+    <input type="submit" />
+</form>
+
+
+

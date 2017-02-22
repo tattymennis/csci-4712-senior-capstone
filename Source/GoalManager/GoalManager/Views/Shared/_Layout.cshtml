@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title -  Tax Slayer Goal Manager</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -11,20 +11,23 @@
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
-            <div class="navbar-header col-lg-2">
+            <div class="navbar-header col-lg-2 col-md-2 hidden-sm" id="logonav">
                 <!-- header means first thing in nav, single entity, (Image), must be followed by the rest of the nav -->
                 <a class="navbar-brand" href="~/Home/Index">
                     <img alt="TaxSlayerLogo" src="~/Images/TaxSlayerLogo.png" id=bannerlogo> <!--must resize inline here-->
                 </a>
             </div>
-            <div class="navbar col-lg-10">
+            <div class="navbar col-lg-10 col-md-10">
                 <!--rest of nav, each link goes in the li, recreate the navs from here-->
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "MainView", "Home")</li>
                     <li>@Html.ActionLink("Goals", "ViewGoal", "Goal")</li>
                     <li></li>
                 </ul>
-                @Html.Partial("_LoginPartial")
+                @if (Request.IsAuthenticated == false)
+                {
+                    @Html.Partial("_LoginPartial")
+                }
             </div>
         </div>
     </nav>
@@ -54,7 +57,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Tax Slayer's Goal Manager</p>
         </footer>
     </div>
 
