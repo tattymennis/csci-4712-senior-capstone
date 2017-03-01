@@ -212,9 +212,11 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CreateDepartmentViewModel.cs" />
     <Compile Include="Models\CreateEmployeeViewModel.cs" />
+    <Compile Include="Models\CreateGoalViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ModifyEmployeeViewModel.cs" />
+    <Compile Include="Models\UpdateGoalViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

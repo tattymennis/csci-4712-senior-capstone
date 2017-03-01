@@ -1,4 +1,9 @@
-﻿@{
+﻿@using GoalManager.Models;
+@model CreateGoalViewModel
+
+
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Create Goal";
 }
@@ -6,11 +11,12 @@
 
 <h1>@ViewBag.Title</h1>
 
+@Html.ValidationSummary();
 
 <form method="post">
     <div class="form-group form-horizontal">
-        <label for="Title">Goal Title</label>
-        <input type="text" class="form-control" />
+        <label for="Subject"> Subject</label>
+        <input type="text" class="form-control" value="@Model.Goal.Title"/>
     </div>
     <div class="form-group">
         <label for="Category">Category</label>
@@ -21,14 +27,24 @@
         </select>
         <small class="form-text text-muted">Select the Type of Goal this is.</small>
     </div>
-    <div class="form-group form-horizontal">
-        <label for="Progress">Progress</label>
-        <input type="number" class="form-control" value="100" />
+    
+    <div class="form-group">
+        <label for="Deadline">Deadline</label>
+        <select class="form-control">
+            <option>Quater 1 2017</option>
+            <option>Quater 2  2017</option>
+            <option>Quater 3 2017</option>
+            <option>Quater 4 2017</option>
+        </select>
+        <small class="form-text text-muted">Select the Deadline for this Goal.</small>
     </div>
+
+
+     
 
     <div class="form-group form-horizontal">
         <label for="">Department Description:</label>
-        <input type="date" class="form-control" />
+        <textarea type="text" value="@Model.Goal" class="form-control" /> <!--add Description-->
         <small class="form-text text-muted">Deadline of the Goal</small>
     </div>
     <input type="submit" />
