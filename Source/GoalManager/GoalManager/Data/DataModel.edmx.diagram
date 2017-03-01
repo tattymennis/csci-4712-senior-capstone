@@ -4,11 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="764676cb203546419b0320114ea9eab8" Name="Diagram1">
-        <EntityTypeShape EntityType="UserDBModel.Department" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Goal" Width="1.5" PointX="5.25" PointY="1.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Update" Width="1.5" PointX="7.5" PointY="1.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.User" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+      <Diagram DiagramId="cbe5faa225e146d69b6c9870e1e524f6" Name="Diagram1">
+        <EntityTypeShape EntityType="UserDBModel.Category" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Department" Width="1.5" PointX="0.75" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Goal" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Update" Width="1.5" PointX="7.5" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.User" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
+        <AssociationConnector Association="UserDBModel.FK_Categories_ToDept" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_DeptID_to_DID" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_SUID_to_Users_UID" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_GID_to_Goal_GID" ManuallyRouted="false" />

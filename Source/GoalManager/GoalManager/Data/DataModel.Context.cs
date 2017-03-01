@@ -25,6 +25,7 @@ namespace GoalManager.Data
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Goal> Goals { get; set; }
         public virtual DbSet<Update> Updates { get; set; }

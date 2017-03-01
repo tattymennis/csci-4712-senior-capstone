@@ -17,6 +17,7 @@ namespace GoalManager.Data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Department()
         {
+            this.Categories = new HashSet<Category>();
             this.Users = new HashSet<User>();
         }
     
@@ -25,6 +26,8 @@ namespace GoalManager.Data
         public string Description { get; set; }
         public string Location { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Category> Categories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
         public virtual User User { get; set; }

@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="UserDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="CatID" />
+          </Key>
+          <Property Name="CatID" Type="int" Nullable="false" />
+          <Property Name="DepID" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="Departments">
           <Key>
             <PropertyRef Name="DID" />
@@ -21,10 +29,11 @@
           <Property Name="GID" Type="int" Nullable="false" />
           <Property Name="UID" Type="int" Nullable="false" />
           <Property Name="Title" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="TimeFrame" Type="datetime" Nullable="false" />
           <Property Name="Category" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Progress" Type="float" Nullable="false" />
           <Property Name="Status" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Updates">
           <Key>
@@ -50,6 +59,18 @@
           <Property Name="Active" Type="bit" Nullable="false" />
           <Property Name="SUID" Type="int" />
         </EntityType>
+        <Association Name="FK_Categories_ToDept">
+          <End Role="Departments" Type="Self.Departments" Multiplicity="0..1" />
+          <End Role="Categories" Type="Self.Categories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DID" />
+            </Principal>
+            <Dependent Role="Categories">
+              <PropertyRef Name="DepID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DeptID_to_DID">
           <End Role="Departments" Type="Self.Departments" Multiplicity="1" />
           <End Role="Users" Type="Self.Users" Multiplicity="*" />
@@ -123,10 +144,15 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="UserDBModelStoreContainer">
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Departments" EntityType="Self.Departments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Goals" EntityType="Self.Goals" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Updates" EntityType="Self.Updates" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Categories_ToDept" Association="Self.FK_Categories_ToDept">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Categories" EntitySet="Categories" />
+          </AssociationSet>
           <AssociationSet Name="FK_DeptID_to_DID" Association="Self.FK_DeptID_to_DID">
             <End Role="Departments" EntitySet="Departments" />
             <End Role="Users" EntitySet="Users" />
@@ -157,6 +183,15 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="UserDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CatID" />
+          </Key>
+          <Property Name="CatID" Type="Int32" Nullable="false" />
+          <Property Name="DepID" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Department" Relationship="Self.FK_Categories_ToDept" FromRole="Categories" ToRole="Departments" />
+        </EntityType>
         <EntityType Name="Department">
           <Key>
             <PropertyRef Name="DID" />
@@ -165,6 +200,7 @@
           <Property Name="SUID" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Categories" Relationship="Self.FK_Categories_ToDept" FromRole="Departments" ToRole="Categories" />
           <NavigationProperty Name="Users" Relationship="Self.FK_DeptID_to_DID" FromRole="Departments" ToRole="Users" />
           <NavigationProperty Name="User" Relationship="Self.FK_SUID_to_Users_UID" FromRole="Departments" ToRole="Users" />
         </EntityType>
@@ -175,10 +211,11 @@
           <Property Name="GID" Type="Int32" Nullable="false" />
           <Property Name="UID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="TimeFrame" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Progress" Type="Double" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Updates" Relationship="Self.FK_GID_to_Goal_GID" FromRole="Goals" ToRole="Updates" />
           <NavigationProperty Name="User" Relationship="Self.FK_Goals_to_Users_UID" FromRole="Goals" ToRole="Users" />
         </EntityType>
@@ -214,6 +251,18 @@
           <NavigationProperty Name="Users1" Relationship="Self.FK_SuperUID_to_SUID" FromRole="Users" ToRole="Users1" />
           <NavigationProperty Name="User1" Relationship="Self.FK_SuperUID_to_SUID" FromRole="Users1" ToRole="Users" />
         </EntityType>
+        <Association Name="FK_Categories_ToDept">
+          <End Role="Departments" Type="Self.Department" Multiplicity="0..1" />
+          <End Role="Categories" Type="Self.Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DID" />
+            </Principal>
+            <Dependent Role="Categories">
+              <PropertyRef Name="DepID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DeptID_to_DID">
           <End Role="Departments" Type="Self.Department" Multiplicity="1" />
           <End Role="Users" Type="Self.User" Multiplicity="*" />
@@ -287,10 +336,15 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="UserDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Departments" EntityType="Self.Department" />
           <EntitySet Name="Goals" EntityType="Self.Goal" />
           <EntitySet Name="Updates" EntityType="Self.Update" />
           <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_Categories_ToDept" Association="Self.FK_Categories_ToDept">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Categories" EntitySet="Categories" />
+          </AssociationSet>
           <AssociationSet Name="FK_DeptID_to_DID" Association="Self.FK_DeptID_to_DID">
             <End Role="Departments" EntitySet="Departments" />
             <End Role="Users" EntitySet="Users" />
@@ -322,6 +376,15 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="UserDBModelStoreContainer" CdmEntityContainer="UserDBEntities">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="UserDBModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+                <ScalarProperty Name="DepID" ColumnName="DepID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Departments">
             <EntityTypeMapping TypeName="UserDBModel.Department">
               <MappingFragment StoreEntitySet="Departments">
@@ -338,10 +401,11 @@
                 <ScalarProperty Name="GID" ColumnName="GID" />
                 <ScalarProperty Name="UID" ColumnName="UID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="TimeFrame" ColumnName="TimeFrame" />
                 <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="Progress" ColumnName="Progress" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

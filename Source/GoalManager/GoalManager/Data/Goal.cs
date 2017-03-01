@@ -23,10 +23,11 @@ namespace GoalManager.Data
         public int GID { get; set; }
         public int UID { get; set; }
         public string Title { get; set; }
-        public System.DateTime TimeFrame { get; set; }
         public string Category { get; set; }
         public double Progress { get; set; }
         public string Status { get; set; }
+        public System.DateTime StartDate { get; set; }
+        public System.DateTime EndDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Update> Updates { get; set; }
