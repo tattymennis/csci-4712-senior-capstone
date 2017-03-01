@@ -6,10 +6,8 @@ using GoalManager.Data;
 
 namespace GoalManager.Models
 {
-    public class DepartmentViewModel
+    public class ModifyEmployeeViewModel
     {
-        public Department Department = new Department();
-
-        public List<User> Supervisors = new List<User>();
+        public User Employee = new User();
     }
 }

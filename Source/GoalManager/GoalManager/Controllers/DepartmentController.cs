@@ -17,7 +17,7 @@ namespace GoalManager.Controllers
         }
         public ActionResult CreateDepartment()
         {
-            var vm = new DepartmentViewModel();
+            var vm = new CreateDepartmentViewModel();
             return View(vm);
         }
         [HttpPost]
@@ -31,20 +31,23 @@ namespace GoalManager.Controllers
             */
 
             var tDBDep = new Department(); //optional
-            // if ModelState.isValid()
-            using (var db = new UserDBEntities())
+            if (ModelState.IsValid == true)
             {
-                db.Departments.Add(tDBDep);
-                db.SaveChangesAsync();
+                using (var db = new UserDBEntities())
+                {
+                    db.Departments.Add(tDBDep);
+                    db.SaveChangesAsync();
+                }
             }
             // 
             RedirectToAction("/Home/Index");
-            DepartmentViewModel vm = new DepartmentViewModel();
+            CreateDepartmentViewModel vm = new CreateDepartmentViewModel();
             vm.Department = tempDep;
             return View(vm);
         }
         public ActionResult ModifyDepartment()
         {
+
             return View();
         }
     }

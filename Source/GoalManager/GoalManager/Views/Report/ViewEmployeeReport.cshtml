@@ -1,10 +1,12 @@
-﻿@{
+﻿@using GoalManager.Models
+@model CreateEmployeeViewModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "View Employee Report";
 }
 <h1>View Report - Employee</h1>
-<h1>Mark Zuck</h1>
-<h2>Accounting</h2>
+<h1>@Model.Employee.FirstName @Model.Employee.LastName</h1>
+<h2>@Model.Employee.Department</h2> <!--must had deparment name-->
 <h3>Pass Spring Certification</h3>
 <h5>Toatal Progress:<p>40%</p></h5> 
 
