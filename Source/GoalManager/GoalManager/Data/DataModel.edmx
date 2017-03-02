@@ -10,8 +10,8 @@
             <PropertyRef Name="CatID" />
           </Key>
           <Property Name="CatID" Type="int" Nullable="false" />
-          <Property Name="DepID" Type="int" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="DepID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Departments">
           <Key>
@@ -19,8 +19,9 @@
           </Key>
           <Property Name="DID" Type="int" Nullable="false" />
           <Property Name="SUID" Type="int" Nullable="false" />
-          <Property Name="Description" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Location" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Location" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Goals">
           <Key>
@@ -28,12 +29,22 @@
           </Key>
           <Property Name="GID" Type="int" Nullable="false" />
           <Property Name="UID" Type="int" Nullable="false" />
-          <Property Name="Title" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Category" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Progress" Type="float" Nullable="false" />
-          <Property Name="Status" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="16" Nullable="false" />
           <Property Name="StartDate" Type="datetime" Nullable="false" />
           <Property Name="EndDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Quarters">
+          <Key>
+            <PropertyRef Name="QID" />
+          </Key>
+          <Property Name="QID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="DID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Updates">
           <Key>
@@ -44,23 +55,25 @@
           <Property Name="UID" Type="int" Nullable="false" />
           <Property Name="Progress" Type="float" Nullable="false" />
           <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
             <PropertyRef Name="UID" />
           </Key>
           <Property Name="UID" Type="int" Nullable="false" />
-          <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Title" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Role" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="Role" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DID" Type="int" Nullable="false" />
           <Property Name="Active" Type="bit" Nullable="false" />
           <Property Name="SUID" Type="int" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <Association Name="FK_Categories_ToDept">
-          <End Role="Departments" Type="Self.Departments" Multiplicity="0..1" />
+          <End Role="Departments" Type="Self.Departments" Multiplicity="1" />
           <End Role="Categories" Type="Self.Categories" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Departments">
@@ -107,6 +120,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Quarters_ToDept">
+          <End Role="Departments" Type="Self.Departments" Multiplicity="1" />
+          <End Role="Quarters" Type="Self.Quarters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DID" />
+            </Principal>
+            <Dependent Role="Quarters">
+              <PropertyRef Name="DID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SUID_to_Users_UID">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Departments" Type="Self.Departments" Multiplicity="*" />
@@ -147,6 +172,7 @@
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Departments" EntityType="Self.Departments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Goals" EntityType="Self.Goals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Quarters" EntityType="Self.Quarters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Updates" EntityType="Self.Updates" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Categories_ToDept" Association="Self.FK_Categories_ToDept">
@@ -164,6 +190,10 @@
           <AssociationSet Name="FK_Goals_to_Users_UID" Association="Self.FK_Goals_to_Users_UID">
             <End Role="Users" EntitySet="Users" />
             <End Role="Goals" EntitySet="Goals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Quarters_ToDept" Association="Self.FK_Quarters_ToDept">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Quarters" EntitySet="Quarters" />
           </AssociationSet>
           <AssociationSet Name="FK_SUID_to_Users_UID" Association="Self.FK_SUID_to_Users_UID">
             <End Role="Users" EntitySet="Users" />
@@ -188,8 +218,8 @@
             <PropertyRef Name="CatID" />
           </Key>
           <Property Name="CatID" Type="Int32" Nullable="false" />
-          <Property Name="DepID" Type="Int32" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DepID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Department" Relationship="Self.FK_Categories_ToDept" FromRole="Categories" ToRole="Departments" />
         </EntityType>
         <EntityType Name="Department">
@@ -198,10 +228,12 @@
           </Key>
           <Property Name="DID" Type="Int32" Nullable="false" />
           <Property Name="SUID" Type="Int32" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Categories" Relationship="Self.FK_Categories_ToDept" FromRole="Departments" ToRole="Categories" />
           <NavigationProperty Name="Users" Relationship="Self.FK_DeptID_to_DID" FromRole="Departments" ToRole="Users" />
+          <NavigationProperty Name="Quarters" Relationship="Self.FK_Quarters_ToDept" FromRole="Departments" ToRole="Quarters" />
           <NavigationProperty Name="User" Relationship="Self.FK_SUID_to_Users_UID" FromRole="Departments" ToRole="Users" />
         </EntityType>
         <EntityType Name="Goal">
@@ -210,14 +242,25 @@
           </Key>
           <Property Name="GID" Type="Int32" Nullable="false" />
           <Property Name="UID" Type="Int32" Nullable="false" />
-          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Progress" Type="Double" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Updates" Relationship="Self.FK_GID_to_Goal_GID" FromRole="Goals" ToRole="Updates" />
           <NavigationProperty Name="User" Relationship="Self.FK_Goals_to_Users_UID" FromRole="Goals" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Quarter">
+          <Key>
+            <PropertyRef Name="QID" />
+          </Key>
+          <Property Name="QID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Department" Relationship="Self.FK_Quarters_ToDept" FromRole="Quarters" ToRole="Departments" />
         </EntityType>
         <EntityType Name="Update">
           <Key>
@@ -228,6 +271,7 @@
           <Property Name="UID" Type="Int32" Nullable="false" />
           <Property Name="Progress" Type="Double" Nullable="false" />
           <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Goal" Relationship="Self.FK_GID_to_Goal_GID" FromRole="Updates" ToRole="Goals" />
           <NavigationProperty Name="User" Relationship="Self.FK_UID_to_Users_UID" FromRole="Updates" ToRole="Users" />
         </EntityType>
@@ -236,14 +280,15 @@
             <PropertyRef Name="UID" />
           </Key>
           <Property Name="UID" Type="Int32" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="DID" Type="Int32" Nullable="false" />
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <Property Name="SUID" Type="Int32" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Department" Relationship="Self.FK_DeptID_to_DID" FromRole="Users" ToRole="Departments" />
           <NavigationProperty Name="Departments" Relationship="Self.FK_SUID_to_Users_UID" FromRole="Users" ToRole="Departments" />
           <NavigationProperty Name="Goals" Relationship="Self.FK_Goals_to_Users_UID" FromRole="Users" ToRole="Goals" />
@@ -252,7 +297,7 @@
           <NavigationProperty Name="User1" Relationship="Self.FK_SuperUID_to_SUID" FromRole="Users1" ToRole="Users" />
         </EntityType>
         <Association Name="FK_Categories_ToDept">
-          <End Role="Departments" Type="Self.Department" Multiplicity="0..1" />
+          <End Role="Departments" Type="Self.Department" Multiplicity="1" />
           <End Role="Categories" Type="Self.Category" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Departments">
@@ -271,6 +316,18 @@
               <PropertyRef Name="DID" />
             </Principal>
             <Dependent Role="Users">
+              <PropertyRef Name="DID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Quarters_ToDept">
+          <End Role="Departments" Type="Self.Department" Multiplicity="1" />
+          <End Role="Quarters" Type="Self.Quarter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="DID" />
+            </Principal>
+            <Dependent Role="Quarters">
               <PropertyRef Name="DID" />
             </Dependent>
           </ReferentialConstraint>
@@ -339,6 +396,7 @@
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Departments" EntityType="Self.Department" />
           <EntitySet Name="Goals" EntityType="Self.Goal" />
+          <EntitySet Name="Quarters" EntityType="Self.Quarter" />
           <EntitySet Name="Updates" EntityType="Self.Update" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <AssociationSet Name="FK_Categories_ToDept" Association="Self.FK_Categories_ToDept">
@@ -348,6 +406,10 @@
           <AssociationSet Name="FK_DeptID_to_DID" Association="Self.FK_DeptID_to_DID">
             <End Role="Departments" EntitySet="Departments" />
             <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Quarters_ToDept" Association="Self.FK_Quarters_ToDept">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Quarters" EntitySet="Quarters" />
           </AssociationSet>
           <AssociationSet Name="FK_SUID_to_Users_UID" Association="Self.FK_SUID_to_Users_UID">
             <End Role="Users" EntitySet="Users" />
@@ -392,6 +454,7 @@
                 <ScalarProperty Name="SUID" ColumnName="SUID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -409,6 +472,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Quarters">
+            <EntityTypeMapping TypeName="UserDBModel.Quarter">
+              <MappingFragment StoreEntitySet="Quarters">
+                <ScalarProperty Name="QID" ColumnName="QID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="DID" ColumnName="DID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Updates">
             <EntityTypeMapping TypeName="UserDBModel.Update">
               <MappingFragment StoreEntitySet="Updates">
@@ -417,6 +491,7 @@
                 <ScalarProperty Name="UID" ColumnName="UID" />
                 <ScalarProperty Name="Progress" ColumnName="Progress" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -432,6 +507,7 @@
                 <ScalarProperty Name="DID" ColumnName="DID" />
                 <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="SUID" ColumnName="SUID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -12,16 +12,14 @@ namespace GoalManager.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Update
+    public partial class Quarter
     {
-        public int UpID { get; set; }
-        public int GID { get; set; }
-        public int UID { get; set; }
-        public double Progress { get; set; }
-        public string Notes { get; set; }
-        public string Subject { get; set; }
+        public int QID { get; set; }
+        public string Name { get; set; }
+        public System.DateTime StartDate { get; set; }
+        public System.DateTime EndDate { get; set; }
+        public int DID { get; set; }
     
-        public virtual Goal Goal { get; set; }
-        public virtual User User { get; set; }
+        public virtual Department Department { get; set; }
     }
 }

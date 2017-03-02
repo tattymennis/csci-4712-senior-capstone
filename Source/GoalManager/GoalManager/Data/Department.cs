@@ -19,17 +19,21 @@ namespace GoalManager.Data
         {
             this.Categories = new HashSet<Category>();
             this.Users = new HashSet<User>();
+            this.Quarters = new HashSet<Quarter>();
         }
     
         public int DID { get; set; }
         public int SUID { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }
+        public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Category> Categories { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Quarter> Quarters { get; set; }
         public virtual User User { get; set; }
     }
 }

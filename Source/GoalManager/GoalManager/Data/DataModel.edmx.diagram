@@ -4,14 +4,16 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="55758a2ef0ab4da39a2c4d72567a1812" Name="Diagram1">
-        <EntityTypeShape EntityType="UserDBModel.Category" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Department" Width="1.5" PointX="0.75" PointY="3.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Goal" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Update" Width="1.5" PointX="7.5" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.User" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
+      <Diagram DiagramId="deddf0a4a4f94631858322fe5f27a2d1" Name="Diagram1">
+        <EntityTypeShape EntityType="UserDBModel.Category" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Department" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Goal" Width="1.5" PointX="5.25" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Quarter" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Update" Width="1.5" PointX="7.5" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.User" Width="1.5" PointX="3" PointY="6.75" IsExpanded="true" />
         <AssociationConnector Association="UserDBModel.FK_Categories_ToDept" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_DeptID_to_DID" ManuallyRouted="false" />
+        <AssociationConnector Association="UserDBModel.FK_Quarters_ToDept" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_SUID_to_Users_UID" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_GID_to_Goal_GID" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_Goals_to_Users_UID" ManuallyRouted="false" />

@@ -28,6 +28,7 @@ namespace GoalManager.Data
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Goal> Goals { get; set; }
+        public virtual DbSet<Quarter> Quarters { get; set; }
         public virtual DbSet<Update> Updates { get; set; }
         public virtual DbSet<User> Users { get; set; }
     }

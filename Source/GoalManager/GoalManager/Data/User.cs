@@ -32,6 +32,7 @@ namespace GoalManager.Data
         public int DID { get; set; }
         public bool Active { get; set; }
         public Nullable<int> SUID { get; set; }
+        public string Username { get; set; }
     
         public virtual Department Department { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

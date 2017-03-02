@@ -15,7 +15,7 @@ namespace GoalManager.Data
     public partial class Category
     {
         public int CatID { get; set; }
-        public Nullable<int> DepID { get; set; }
+        public int DepID { get; set; }
         public string Name { get; set; }
     
         public virtual Department Department { get; set; }
