@@ -25,47 +25,51 @@ namespace GoalManager.Controllers
         [HttpPost]
         public ActionResult CreateEmployee(User tempuser)
         {
+            
             var tpdbuser = new User(); //optional
+            
             //Validation for Each Field
 
             //First Name 
-            if(tempuser.FirstName == null)
+            // if(tempuser.FirstName == null)
+            if (String.IsNullOrWhiteSpace(tempuser.FirstName))
             {
-                ModelState.AddModelError("FirstName", "First Name Can Not Be Blank");
+                ModelState.AddModelError("FirstName", "First name can not be blank.");
             }
-            if (tempuser.FirstName != null)
+
+            else
             {
                 foreach (char x in tempuser.FirstName)
-                {
-
-                    if (System.Char.IsDigit(x))
+                {    
+                    if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
                     {
-                        ModelState.AddModelError("FirstName", "First Name Can Not Contains a Number");
+                        ModelState.AddModelError("FirstName", "First name can only contain characters A-z.");
                         break;
                     }
-
                 }
             }
             //Last Name
-            if (tempuser.LastName == null)
+            //if (tempuser.LastName == null)
+            if (String.IsNullOrWhiteSpace(tempuser.LastName))
             {
-                ModelState.AddModelError("LastName", "Last Name Can Not Be Blank");
+                ModelState.AddModelError("LastName", "Last name can not be blank.");
             }
-            if (tempuser.LastName != null)
+
+            else
             {
                 foreach (char x in tempuser.LastName)
                 {
 
-                    if (System.Char.IsDigit(x))
+                    if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
                     {
-                        ModelState.AddModelError("LastName", "Last Name Can Not Contains a Number");
+                        ModelState.AddModelError("LastName", "Last name can only contain A-z.");
                         break;
                     }
 
                 }
             }
             //Email is error check by the html web browser ahead of time if valid email address
-            if(tempuser.Email == null)
+            if(String.IsNullOrWhiteSpace(tempuser.Email))
             {
                 ModelState.AddModelError("Email", "Email Can Not Be Black");
             }
