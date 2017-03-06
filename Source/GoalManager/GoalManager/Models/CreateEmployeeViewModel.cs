@@ -9,5 +9,6 @@ namespace GoalManager.Models
     public class CreateEmployeeViewModel
     {
         public User Employee = new User();
+        public List<Department> Departments = new List<Department>();
     }
 }
