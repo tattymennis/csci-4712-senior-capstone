@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="CatID" />
           </Key>
-          <Property Name="CatID" Type="int" Nullable="false" />
+          <Property Name="CatID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DepID" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
@@ -17,7 +17,7 @@
           <Key>
             <PropertyRef Name="DID" />
           </Key>
-          <Property Name="DID" Type="int" Nullable="false" />
+          <Property Name="DID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SUID" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Location" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -27,7 +27,7 @@
           <Key>
             <PropertyRef Name="GID" />
           </Key>
-          <Property Name="GID" Type="int" Nullable="false" />
+          <Property Name="GID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Category" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -40,7 +40,7 @@
           <Key>
             <PropertyRef Name="QID" />
           </Key>
-          <Property Name="QID" Type="int" Nullable="false" />
+          <Property Name="QID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="StartDate" Type="datetime" Nullable="false" />
           <Property Name="EndDate" Type="datetime" Nullable="false" />
@@ -50,10 +50,10 @@
           <Key>
             <PropertyRef Name="UpID" />
           </Key>
-          <Property Name="UpID" Type="int" Nullable="false" />
+          <Property Name="UpID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GID" Type="int" Nullable="false" />
           <Property Name="UID" Type="int" Nullable="false" />
-          <Property Name="Progress" Type="float" Nullable="false" />
+          <Property Name="Progress" Type="int" Nullable="false" />
           <Property Name="Notes" Type="nvarchar" MaxLength="255" />
           <Property Name="Subject" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -61,7 +61,7 @@
           <Key>
             <PropertyRef Name="UID" />
           </Key>
-          <Property Name="UID" Type="int" Nullable="false" />
+          <Property Name="UID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="64" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="64" Nullable="false" />
           <Property Name="Role" Type="nvarchar" MaxLength="16" Nullable="false" />
@@ -217,7 +217,7 @@
           <Key>
             <PropertyRef Name="CatID" />
           </Key>
-          <Property Name="CatID" Type="Int32" Nullable="false" />
+          <Property Name="CatID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DepID" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Department" Relationship="Self.FK_Categories_ToDept" FromRole="Categories" ToRole="Departments" />
@@ -226,7 +226,7 @@
           <Key>
             <PropertyRef Name="DID" />
           </Key>
-          <Property Name="DID" Type="Int32" Nullable="false" />
+          <Property Name="DID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SUID" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
@@ -240,7 +240,7 @@
           <Key>
             <PropertyRef Name="GID" />
           </Key>
-          <Property Name="GID" Type="Int32" Nullable="false" />
+          <Property Name="GID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
@@ -255,7 +255,7 @@
           <Key>
             <PropertyRef Name="QID" />
           </Key>
-          <Property Name="QID" Type="Int32" Nullable="false" />
+          <Property Name="QID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
@@ -266,10 +266,10 @@
           <Key>
             <PropertyRef Name="UpID" />
           </Key>
-          <Property Name="UpID" Type="Int32" Nullable="false" />
+          <Property Name="UpID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="GID" Type="Int32" Nullable="false" />
           <Property Name="UID" Type="Int32" Nullable="false" />
-          <Property Name="Progress" Type="Double" Nullable="false" />
+          <Property Name="Progress" Type="Int32" Nullable="false" />
           <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Goal" Relationship="Self.FK_GID_to_Goal_GID" FromRole="Updates" ToRole="Goals" />
@@ -279,7 +279,7 @@
           <Key>
             <PropertyRef Name="UID" />
           </Key>
-          <Property Name="UID" Type="Int32" Nullable="false" />
+          <Property Name="UID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Email" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Role" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />

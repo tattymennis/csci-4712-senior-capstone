@@ -17,7 +17,7 @@ namespace GoalManager.Data
         public int UpID { get; set; }
         public int GID { get; set; }
         public int UID { get; set; }
-        public double Progress { get; set; }
+        public int Progress { get; set; }
         public string Notes { get; set; }
         public string Subject { get; set; }
     

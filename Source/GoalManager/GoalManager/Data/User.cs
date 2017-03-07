@@ -11,7 +11,8 @@ namespace GoalManager.Data
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -33,6 +34,7 @@ namespace GoalManager.Data
         public bool Active { get; set; }
         public Nullable<int> SUID { get; set; }
         public string Username { get; set; }
+        [NotMapped]
     
         public virtual Department Department { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
