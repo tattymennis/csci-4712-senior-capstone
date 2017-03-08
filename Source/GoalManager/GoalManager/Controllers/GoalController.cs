@@ -15,13 +15,21 @@ namespace GoalManager.Controllers
         {
             return View();
         }
+
+
+
+
+        ////////CreateGoal
+
+
         public ActionResult CreateGoal()
         {
             // must get logged in user Role and Department to pull drop down list of Categories + Quarters
             var vm = new CreateGoalViewModel();
             using (var db = new UserDBEntities())
             {
-                
+                // create dropdown for category 
+                // creat dropdown for quarter 
             }
             return View(vm);
         }
@@ -37,12 +45,19 @@ namespace GoalManager.Controllers
                     db.Goals.Add(dbGoal);
                     db.SaveChangesAsync();
                 }
-                RedirectToAction("/Home/Index");
+                RedirectToAction("~/Home/Index");
             }
             var vm = new CreateGoalViewModel();
+            // create dropdown for category 
+            // creat dropdown for quarter
             vm.Goal = tmpGoal;
             return View(vm);
         }
+
+
+        //////UpdateGoal
+
+
         public ActionResult UpdateGoal()
         {
 
@@ -50,7 +65,7 @@ namespace GoalManager.Controllers
             return View(vm);
         }
         [HttpPost]
-        public ActionResult UpdateGoal(Goal tmpUpdate)
+        public ActionResult UpdateGoal( Update tmpUpdate)
         {
             var dbUpdate = new Goal();
             if (ModelState.IsValid == true)
@@ -60,16 +75,26 @@ namespace GoalManager.Controllers
                     db.Goals.Add(dbUpdate); //add if approved
                      //save for now until approved
                 }
-                RedirectToAction("/Home/Index");
+                RedirectToAction("~/Home/Index");
             }
 
             var vm = new UpdateGoalViewModel();
             vm.Update = tmpUpdate;
             return View(vm);
         }
-        public ActionResult ViewGoal()
+
+
+        ///ViewGoal
+        ///
+        [HttpPost]
+        public ActionResult ViewGoal(int ID) 
         {
-            return View();
+            var vm = new ViewGoalViewModel();
+            //find user from the db
+            //find goal from the db
+            //find associated updates from the goal
+            return View(vm);
         }
+
     }
 }

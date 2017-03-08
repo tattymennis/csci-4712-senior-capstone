@@ -14,17 +14,17 @@
 
 <form method="post">
     <div class="form-group form-horizontal">
-        <label for="Title">Update Subject</label>
-        <input type="text" class="form-control" value="@Model.Update.Title"/>
+        <label for="Subject">Update Subject</label>
+        <input type="text" class="form-control" name="Subject" value="@Model.Update.Subject"/>
         <small class="form-text text-muted">Note:All users will see this for their respective Department criteria  </small>
     </div>
     <div class="form-group form-horizontal">
         <label for="Progress">Progress</label>
-        <input type="number" class="form-control" value="@Model.Update.Progress"/>
+        <input type="number" class="form-control" name="Progress" value="@Model.Update.Progress"/>
     </div>
     <div class="form-group form-horizontal">
-        <label for="Decription">Description</label>
-        <textarea class="form-control" value="@Model.Update" ></textarea>
+        <label for="Notes">Notes</label>
+        <textarea class="form-control" name="Notes" value="@Model.Update.Notes" ></textarea>
         
     </div>
 <input type="submit"/>

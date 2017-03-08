@@ -1,12 +1,20 @@
-﻿@{
+﻿@using GoalManager.Models;
+@model ViewGoalViewModel
+
+
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "View Goal";
+    
 }
-<h1>View Goal - Mark Zuck</h1>
-<h2>Accounting</h2>
-<h3>Goal : Pass Spring Certification</h3>
-<h3>02/22/2017</h3>
-<h3>Total Progress: 80%</h3>
+<h1>@ViewBag.Title - @Model.Employee.FirstName @Model.Employee.LastName</h1>
+<h2>@Model.Employee.Department</h2>
+<h3>Goal : @Model.Goal.Title</h3>
+<h4>Start Date : @Model.Goal.StartDate</h4>
+<h4>End Date : @Model.Goal.EndDate</h4>
+<h5>@Model.Date</h5>
+<h3>Total Progress: </h3>
 <table class="table  table-bordered table-hover table-responsive">
     <thead>
         <!--update section-->
@@ -19,18 +27,15 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td class="success">Pass ACC 1000 Exam 1</td>
-            <td class="success"> 02/31/2017</td>
-            <td class="success">60%</td>
-            <td class="success">Study and pass ACC 1000 Exam on 01/22/2017</td>
-        </tr>
-        <tr>
-            <th class="alert-danger">Work on ACC 1000 project</th>
-            <td class="alert-danger"> 04/01/2017</td>
-            <th class="alert-danger">20%</th>
-            <th class="alert-danger">Complete and present ACC 1000 project</th>
-        </tr>
+        @foreach (var x in Model.Updates)
+        {
+            <tr>
+                <td class="success">@x.Subject</td>
+                <td class="success">06/06/2022</td> <!--Must update Update table to support Date attribute-->
+                <td class="success">@x.Progress</td>
+                <td class="success">@x.Notes</td>
+            </tr>
+        }
         <!-- end of update section-->
     </tbody>
     </table>
