@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GoalManager.Models;
+using GoalManager.Data;
 
 namespace GoalManager.Controllers
 {
@@ -14,7 +16,12 @@ namespace GoalManager.Controllers
         }
         public ActionResult EmployeeHome()
         {
-            return View();
+            var vm = new EmployeeHomeViewModel();
+            using (var db = new UserDBEntities())
+            {
+                vm.Goals.AddRange(db.Goals);
+            }
+                return View(vm);
         }
         public ActionResult SupervisorHome()
         {

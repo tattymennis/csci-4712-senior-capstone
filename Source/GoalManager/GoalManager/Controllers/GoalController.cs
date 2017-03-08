@@ -24,13 +24,36 @@ namespace GoalManager.Controllers
 
         public ActionResult CreateGoal()
         {
-            // must get logged in user Role and Department to pull drop down list of Categories + Quarters
+
             var vm = new CreateGoalViewModel();
+
+            List<SelectListItem> catTempList = new List<SelectListItem>();
+            catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
+
+            List<SelectListItem> quartTempList = new List<SelectListItem>();
+            quartTempList.Add(new SelectListItem { Value = "1", Text = "Select a Quarter", Selected = true });
+
             using (var db = new UserDBEntities())
             {
-                // create dropdown for category 
-                // creat dropdown for quarter 
+                //pulling categories
+                var cats = db.Categories;
+                foreach (Category c in cats)
+                {
+                    catTempList.Add(new SelectListItem { Value = c.CatID.ToString(), Text = c.Name, Selected = false });
+                }
+
+                var quarts = db.Quarters;
+                foreach (Quarter q in quarts)
+                {
+                    quartTempList.Add(new SelectListItem { Value = q.QID.ToString(), Text = q.Name, Selected = false });
+                }
+
+
+
             }
+
+            vm.CatDropDown = catTempList;
+            vm.QuartDropDown = quartTempList;
             return View(vm);
         }
 
@@ -87,9 +110,24 @@ namespace GoalManager.Controllers
         ///ViewGoal
         ///
         [HttpPost]
-        public ActionResult ViewGoal(int ID) 
+        public ActionResult ViewGoal(int goalid) 
         {
             var vm = new ViewGoalViewModel();
+
+            List<Update> tmpUpdates = new List<Update>();
+            
+            using (var db = new UserDBEntities())
+            {
+                vm.Goal = db.Goals.Where(x => x.GID == goalid).FirstOrDefault();
+
+
+                vm.Updates.AddRange(db.Updates.Where(x => x.GID == vm.Goal.GID));
+                
+            }
+
+            List<SelectListItem> catTempList = new List<SelectListItem>();
+            catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
+
             //find user from the db
             //find goal from the db
             //find associated updates from the goal

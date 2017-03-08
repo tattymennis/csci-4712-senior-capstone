@@ -216,6 +216,7 @@
     <Compile Include="Models\CreateDepartmentViewModel.cs" />
     <Compile Include="Models\CreateEmployeeViewModel.cs" />
     <Compile Include="Models\CreateGoalViewModel.cs" />
+    <Compile Include="Models\EmployeeHomeViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ModifyEmployeeViewModel.cs" />

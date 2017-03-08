@@ -1,16 +1,65 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@using GoalManager.Models
+@model EmployeeHomeViewModel
 <h1>@ViewBag.Title</h1>
-<ul class="nav nav-pills">
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Goal/CreateGoal">Create Goal</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Goal/UpdateGoal">Update Goal</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Goal/ViewGoal">View Goal</a>
-    </li>
-</ul>
+<div>
+    <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a class="nav-item navbar-link active" href="~/Goal/CreateGoal">Create Goal</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-item navbar-link active" href="~/Goal/UpdateGoal">Update Goal</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-item navbar-link active" href="~/Goal/ViewGoal">View Goal</a>
+        </li>
+    </ul>
+</div>
+
+<div>
+    
+ <table class="table  table-bordered table-hover table-responsive">
+    <thead>
+        <!--update section-->
+        <tr class="active">
+
+            <th>Update</th>
+            <th>Deadline</th>
+            <th>Progress</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+
+
+        <tbody>
+            @foreach (var u in Model.Goals)
+            {
+                
+                    <tr>
+                        <td class="success">@u.Title</td>
+                        <td class="success">06/05/2090</td> <!--Must update Update table to support Date attribute-->
+                        <td class="success">@u.Progress</td>
+                        <td class="success">@u.Status</td>
+                        <td>
+                            <form action="/Goal/ViewGoal" method="post">
+                                <input type="hidden" name="goalid" value="@u.GID"  />
+                                <input type="submit" value="View" />
+                            </form>
+                            
+                        </td>
+                    </tr>
+                
+
+
+            }
+            <!-- end of update section-->
+        </tbody>
+    </table>
+
+
+                
+            
+</div>
