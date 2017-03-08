@@ -132,7 +132,7 @@ namespace GoalManager.Controllers
                 {                    
                     // generate username
                     int count = 1;
-                    string username = tempuser.FirstName[0] + tempuser.LastName;
+                    string username = (tempuser.FirstName[0] + tempuser.LastName).ToLower();
                     while (db.Users.Any(x => x.Username == username) || count > 16) // username collision
                     {
                         username += count.ToString();
@@ -147,9 +147,6 @@ namespace GoalManager.Controllers
                 }
                 RedirectToAction("~/Home/Index");
             }
-
-            
-
 
             // Active, Not able to bind to value, must discuss next video chat, or default to true
            

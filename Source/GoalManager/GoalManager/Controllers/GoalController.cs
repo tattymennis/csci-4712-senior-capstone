@@ -6,11 +6,6 @@ using System.Web.Mvc;
 using GoalManager.Models;
 using GoalManager.Data;
 
-
-
-
-
-
 namespace GoalManager.Controllers
 {
     public class GoalController : Controller
@@ -22,7 +17,12 @@ namespace GoalManager.Controllers
         }
         public ActionResult CreateGoal()
         {
+            // must get logged in user Role and Department to pull drop down list of Categories + Quarters
             var vm = new CreateGoalViewModel();
+            using (var db = new UserDBEntities())
+            {
+                
+            }
             return View(vm);
         }
 
