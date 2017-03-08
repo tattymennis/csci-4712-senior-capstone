@@ -13,10 +13,6 @@ namespace GoalManager.Models
     {
         public IEnumerable<SelectListItem> DeptDropDown { get; set; }
 
-        public string DeptChoice { get; set; }
-
         public User Employee = new User();
-
-        public List<Department> Departments = new List<Department>();
     }
 }
