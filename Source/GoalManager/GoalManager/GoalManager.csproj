@@ -309,6 +309,9 @@
     <Content Include="Views\Department\ModifyDepartment.cshtml" />
     <Content Include="Views\Goal\UpdateGoal.cshtml" />
     <Content Include="Views\Home\MainView.cshtml" />
+    <Content Include="Views\Home\EmployeeHome.cshtml" />
+    <Content Include="Views\Home\SupervisorHome.cshtml" />
+    <Content Include="Views\Home\AdminHome.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

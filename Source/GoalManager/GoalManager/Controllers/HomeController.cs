@@ -12,7 +12,18 @@ namespace GoalManager.Controllers
         {
             return View();
         }
-
+        public ActionResult EmployeeHome()
+        {
+            return View();
+        }
+        public ActionResult SupervisorHome()
+        {
+            return View();
+        }
+        public ActionResult AdminHome()
+        {
+            return View();
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

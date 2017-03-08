@@ -23,12 +23,7 @@ namespace GoalManager.Controllers
         [HttpPost]
         public ActionResult CreateDepartment(Department tempDep)
         {
-            /* if(tempDep.Location == "")
-            {
-                ModelState.AddModelError("Location", "Location cannnt be empty!"); //wrong
-            }
-            ModelState.AddModelError("Location", "Location Cannnt be empadf;ladf!"); //wrong
-            */
+          
 
             var tDBDep = new Department(); //optional
             if (ModelState.IsValid == true)
