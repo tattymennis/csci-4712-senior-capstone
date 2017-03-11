@@ -1,18 +1,54 @@
-﻿@{
+﻿@using GoalManager.Models;
+@model AdminHomeViewModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>@ViewBag.Title</h1>
-<ul class="nav nav-pills">
-    <li>
+<ul class="nav nav-pills row">
+    <li class="nav-item col-lg-2">
         <a class="nav-item navbar-link active" href="~/Department/CreateDepartment">Create Department</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item col-lg-2">
         <a class="nav-item navbar-link active" href="~/Department/ModifyDepartment">Modify Department</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item col-lg-2">
         <a class="nav-item navbar-link active" href="~/Employee/CreateEmployee">Create Employee</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item col-lg-2">
         <a class="nav-item navbar-link active" href="~/Employee/ModifyEmployee">Modify Employee</a>
     </li>
 </ul>
+
+
+<table class="row table table-bordered table-hover table-responsive">
+    <thead>
+        <!--update section-->
+        <tr class="active">
+
+            <th>Name</th>
+            <th>Role</th>
+            <th>Title</th>
+            <th>Email</th>
+            <th>Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model.Employees)
+        {
+            <tr>
+                <td class="success">@x.FirstName @x.LastName</td>
+                <td class="success">@x.Role</td>
+                <td class="success">@x.Title</td>
+                <td class="success">@x.Email</td>
+                <td class="success">@x.Active</td>
+                <td>
+                    <form action="/Employee/ModifyEmployee" method="post">
+                        <input type="hidden" name="EmpID" value="@x.UID" />
+                        <input type="submit" value="Modify" />
+                    </form>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

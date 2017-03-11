@@ -213,6 +213,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AdminHomeViewModel.cs" />
     <Compile Include="Models\CreateDepartmentViewModel.cs" />
     <Compile Include="Models\CreateEmployeeViewModel.cs" />
     <Compile Include="Models\CreateGoalViewModel.cs" />
@@ -226,6 +227,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\IdentityDB.mdf" />
+    <Content Include="App_Data\IdentityDB_log.ldf" />
     <Content Include="App_Data\UserDB.mdf" />
     <Content Include="App_Data\UserDB_log.ldf" />
     <Content Include="Content\bootstrap.css" />
@@ -313,6 +316,7 @@
     <Content Include="Views\Home\EmployeeHome.cshtml" />
     <Content Include="Views\Home\SupervisorHome.cshtml" />
     <Content Include="Views\Home\AdminHome.cshtml" />
+    <Content Include="Views\Account\RegisterEmployee.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

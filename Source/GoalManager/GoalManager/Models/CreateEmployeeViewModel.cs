@@ -15,4 +15,19 @@ namespace GoalManager.Models
 
         public User Employee = new User();
     }
+
+    public class RegisterEmployeeViewModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
+        [Required]
+        public string Role { get; set; }
+    }
 }

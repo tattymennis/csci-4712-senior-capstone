@@ -5,16 +5,35 @@ using System.Web;
 using System.Web.Mvc;
 using GoalManager.Models;
 using GoalManager.Data;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace GoalManager.Controllers
 {
     public class EmployeeController : Controller
     {
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
         // GET: Employee
         public ActionResult Index()
         {
             return View();
         }
+
+        // [Authorized]
         public ActionResult CreateEmployee()
         {
             var vm = new CreateEmployeeViewModel();
@@ -34,8 +53,8 @@ namespace GoalManager.Controllers
             vm.DeptDropDown = tempList;
             return View(vm);
         }
-            
 
+        // [Authorized]    
         [HttpPost]
         public ActionResult CreateEmployee(User tempuser)
         {
@@ -86,7 +105,17 @@ namespace GoalManager.Controllers
 
             else // TODO: Regex email address?
             {
-                dbuser.Email = tempuser.Email;
+                using (UserDBEntities db = new UserDBEntities())
+                {                  
+                    if (db.Users.Any(x => x.Email == tempuser.Email))
+                    {
+                        ModelState.AddModelError("Email", "Please enter a new email address.");
+                    }
+                    else
+                    {
+                        dbuser.Email = tempuser.Email;
+                    }
+                }          
             }
 
             //Title
@@ -100,7 +129,7 @@ namespace GoalManager.Controllers
                 //Title can have a digit, e.g "Section 8 Specialist"
                 foreach (char x in tempuser.Title)
                 {
-                    if (Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
                     {
                         ModelState.AddModelError("Title", "Title can only contain A-Z or numbers");
                         break;
@@ -133,8 +162,10 @@ namespace GoalManager.Controllers
                     // generate username
                     int count = 1;
                     string username = (tempuser.FirstName[0] + tempuser.LastName).ToLower();
-                    while (db.Users.Any(x => x.Username == username) || count > 16) // username collision
+                    while (db.Users.Any(x => x.Username == username) || count > 100) // username collision
                     {
+                        username = (tempuser.FirstName[0] + tempuser.LastName).ToLower(); 
+
                         username += count.ToString();
                         count++;
                     }
@@ -145,11 +176,17 @@ namespace GoalManager.Controllers
 
                     db.SaveChanges();
                 }
-                RedirectToAction("~/Home/Index");
+
+                // Account creation
+                RegisterEmployeeViewModel revm = new RegisterEmployeeViewModel();
+                revm.Email = dbuser.Email;
+                revm.Username = dbuser.Username;
+                revm.Role = dbuser.Role;
+                Session["RegisterEmployeeVM"] = revm;
+                return RedirectToAction("RegisterEmployee");
             }
 
-            // Active, Not able to bind to value, must discuss next video chat, or default to true
-           
+            // New ViewModel may be unnecessary
             CreateEmployeeViewModel nvm = new CreateEmployeeViewModel();
             nvm.Employee = tempuser;
             List<SelectListItem> tempList = new List<SelectListItem>();
@@ -161,17 +198,44 @@ namespace GoalManager.Controllers
                 {
                     tempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
                 }
-
             }
             nvm.DeptDropDown = tempList;
-          //  ViewData["DeptDropDown"] = vm.DeptDropDown;
-
             return View(nvm);
         }
+        
+        // [Authorized]
+        [AllowAnonymous] 
+        public async Task<ActionResult> RegisterEmployee()
+        {
+            RegisterEmployeeViewModel revm = Session["RegisterEmployeeVM"] as RegisterEmployeeViewModel;
+            if (revm == null)
+            {
+                // failed; no data passed
+                return RedirectToAction("CreateEmployee", "Employee");
+            }
+
+            var user = new ApplicationUser { UserName = revm.Username, Email = revm.Email };
+            var result = await UserManager.CreateAsync(user, "Pa$$w0rd");
+
+            Session["CurrentUser"] = revm.Role;
+            return RedirectToAction("MainView", "Home");
+            //return View(revm);
+        }
+
+        [HttpPost]
+        [AllowAnonymous] // temporary
+        public async Task<ActionResult> RegisterEmployee(RegisterEmployeeViewModel vm)
+        {
+            var role = vm.Role;
+            var user = new ApplicationUser { UserName = vm.Username, Email = vm.Email };
+            var result = await UserManager.CreateAsync(user, "Pa$$w0rd");
+
+            return RedirectToAction("MainView", "Home");
+        }
+
         [HttpPost]
         public ActionResult ModifyEmployee(int ID) //Pass Employee ID to be Displayed
         {
-
             var vm = new ModifyEmployeeViewModel();
             //using Db, search where ID equals the Employeee ID
             return View(vm);
@@ -284,7 +348,6 @@ namespace GoalManager.Controllers
                 }
                 RedirectToAction("~/Home/Index");
             }
-
 
             CreateEmployeeViewModel nvm = new CreateEmployeeViewModel();
             nvm.Employee = tempuser;

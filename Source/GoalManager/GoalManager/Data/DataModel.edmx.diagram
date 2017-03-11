@@ -5,12 +5,12 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="fdec8c96e7ff44acac691c7a7219b444" Name="Diagram1">
-        <EntityTypeShape EntityType="UserDBModel.Category" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Category" Width="1.5" PointX="0.75" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="UserDBModel.Department" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Goal" Width="1.5" PointX="5.25" PointY="7.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Quarter" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.Update" Width="1.5" PointX="7.5" PointY="7.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="UserDBModel.User" Width="1.5" PointX="3" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Goal" Width="1.5" PointX="5.125" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Quarter" Width="1.5" PointX="3" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Update" Width="1.5" PointX="7.5" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.User" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
         <AssociationConnector Association="UserDBModel.FK_Categories_ToDept" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_DeptID_to_DID" ManuallyRouted="false" />
         <AssociationConnector Association="UserDBModel.FK_Quarters_ToDept" ManuallyRouted="false" />

@@ -11,7 +11,9 @@ namespace GoalManager.Data
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Web.Mvc;
+    using System.ComponentModel; // for [DisplayName]
+    using System.ComponentModel.DataAnnotations;
 
     public partial class User
     {
@@ -23,20 +25,19 @@ namespace GoalManager.Data
             this.Updates = new HashSet<Update>();
             this.Users1 = new HashSet<User>();
         }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+    
+        public int UID { get; set; }
         public string Email { get; set; }
         public string Title { get; set; }
         public string Role { get; set; }
-        public int UID { get; set; } 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public int DID { get; set; }
         public bool Active { get; set; }
         public Nullable<int> SUID { get; set; }
         public string Username { get; set; }
-
-        [NotMapped]
+        
         public int DepRefChoice { get; set; }
-    
         public virtual Department Department { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Department> Departments { get; set; }

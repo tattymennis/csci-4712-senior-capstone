@@ -12,6 +12,7 @@ namespace GoalManager.Controllers
     {
         public ActionResult Index()
         {
+             
             return View();
         }
         public ActionResult EmployeeHome()
@@ -21,7 +22,7 @@ namespace GoalManager.Controllers
             {
                 vm.Goals.AddRange(db.Goals);
             }
-                return View(vm);
+            return View(vm);
         }
         public ActionResult SupervisorHome()
         {
@@ -29,7 +30,13 @@ namespace GoalManager.Controllers
         }
         public ActionResult AdminHome()
         {
-            return View();
+            var vm = new AdminHomeViewModel();
+            using (var db = new UserDBEntities())
+            {
+                vm.Departments.AddRange(db.Departments);
+                vm.Employees.AddRange(db.Users);
+            }
+            return View(vm);
         }
         public ActionResult About()
         {

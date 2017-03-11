@@ -11,8 +11,7 @@ namespace GoalManager.Data
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations.Schema;
-
+    
     public partial class Goal
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -29,11 +28,7 @@ namespace GoalManager.Data
         public string Status { get; set; }
         public System.DateTime StartDate { get; set; }
         public System.DateTime EndDate { get; set; }
-
-        [NotMapped]
-        public int QuartRef { get; set; }
-        public int CatRef { get; set; }
-
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Update> Updates { get; set; }
         public virtual User User { get; set; }

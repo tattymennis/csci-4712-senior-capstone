@@ -24,9 +24,10 @@
                     <li>@Html.ActionLink("Goals", "ViewGoal", "Goal")</li>
                     <li></li>
                 </ul>
+                @Html.Partial("_LoginPartial")
                 @if (Request.IsAuthenticated == false)
                 {
-                    @Html.Partial("_LoginPartial")
+                    
                 }
             </div>
         </div>
