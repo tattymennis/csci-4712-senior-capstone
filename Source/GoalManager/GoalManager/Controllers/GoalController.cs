@@ -12,14 +12,8 @@ namespace GoalManager.Controllers
 {
     public class GoalController : Controller
     {
-        // GET: Goal
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         // CreateGoal
-        // [Authorize]
+        [Authorize]
         public ActionResult CreateGoal()
         {
             var vm = new CreateGoalViewModel();
@@ -62,6 +56,7 @@ namespace GoalManager.Controllers
         }
 
         // new HttpPost for CreateGoal
+        [Authorize]
         [HttpPost]
         public ActionResult CreateGoal(CreateGoalViewModel vm)
         {
@@ -137,6 +132,15 @@ namespace GoalManager.Controllers
                     db.Updates.Add(update);
                     db.SaveChanges();
 
+                    var userSessionData = new UserSessionData
+                    {
+                        Username = user.Username,
+                        Role = user.Role,
+                        UID = user.UID,
+                        Goals = db.Goals.Where(x => x.UID == user.UID).ToList<Goal>()
+                    };
+                    Session["UserSessionData"] = userSessionData;
+
                     return RedirectToAction("EmployeeHome", "Home");
                 }               
             }
@@ -147,61 +151,68 @@ namespace GoalManager.Controllers
             return View(nvm);
         }
 
-        //[HttpPost]
-        //public ActionResult CreateGoal(Goal tmpGoal)
-        //{
-        //    var dbGoal = new Goal(); //optional
-        //    if (ModelState.IsValid == true)
-        //    {
-        //        using (var db = new UserDBEntities())
-        //        {
-        //            db.Goals.Add(dbGoal);
-        //            db.SaveChangesAsync();
-        //        }
-        //        RedirectToAction("~/Home/Index");
-        //    }
-        //    var vm = new CreateGoalViewModel();
-        //    // create dropdown for category 
-        //    // creat dropdown for quarter
-        //    vm.Goal = tmpGoal;
-        //    return View(vm);
-        //}
-
-        //////UpdateGoal
-
+        // UpdateGoal
 
         public ActionResult UpdateGoal()
         {
-
             var vm = new UpdateGoalViewModel();
-            return View(vm);
-        }
-        [HttpPost]
-        public ActionResult UpdateGoal( Update tmpUpdate)
-        {
-            var dbUpdate = new Goal();
-            if (ModelState.IsValid == true)
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
+            if (vm == null)
             {
-                using (var db = new UserDBEntities())
-                {
-                    db.Goals.Add(dbUpdate); //add if approved
-                     //save for now until approved
-                }
-                RedirectToAction("~/Home/Index");
+                // TODO: Error
             }
 
-            var vm = new UpdateGoalViewModel();
-            vm.Update = tmpUpdate;
+            if (userSessionData == null)
+            {
+                // TODO: Error
+            }
+
+            // get selected Goal
+            var goal = userSessionData.Goals.Find(x => x.GID == vm.GID);
+            vm.Update = new Update
+            {
+                Goal = goal
+            };
+
             return View(vm);
         }
 
+        [HttpPost]
+        public ActionResult UpdateGoal(UpdateGoalViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                vm.Update.Time = DateTime.Now;
+                using (UserDBEntities db = new UserDBEntities())
+                {
+                    db.Updates.Add(vm.Update);
+                    db.SaveChanges();
+                }
+                return RedirectToAction("MainView", "Home");
+            }
+            var nvm = new UpdateGoalViewModel();
+            return View(vm);
+        }
 
         // ViewGoal
-        //[Authorize]
+        [Authorize]
         public ActionResult ViewGoal()
         {
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
             string userID = User.Identity.GetUserId();
             string username = User.Identity.GetUserName();
+
+            if (userSessionData == null)
+            {
+                // TODO: Error
+            }
+
+            foreach (int key in userSessionData.UpdateDict.Keys)
+            {
+                // TODO: 
+                List<Update> ups = userSessionData.UpdateDict[key];
+            }
+
             if (String.IsNullOrWhiteSpace(userID) || String.IsNullOrWhiteSpace(username))
             {
                 // error
@@ -219,7 +230,6 @@ namespace GoalManager.Controllers
                     }
                 }
             }
-
 
             ViewGoalViewModel vm = new ViewGoalViewModel();
             return View(vm);
@@ -250,5 +260,10 @@ namespace GoalManager.Controllers
             return View(vm);
         }
 
+        // GET: Goal
+        public ActionResult Index()
+        {
+            return View();
+        }
     }
 }

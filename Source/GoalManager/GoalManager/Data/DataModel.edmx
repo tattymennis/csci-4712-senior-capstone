@@ -55,8 +55,8 @@
           <Property Name="GID" Type="int" Nullable="false" />
           <Property Name="Progress" Type="int" Nullable="false" />
           <Property Name="Notes" Type="nvarchar" MaxLength="255" />
-          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
-          <Property Name="Time" Type="datetime2" Precision="7" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Time" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -256,8 +256,8 @@
           <Property Name="GID" Type="Int32" Nullable="false" />
           <Property Name="Progress" Type="Int32" Nullable="false" />
           <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Time" Type="DateTime" Precision="7" />
+          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Time" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Goal" Relationship="Self.FK_GID_to_Goal_GID" FromRole="Updates" ToRole="Goals" />
         </EntityType>
         <EntityType Name="User">

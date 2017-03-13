@@ -8,7 +8,8 @@ namespace GoalManager.Models
 {
     public class UpdateGoalViewModel
     {
-        public Update Update = new Update();
+        public int GID { get; set; }
+        public Update Update { get; set; }
         public User Employee = new User();
     }
 }

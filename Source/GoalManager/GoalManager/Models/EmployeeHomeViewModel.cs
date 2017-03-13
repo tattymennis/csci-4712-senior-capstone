@@ -10,5 +10,6 @@ namespace GoalManager.Models
     {
         public List<Goal> Goals = new List<Goal>();
         public List<Update> Updates = new List<Update>();
+        
     }
 }

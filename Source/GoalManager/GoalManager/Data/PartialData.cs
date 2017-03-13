@@ -123,4 +123,21 @@ namespace GoalManager.Data
 
     public class CategoryMetadata { }
 
+    public class UserSessionData
+    {
+        public string Username { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string Role { get; set; }
+
+        public int UID { get; set; }
+
+        public int DID { get; set; }
+
+        public List<Goal> Goals { get; set; }
+        public Dictionary<int,List<Update>> UpdateDict { get; set; }
+    }
 }

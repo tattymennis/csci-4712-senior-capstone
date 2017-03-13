@@ -33,7 +33,7 @@ namespace GoalManager.Controllers
             return View();
         }
 
-        // [Authorized]
+        [Authorize]
         public ActionResult CreateEmployee()
         {
             var vm = new CreateEmployeeViewModel();
@@ -53,9 +53,10 @@ namespace GoalManager.Controllers
             vm.DeptDropDown = tempList;
             return View(vm);
         }
-
-        // [Authorized]    
+ 
         [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult CreateEmployee(CreateEmployeeViewModel vm)
         {
             User dbuser = new User(); //user to be added to the database
@@ -207,9 +208,8 @@ namespace GoalManager.Controllers
             nvm.DeptDropDown = tempList;
             return View(nvm);
         }
-        
-        // [Authorized]
-        [AllowAnonymous] 
+
+        [Authorize]
         public async Task<ActionResult> RegisterEmployee()
         {
             RegisterEmployeeViewModel revm = Session["RegisterEmployeeVM"] as RegisterEmployeeViewModel;
@@ -228,7 +228,8 @@ namespace GoalManager.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous] // temporary
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> RegisterEmployee(RegisterEmployeeViewModel vm)
         {
             var role = vm.Role;
@@ -246,7 +247,15 @@ namespace GoalManager.Controllers
         //    return View(vm);
         // }
 
+        [Authorize]
+        public ActionResult ModifyEmployee()
+        {
+            return View();
+        }
+
         [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult ModifyEmployee(ModifyEmployeeViewModel vm)
         {
             ModifyEmployeeViewModel nvm = new ModifyEmployeeViewModel();

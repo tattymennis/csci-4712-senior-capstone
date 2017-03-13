@@ -8,11 +8,12 @@
 
 <h1>@ViewBag.Title</h1>
 
-@*<div class="text-danger">
+<div class="text-danger">
     @Html.ValidationSummary()
-</div>*@
+</div>
 
 <form method="post">
+    @Html.AntiForgeryToken()
     <div class="form-group form-horizontal">
         <label for="Title">Title</label>
         <input type="text" class="form-control" name="Title" value="@Model.Goal.Title" />
@@ -32,23 +33,8 @@
 
     <div class="form-group form-horizontal">
         <label for="QuarterTime">Quarter</label>
-        @Html.DropDownListFor(x => x.QuarterTime, Model.CatDropDown, new { Name = "QuarterTime", Class = "form-control" })
+        @Html.DropDownListFor(x => x.QuarterTime, Model.QuartDropDown, new { Name = "QuarterTime", Class = "form-control" })
     </div>
-
-    @*<div class="form-group form-horizontal">
-        <label for="CatRef">Category</label>
-
-        @Html.DropDownListFor(x => x.Goal.CatRef, Model.CatDropDown, new { Name = "CatRef", Class = "form-control" })
-    </div>
-
-    <div class="form-group form-horizontal">
-        <label for="QuartRef">Quarter</label>
-
-        @Html.DropDownListFor(x => x.Goal.QuartRef, Model.QuartDropDown, new { Name = "QuartRef", Class = "form-control" })
-    </div>*@
-
-
-
     <input type="submit" />
 </form>
 

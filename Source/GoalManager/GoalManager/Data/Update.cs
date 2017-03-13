@@ -19,7 +19,7 @@ namespace GoalManager.Data
         public int Progress { get; set; }
         public string Notes { get; set; }
         public string Subject { get; set; }
-        public Nullable<System.DateTime> Time { get; set; }
+        public System.DateTime Time { get; set; }
     
         public virtual Goal Goal { get; set; }
     }
