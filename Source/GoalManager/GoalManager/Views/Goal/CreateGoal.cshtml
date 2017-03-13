@@ -8,9 +8,9 @@
 
 <h1>@ViewBag.Title</h1>
 
-<div class="text-danger">
+@*<div class="text-danger">
     @Html.ValidationSummary()
-</div>
+</div>*@
 
 <form method="post">
     <div class="form-group form-horizontal">
@@ -19,7 +19,7 @@
     </div>
 
 
-    <div class="form-group form-horizontal">
+    @*<div class="form-group form-horizontal">
         <label for="CatRef">Category</label>
 
         @Html.DropDownListFor(x => x.Goal.CatRef, Model.CatDropDown, new { Name = "CatRef", Class = "form-control" })
@@ -29,7 +29,7 @@
         <label for="QuartRef">Quarter</label>
 
         @Html.DropDownListFor(x => x.Goal.QuartRef, Model.QuartDropDown, new { Name = "QuartRef", Class = "form-control" })
-    </div>
+    </div>*@
 
 
     <div class="form-group form-horizontal">
