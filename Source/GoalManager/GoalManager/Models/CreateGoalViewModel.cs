@@ -22,8 +22,10 @@ namespace GoalManager.Models
         public Goal Goal = new Goal();
         public User Employee = new User();
 
+        public string CategoryName { get; set; }
         public IEnumerable<SelectListItem> CatDropDown { get; set; } 
 
+        public string QuarterTime { get; set; } // parse to DateTime
         public IEnumerable<SelectListItem> QuartDropDown { get; set; } 
     }
 }

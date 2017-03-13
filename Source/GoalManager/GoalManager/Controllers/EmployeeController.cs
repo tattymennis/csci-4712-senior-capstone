@@ -149,13 +149,11 @@ namespace GoalManager.Controllers
                 dbuser.Role = vm.Role;
             }
 
-            //Department
-            if(vm.DepRefChoice == 0) //This field is enclosed under value="0" as a default choice, client side only able to choose default or valid. 
-            {
-                ModelState.AddModelError("DepRefChoice", "Must Select a Department");
-            }
-            //Active, active is true for new employees
-            dbuser.Active = true;
+            ////Department
+            //if(vm.DepRefChoice == 0) //This field is enclosed under value="0" as a default choice, client side only able to choose default or valid. 
+            //{
+            //    ModelState.AddModelError("DepRefChoice", "Must Select a Department");
+            //}
 
             //If no errors, Add to the Database
             if (ModelState.IsValid)
@@ -172,10 +170,14 @@ namespace GoalManager.Controllers
                         count++;
                     }
                     dbuser.Username = username;
+                    dbuser.Active = true; // Active, active is true for new employees
 
                     dbuser.Department = db.Departments.Where(x => x.DID == vm.DepRefChoice).FirstOrDefault();
-                    db.Users.Add(dbuser);
 
+                    // make sure User1 is right nav property
+                    dbuser.User1 = db.Users.Where(x => x.UID == dbuser.Department.SUID).FirstOrDefault(); // set SUID
+
+                    db.Users.Add(dbuser);
                     db.SaveChanges();
                 }
 

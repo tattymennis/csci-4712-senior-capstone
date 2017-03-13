@@ -46,12 +46,12 @@ namespace GoalManager.Controllers
 
                     foreach (Category c in cats)
                     {
-                        catTempList.Add(new SelectListItem { Value = c.CatID.ToString(), Text = c.Name, Selected = false });
+                        catTempList.Add(new SelectListItem { Value = c.Name, Text = c.Name, Selected = false });
                     }
 
                     foreach (Quarter q in quarts)
                     {
-                        quartTempList.Add(new SelectListItem { Value = q.QID.ToString(), Text = q.Name, Selected = false });
+                        quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
                     }
                 }
             }
@@ -65,6 +65,10 @@ namespace GoalManager.Controllers
         [HttpPost]
         public ActionResult CreateGoal(CreateGoalViewModel vm)
         {
+            if (vm == null)
+            {
+                // fix error stuff
+            }
             string username = User.Identity.GetUserName();
 
             List<SelectListItem> catTempList = new List<SelectListItem>();
@@ -83,43 +87,64 @@ namespace GoalManager.Controllers
                 using (var db = new UserDBEntities())
                 {
                     var user = db.Users.Where(x => x.Username == username).FirstOrDefault();
+                    var department = db.Departments.Where(x => x.DID == user.DID);
                     int did = db.Users.Where(x => x.Username == username).FirstOrDefault().DID;
                     var cats = db.Categories.Where(x => x.DepID == did);
                     var quarts = db.Quarters.Where(x => x.DID == did);
 
                     foreach (Category c in cats)
                     {
-                        catTempList.Add(new SelectListItem { Value = c.CatID.ToString(), Text = c.Name, Selected = false });
+                        catTempList.Add(new SelectListItem { Value = c.Name, Text = c.Name, Selected = false });
                     }
 
                     foreach (Quarter q in quarts)
                     {
-                        quartTempList.Add(new SelectListItem { Value = q.QID.ToString(), Text = q.Name, Selected = false });
+                        quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
                     }
 
-                    Goal newGoal = new Goal();
-                    newGoal.Title = vm.Title;
-                    // newGoal.Description = vm.Description -> not in DB yet
-                    newGoal.StartDate = DateTime.Now;
+                    Goal goal;
+                    Update update;
 
-                    newGoal.Progress = 0.00;
-                    newGoal.User = user as User; // null check?
+                    //goal.Title = vm.Title;
+                    //goal.Description = vm.Description; // not in DB yet
+                    //goal.StartDate = DateTime.Now;
+                    //goal.Progress = 0.00;
+                 
+                    goal = new Goal(vm.Title, vm.CategoryName, "Active", 0);
 
-                    // debugging, dummy info
-                    newGoal.EndDate = DateTime.Now;
-                    newGoal.Status = "";
-                    newGoal.Category = "";
+                    // populate UID FK in Goal table
+                    goal.User = user as User; // null check?
+                    goal.StartDate = DateTime.Now;
 
-                    db.Goals.Add(newGoal);
+                    // Description
+                    if (!String.IsNullOrWhiteSpace(vm.Description))
+                    {
+                        goal.Description = vm.Description;
+                    }
+
+                    // debugging, dummy info - DateTime objecs in a DDM will have to be serialized?
+                    //goal.EndDate = vm.QuarterTime;
+                    goal.EndDate = DateTime.Now;
+                    goal.Category = vm.CategoryName;
+                    //goal.Category = "";
+
+                    update = new Update("Initial update", "Created goal", 0, goal.StartDate);
+
+                    // populate GID FK in Update table
+                    update.Goal = goal;
+
+                    db.Goals.Add(goal);
+                    db.Updates.Add(update);
                     db.SaveChanges();
-                }
-                return RedirectToAction("EmployeeHome", "Home");
+
+                    return RedirectToAction("EmployeeHome", "Home");
+                }               
             }
 
-            CreateGoalViewModel nvm = new CreateGoalViewModel();
+            var nvm = new CreateGoalViewModel();
             nvm.CatDropDown = catTempList;
             nvm.QuartDropDown = quartTempList;
-            return View();
+            return View(nvm);
         }
 
         //[HttpPost]

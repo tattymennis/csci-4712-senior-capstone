@@ -200,6 +200,7 @@
     <Compile Include="Data\Goal.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\PartialData.cs" />
     <Compile Include="Data\Quarter.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
