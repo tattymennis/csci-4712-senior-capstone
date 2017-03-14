@@ -44,6 +44,7 @@
                 <td>
                     <form action="/Employee/ModifyEmployee" method="post">
                         <input type="hidden" name="IDRef" value="@x.UID" />
+                        @Html.AntiForgeryToken()
                         <input type="submit" value="Modify" />
                     </form>
 
