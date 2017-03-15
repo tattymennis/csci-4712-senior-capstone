@@ -6,26 +6,28 @@
     ViewBag.Title = "Update Goal";
 }
 
+@Html.ValidationSummary()
+<div>
+    @*<h1>@ViewBag.Title</h1>
+    <h2>@Model.Goal.Title</h2>
+    <h3>Start Date: @Model.Goal.StartDate.ToString()</h3>
+    <h3>End Date: @Model.Goal.EndDate.ToString()</h3>*@
+</div>
 
-
-<h1>@ViewBag.Title</h1>
-
-@Html.ValidationSummary();
-
+@Html.AntiForgeryToken()
 <form method="post">
     <div class="form-group form-horizontal">
-        <label for="Subject">Update Subject</label>
-        <input type="text" class="form-control" name="Subject" value="@Model.Update.Subject"/>
-        <small class="form-text text-muted">Note:All users will see this for their respective Department criteria  </small>
+        <label for="Subject">Reason for Update</label>
+        <input type="text" class="form-control" name="Subject" value="@Model.Subject"/>
+        <small class="form-text text-muted">Note: All users will see this for their respective Department criteria  </small>
     </div>
     <div class="form-group form-horizontal">
         <label for="Progress">Progress</label>
-        <input type="number" class="form-control" name="Progress" value="@Model.Update.Progress"/>
+        <input type="number" class="form-control" name="Progress" value="@Model.Progress"/>
     </div>
     <div class="form-group form-horizontal">
         <label for="Notes">Notes</label>
-        <textarea class="form-control" name="Notes" value="@Model.Update.Notes" ></textarea>
-        
+        <textarea class="form-control" name="Notes" value="@Model.Notes" ></textarea>        
     </div>
 <input type="submit"/>
 </form>

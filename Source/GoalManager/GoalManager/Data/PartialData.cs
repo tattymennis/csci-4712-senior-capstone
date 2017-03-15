@@ -103,6 +103,7 @@ namespace GoalManager.Data
     }
     public class UpdateMetadata
     {
+        [Key]
         public int UpID { get; set; }
         public int GID { get; set; }
         public int Progress { get; set; }
@@ -123,21 +124,19 @@ namespace GoalManager.Data
 
     public class CategoryMetadata { }
 
+    // Helper class to save clean, database data to Session
     public class UserSessionData
     {
-        public string Username { get; set; }
-
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Role { get; set; }
-
         public int UID { get; set; }
 
         public int DID { get; set; }
 
         public List<Goal> Goals { get; set; }
-        public Dictionary<int,List<Update>> UpdateDict { get; set; }
+
+        public Dictionary<int,List<Update>> GoalUpdatesTable { get; set; }
+
+        public string Username { get; set; }
+
+        public string Role { get; set; }
     }
 }

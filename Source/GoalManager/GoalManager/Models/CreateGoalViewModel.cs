@@ -10,6 +10,7 @@ namespace GoalManager.Models
 {
     public class CreateGoalViewModel
     {
+        // Form fields
         [Required(ErrorMessage = "Title is required")]
         [Display(Name = "Title")]
         [StringLength(50, ErrorMessage = "Title must be between 1-50 characters.", MinimumLength = 1)]
@@ -19,9 +20,11 @@ namespace GoalManager.Models
         [MaxLength(256, ErrorMessage = "Description cannot be longer than 256 characters.")]
         public string Description { get; set; }
 
+        // Navigation properties
         public Goal Goal = new Goal();
         public User Employee = new User();
 
+        // Drop Down
         public string CategoryName { get; set; }
         public IEnumerable<SelectListItem> CatDropDown { get; set; } 
 

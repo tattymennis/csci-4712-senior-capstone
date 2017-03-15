@@ -17,7 +17,11 @@ namespace GoalManager.Controllers
         public ActionResult CreateGoal()
         {
             var vm = new CreateGoalViewModel();
-            string username = User.Identity.GetUserName();
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
+            if (userSessionData == null)
+            {
+                // TODO: Error handling
+            }
 
             List<SelectListItem> catTempList = new List<SelectListItem>();
             catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
@@ -27,27 +31,21 @@ namespace GoalManager.Controllers
 
             using (var db = new UserDBEntities())
             {
-                if (String.IsNullOrWhiteSpace(username))
+                int uid = userSessionData.UID;
+                //int did = db.Users.Where(x => x.Username == userSessionData.Username).FirstOrDefault().DID;
+                int did = userSessionData.DID;
+                List<Category> cats = db.Categories.Where(x => x.DepID == did).ToList<Category>();
+                List<Quarter> quarts = db.Quarters.Where(x => x.DID == did).ToList<Quarter>();
+
+                foreach (Category c in cats)
                 {
-                    // error
+                    catTempList.Add(new SelectListItem { Value = c.Name, Text = c.Name, Selected = false });
                 }
 
-                else
+                foreach (Quarter q in quarts)
                 {
-                    int did = db.Users.Where(x => x.Username == username).FirstOrDefault().DID;
-                    var cats = db.Categories.Where(x => x.DepID == did);
-                    var quarts = db.Quarters.Where(x => x.DID == did);
-
-                    foreach (Category c in cats)
-                    {
-                        catTempList.Add(new SelectListItem { Value = c.Name, Text = c.Name, Selected = false });
-                    }
-
-                    foreach (Quarter q in quarts)
-                    {
-                        quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
-                    }
-                }
+                    quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
+                }             
             }
 
             vm.CatDropDown = catTempList;
@@ -60,11 +58,16 @@ namespace GoalManager.Controllers
         [HttpPost]
         public ActionResult CreateGoal(CreateGoalViewModel vm)
         {
-            if (vm == null)
+            if (vm == null || !User.Identity.IsAuthenticated)
             {
-                // fix error stuff
+                // TODO: Error handling
             }
-            string username = User.Identity.GetUserName();
+
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
+            if (userSessionData == null)
+            {
+                // TODO: Error handling
+            }
 
             List<SelectListItem> catTempList = new List<SelectListItem>();
             catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
@@ -72,20 +75,15 @@ namespace GoalManager.Controllers
             List<SelectListItem> quartTempList = new List<SelectListItem>();
             quartTempList.Add(new SelectListItem { Value = "1", Text = "Select a Quarter", Selected = true });
 
-            if (vm == null || !ModelState.IsValid || !User.Identity.IsAuthenticated || String.IsNullOrWhiteSpace(username))
-            {
-                // error
-            }
-
-            else
+            if (ModelState.IsValid)
             {
                 using (var db = new UserDBEntities())
                 {
-                    var user = db.Users.Where(x => x.Username == username).FirstOrDefault();
-                    var department = db.Departments.Where(x => x.DID == user.DID);
-                    int did = db.Users.Where(x => x.Username == username).FirstOrDefault().DID;
-                    var cats = db.Categories.Where(x => x.DepID == did);
-                    var quarts = db.Quarters.Where(x => x.DID == did);
+                    // var user = userSessionData.User ?? db.Users.Where(x => x.UID == vm.Employee.UID).FirstOrDefault();
+                    // var department = userSessionData.Department ?? db.Departments.Where(x => x.DID == user.DID).FirstOrDefault();
+                    var cats = db.Categories.Where(x => x.DepID == userSessionData.DID).ToList<Category>();
+                    var quarts = db.Quarters.Where(x => x.DID == userSessionData.DID).ToList<Quarter>();
+                    User user = db.Users.Where(x => x.UID == userSessionData.UID).FirstOrDefault();
 
                     foreach (Category c in cats)
                     {
@@ -100,16 +98,13 @@ namespace GoalManager.Controllers
                     Goal goal;
                     Update update;
 
-                    //goal.Title = vm.Title;
-                    //goal.Description = vm.Description; // not in DB yet
-                    //goal.StartDate = DateTime.Now;
-                    //goal.Progress = 0.00;
-                 
-                    goal = new Goal(vm.Title, vm.CategoryName, "Active", 0);
-
                     // populate UID FK in Goal table
-                    goal.User = user as User; // null check?
+                    goal = new Goal(vm.Title, vm.CategoryName, "Active", 0);
+                    goal.User = user; // null check?
                     goal.StartDate = DateTime.Now;
+                    goal.EndDate = DateTime.Now; // test driver
+                    //goal.EndDate = Convert.ToDateTime(vm.QuarterTime);
+                    goal.Category = vm.CategoryName;
 
                     // Description
                     if (!String.IsNullOrWhiteSpace(vm.Description))
@@ -117,32 +112,20 @@ namespace GoalManager.Controllers
                         goal.Description = vm.Description;
                     }
 
-                    // debugging, dummy info - DateTime objecs in a DDM will have to be serialized?
-                    //goal.EndDate = vm.QuarterTime;
-                    goal.EndDate = DateTime.Now;
-                    goal.Category = vm.CategoryName;
-                    //goal.Category = "";
+                    // create an initial Update
+                    update = new Update
+                    {
+                        Subject = "Created goal",
+                        Notes = "",
+                        Progress = 0,
+                        Time = goal.StartDate
+                    };
 
-                    update = new Update("Initial update", "Created goal", 0, goal.StartDate);
-
-                    // populate GID FK in Update table
-                    update.Goal = goal;
-
-                    db.Goals.Add(goal);
+                    update.Goal = db.Goals.Add(goal);
                     db.Updates.Add(update);
                     db.SaveChanges();
-
-                    var userSessionData = new UserSessionData
-                    {
-                        Username = user.Username,
-                        Role = user.Role,
-                        UID = user.UID,
-                        Goals = db.Goals.Where(x => x.UID == user.UID).ToList<Goal>()
-                    };
-                    Session["UserSessionData"] = userSessionData;
-
-                    return RedirectToAction("EmployeeHome", "Home");
-                }               
+                }
+                return RedirectToAction("MainView", "Home");
             }
 
             var nvm = new CreateGoalViewModel();
@@ -151,112 +134,179 @@ namespace GoalManager.Controllers
             return View(nvm);
         }
 
-        // UpdateGoal
-
-        public ActionResult UpdateGoal()
+        // GET UpdateGoal
+        // Vulnerable. User can pass any value into Query string
+        [Authorize]
+        [HttpGet]
+        public ActionResult UpdateGoal(int GIDRef)
         {
             var vm = new UpdateGoalViewModel();
-            var userSessionData = Session["UserSessionData"] as UserSessionData;
-            if (vm == null)
+            vm.GIDRef = GIDRef;
+            try
             {
-                // TODO: Error
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+
+                if (userSessionData == null)
+                {
+                    // TODO: Error
+                }
+
+                else
+                {
+                    var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
+                    List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
+
+                    //vm.Goal = goal as Goal;
+                    //vm.Updates = updates;
+                }
+                //return View("UpdateGoal", vm);
+                return View(vm);
             }
 
-            if (userSessionData == null)
+            catch (Exception ex)
             {
-                // TODO: Error
+
             }
-
-            // get selected Goal
-            var goal = userSessionData.Goals.Find(x => x.GID == vm.GID);
-            vm.Update = new Update
-            {
-                Goal = goal
-            };
-
+            //return View("UpdateGoal", vm);
             return View(vm);
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult UpdateGoal(UpdateGoalViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                vm.Update.Time = DateTime.Now;
-                using (UserDBEntities db = new UserDBEntities())
-                {
-                    db.Updates.Add(vm.Update);
-                    db.SaveChanges();
-                }
-                return RedirectToAction("MainView", "Home");
-            }
             var nvm = new UpdateGoalViewModel();
-            return View(vm);
-        }
-
-        // ViewGoal
-        [Authorize]
-        public ActionResult ViewGoal()
-        {
-            var userSessionData = Session["UserSessionData"] as UserSessionData;
-            string userID = User.Identity.GetUserId();
-            string username = User.Identity.GetUserName();
-
-            if (userSessionData == null)
+            try
             {
-                // TODO: Error
-            }
-
-            foreach (int key in userSessionData.UpdateDict.Keys)
-            {
-                // TODO: 
-                List<Update> ups = userSessionData.UpdateDict[key];
-            }
-
-            if (String.IsNullOrWhiteSpace(userID) || String.IsNullOrWhiteSpace(username))
-            {
-                // error
-            }
-            
-            else
-            {
-                using (UserDBEntities userDB = new UserDBEntities())
+                if (!(vm.Progress > -1 && vm.Progress < 101))
                 {
-                    var user = userDB.Users.Where(x => x.Username == username).FirstOrDefault();
-                    var goals = userDB.Goals.Where(x => x.UID == user.UID);
-                    foreach (Goal g in goals)
-                    {
+                    // TODO: Error
+                }
 
+                if (ModelState.IsValid)
+                {
+                    var userSessionData = Session["UserSessionData"] as UserSessionData;
+                    if (userSessionData == null || userSessionData.GoalUpdatesTable == null)
+                    {
+                        ArgumentNullException ex = new ArgumentNullException("userSessionData", "Problem with Session data.");
+                    }
+
+                    else
+                    {
+                        var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
+                        List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
+
+                        //vm.Goal = goal as Goal;
+                        //vm.Updates = updates;                       
+
+                        Update update = new Update
+                        {
+                            Subject = vm.Subject,
+                            Notes = vm.Notes,
+                            Time = DateTime.Now,
+                            Progress = vm.Progress,
+                        };
+
+                        nvm.GIDRef = vm.GIDRef;
+                        //nvm.Goal = goal;
+                        //nvm.Updates = updates;
+                        //nvm.Updates.Add(update);
+
+                        using (UserDBEntities db = new UserDBEntities())
+                        {
+                            update.Goal = db.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
+
+                            db.Updates.Add(update);
+                            db.SaveChanges();
+                        }
+                        return RedirectToAction("MainView", "Home");
                     }
                 }
             }
 
+            catch (ArgumentNullException ex)
+            {
+                // TODO: Error handling
+            }
+            catch (Exception ex)
+            {
+                // TODO: Error handling
+            }
+
+            // failed validation
+            return View(nvm);
+        }
+
+        // ViewGoal
+        [Authorize]
+        public ActionResult ViewGoal(int GID)
+        {
             ViewGoalViewModel vm = new ViewGoalViewModel();
+            vm.GID = GID;
+            try
+            {
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+
+                if (userSessionData == null)
+                {
+                    ArgumentNullException ex = new ArgumentNullException("userSessionData", "Problem with Session data.");
+                }
+
+                else
+                {
+                    vm.Goal = userSessionData.Goals.Where(x => x.GID == vm.GID).First();
+                    vm.Updates = userSessionData.GoalUpdatesTable[vm.GID];
+                }
+
+                return View(vm);
+
+            }
+            catch (ArgumentNullException ex)
+            {
+                // TODO: Error handling
+            }
+
+            catch (Exception ex)
+            {
+                // TODO: Error handling
+            }
+
             return View(vm);
         }
 
+        [Authorize]
         [HttpPost]
-        public ActionResult ViewGoal(int goalid) 
+        public ActionResult ViewGoal(ViewGoalViewModel vm) 
         {
-            var vm = new ViewGoalViewModel();
-
-            List<Update> tmpUpdates = new List<Update>();
-            
-            using (var db = new UserDBEntities())
+            try
             {
-                vm.Goal = db.Goals.Where(x => x.GID == goalid).FirstOrDefault();
+                if (ModelState.IsValid)
+                {
+                    var userSessionData = Session["UserSessionData"] as UserSessionData;
 
+                    if (userSessionData == null)
+                    {
+                        ArgumentNullException ex = new ArgumentNullException("userSessionData", "Problem with Session data.");
+                    }
 
-                vm.Updates.AddRange(db.Updates.Where(x => x.GID == vm.Goal.GID));
-                
+                    else
+                    {
+                        vm.Goal = userSessionData.Goals.Where(x => x.GID == vm.GID).First();
+                        vm.Updates = userSessionData.GoalUpdatesTable[vm.GID];
+                    }
+                }    
             }
 
-            List<SelectListItem> catTempList = new List<SelectListItem>();
-            catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
+            catch (ArgumentNullException ex)
+            {
+                // TODO: Error handling
+            }
 
-            //find user from the db
-            //find goal from the db
-            //find associated updates from the goal
+            catch (Exception ex)
+            {
+                // TODO: Error handling
+            }
+
             return View(vm);
         }
 
