@@ -1,25 +1,21 @@
 ﻿@using GoalManager.Models;
 @model ViewGoalViewModel
 
-
-
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "View Goal";
     
 }
-<h1>@ViewBag.Title - @Model.Employee.FirstName @Model.Employee.LastName</h1>
-<h2>@Model.Employee.Department</h2>
+
+<h1>@ViewBag.Title</h1>
 <h3>Goal : @Model.Goal.Title</h3>
 <h4>Start Date : @Model.Goal.StartDate</h4>
 <h4>End Date : @Model.Goal.EndDate</h4>
-<h5>@Model.Date</h5>
 <h3>Total Progress: </h3>
 <table class="table  table-bordered table-hover table-responsive">
     <thead>
         <!--update section-->
         <tr class="active">
-
             <th>Update</th>
             <th>Deadline</th>
             <th>Progress</th>
@@ -31,7 +27,7 @@
         {
             <tr>
                 <td class="success">@x.Subject</td>
-                <td class="success">06/06/2022</td> <!--Must update Update table to support Date attribute-->
+                <td class="success">@x.Time</td>
                 <td class="success">@x.Progress</td>
                 <td class="success">@x.Notes</td>
             </tr>

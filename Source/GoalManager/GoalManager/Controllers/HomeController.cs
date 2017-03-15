@@ -22,7 +22,10 @@ namespace GoalManager.Controllers
             }
 
             var vm = new EmployeeHomeViewModel();
-            vm.Goals = userSessionData.Goals;
+            using (UserDBEntities db = new UserDBEntities())
+            {
+                vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+            }
 
             return View(vm);
         }
@@ -48,15 +51,17 @@ namespace GoalManager.Controllers
         [Authorize]
         public ActionResult MainView()
         {
-            ViewBag.Message = "View for specific Role.";
             try
             {
                 var username = User.Identity.GetUserName();
                 var id = User.Identity.GetUserName();
+
                 if (String.IsNullOrWhiteSpace(username) || String.IsNullOrWhiteSpace(id))
                 {
                     throw new ArgumentNullException($"Null, empty, or whitespace Username:{username} or ID:{id}");
                 }
+
+                UserSessionData userSessionData = new UserSessionData();
 
                 using (UserDBEntities db = new UserDBEntities())
                 {
@@ -66,50 +71,56 @@ namespace GoalManager.Controllers
                     {
                         throw new ArgumentNullException($"Null User field.");
                     }
-                    
+
+                    if (user.Username != username)
+                    {
+                        // problems
+                    }
+
                     // Collect properties for UserSessionData
-                    int uid = user.UID;
-                    int did = user.DID;
+                    var dept = user.Department as Department;
+                    var goals = db.Goals.Where(x => x.UID == user.UID).ToList<Goal>();
+                    var cats = dept.Categories.ToList<Category>();
+                    var quarts = dept.Quarters.ToList<Quarter>();
                     string role = user.Role;
-                    var goals = db.Goals.Where(x => x.UID == user.UID);
 
                     // UserSessionData property Dictionary<int,List<Update>> UpdateDict
+                    // Contains every Goal associated w/ User as key, and List of all Updates associated with each Goal as val
                     Dictionary<int, List<Update>> dict = new Dictionary<int, List<Update>>();
                     foreach (Goal g in goals)
                     {
-                        dict.Add(g.GID, g.Updates.ToList<Update>());
+                        dict.Add(g.GID, db.Updates.Where(x => x.GID == g.GID).ToList<Update>());
                     }
 
-                    var userSessionData = new UserSessionData
+                    userSessionData = new UserSessionData
                     {
+                        UID = user.UID,
+                        DID = dept.DID,
                         Username = username,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
                         Role = role,
-                        UID = uid,
-                        DID = did,
-                        Goals = goals.ToList<Goal>(),
-                        UpdateDict = dict                 
+                        Goals = goals,
+                        GoalUpdatesTable = dict
                     };
 
                     // store newly-logged in user's profile
                     Session["UserSessionData"] = userSessionData;
-
-                    switch (user.Role)
-                    {
-                        case ("Employee"):
-                            return RedirectToAction("EmployeeHome");
-                        case ("Supervisor"):
-                            return RedirectToAction("SupervisorHome");
-                        case ("Administrator"):
-                            return RedirectToAction("AdminHome");
-                        default:
-                            // Invalid Role 
-                            Exception ex = new Exception($"Invalid Role for User {user.Username}, UID:{user.UID}.");
-                            Session.Clear(); // if failed, clean Session 
-                            return RedirectToAction("Index", "Home", new { exception = ex.Message});             
-                    }
                 }
+
+                switch (userSessionData.Role)
+                {
+                    case ("Employee"):
+                        return RedirectToAction("EmployeeHome");
+                    case ("Supervisor"):
+                        return RedirectToAction("SupervisorHome");
+                    case ("Administrator"):
+                        return RedirectToAction("AdminHome");
+                    default:
+                        // Invalid Role 
+                        Exception ex = new Exception($"Invalid Role for Role: {userSessionData.Role}");
+                        Session.Clear(); // if failed, clean Session 
+                        return RedirectToAction("Index", "Home", new { exception = ex.Message});             
+                }
+                
             }
 
             catch(ArgumentNullException ex)

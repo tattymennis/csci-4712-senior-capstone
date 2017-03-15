@@ -42,6 +42,7 @@
                 <td class="success">@x.Email</td>
                 <td class="success">@x.Active</td>
                 <td>
+                    @Html.AntiForgeryToken()
                     <form action="/Employee/ModifyEmployee" method="post">
                         <input type="hidden" name="IDRef" value="@x.UID" />
                         <input type="submit" value="Modify" />

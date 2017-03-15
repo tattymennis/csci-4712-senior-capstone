@@ -8,8 +8,6 @@ namespace GoalManager.Models
 {
     public class EmployeeHomeViewModel
     {
-        public List<Goal> Goals = new List<Goal>();
-        public List<Update> Updates = new List<Update>();
-        
+        public List<Goal> Goals = new List<Goal>();       
     }
 }

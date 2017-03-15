@@ -10,7 +10,9 @@
 <div class="text-danger">
     @Html.ValidationSummary()
 </div>
+
 <form method="post">
+    @Html.AntiForgeryToken()
     <div class="form-group form-horizontal">
         <label for="firstname">First Name</label>
         <input type="text" class="form-control" name="FirstName" value="@Model.FirstName" />
@@ -47,6 +49,7 @@
         @Html.DropDownListFor(x => x.DepRefChoice, Model.DeptDropDown, new { Name = "DepRefChoice", Class = "form-control" })
     </div>
 
+  
     <!--Must add values to radio buttons true and false!-->
     <div class="form-group">
         <label for="Active"> Currently Active</label>
