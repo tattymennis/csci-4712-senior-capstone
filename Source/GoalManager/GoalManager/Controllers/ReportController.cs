@@ -15,10 +15,12 @@ namespace GoalManager.Controllers
         }
         public ActionResult ViewDepartmentReport()
         {
+            ViewBag.Title = "Department Report";
             return View();
         }
         public ActionResult ViewEmployeeReport()
         {
+            ViewBag.Title = "Employee Report";
             return View();
         }
     }

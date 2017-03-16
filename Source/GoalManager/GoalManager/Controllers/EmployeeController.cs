@@ -26,16 +26,10 @@ namespace GoalManager.Controllers
                 _userManager = value;
             }
         }
-
-        // GET: Employee
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         [Authorize]
         public ActionResult CreateEmployee()
         {
+            ViewBag.Title = "Create Employee";
             var vm = new CreateEmployeeViewModel();
 
             List<SelectListItem> tempList = new List<SelectListItem>();
@@ -59,6 +53,7 @@ namespace GoalManager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateEmployee(CreateEmployeeViewModel vm)
         {
+            ViewBag.Title = "Create Employee";
             User dbuser = new User(); //user to be added to the database
             //Validation for Each Field
             //First Name 
@@ -151,6 +146,7 @@ namespace GoalManager.Controllers
             }
 
             //Department
+            int DepRefChoice = Convert.ToInt32(vm.DepRefChoice); // Try parse in debugging phase
             if (vm.DepRefChoice == "Select Department") //This field is enclosed under value="0" as a default choice, client side only able to choose default or valid. 
             {
                 
@@ -185,10 +181,10 @@ namespace GoalManager.Controllers
                     dbuser.Username = username;
                     dbuser.Active = true; // Active, active is true for new employees
 
-                    dbuser.Department = db.Departments.Where(x => x.DID == Convert.ToInt32(vm.DepRefChoice)).FirstOrDefault();
+                    dbuser.Department = db.Departments.Where(x => x.DID == DepRefChoice).FirstOrDefault();
 
                     // Supervisor Property
-                    dbuser.User1 = db.Users.Where(x => x.UID == dbuser.Department.SUID).FirstOrDefault(); // set SUID
+                    //dbuser.User1 = db.Users.Where(x => x.UID == dbuser.Department.SUID).FirstOrDefault(); // set SUID
 
                     db.Users.Add(dbuser);
                     db.SaveChanges();
@@ -250,17 +246,12 @@ namespace GoalManager.Controllers
             return RedirectToAction("MainView", "Home");
         }
 
-        [Authorize]
-        public ActionResult ModifyEmployee()
-        {
-            return View();
-        }
-
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult ModifyEmployee(ModifyEmployeeViewModel vm)
         {
+            ViewBag.Title = "Modify Employee";
             ModifyEmployeeViewModel nvm = new ModifyEmployeeViewModel();
             List<SelectListItem> tempList = new List<SelectListItem>();
 

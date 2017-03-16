@@ -10,20 +10,17 @@ namespace GoalManager.Controllers
 {
     public class DepartmentController : Controller
     {
-        // GET: Department
-        public ActionResult Index()
-        {
-            return View();
-        }
         public ActionResult CreateDepartment()
         {
+            ViewBag.Title = "Create Department";
             var vm = new CreateDepartmentViewModel();
             return View(vm);
         }
+
         [HttpPost]
         public ActionResult CreateDepartment(Department tempDep)
         {
-          
+            ViewBag.Title = "Create Department";
 
             var tDBDep = new Department(); //optional
             if (ModelState.IsValid == true)
@@ -42,7 +39,7 @@ namespace GoalManager.Controllers
         }
         public ActionResult ModifyDepartment()
         {
-
+            ViewBag.Title = "Modify Department";
             return View();
         }
     }

@@ -22,8 +22,8 @@ select,
 textarea {
     max-width: 280px;
 }
-#logonav{
-    height:1px;
+#conlogo{
+    padding:5px;
 }
 #bannerlogo{
     height:50px;

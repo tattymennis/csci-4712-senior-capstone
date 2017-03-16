@@ -14,6 +14,7 @@ namespace GoalManager.Controllers
         [Authorize]
         public ActionResult EmployeeHome()
         {
+            ViewBag.Title = "Employee Home Page";
             var userSessionData = Session["UserSessionData"] as UserSessionData;
             if (userSessionData == null)
             {
@@ -33,12 +34,14 @@ namespace GoalManager.Controllers
         [Authorize]
         public ActionResult SupervisorHome()
         {
+            ViewBag.Title = "Supervisor Home Page";
             return View();
         }
 
         [Authorize]
         public ActionResult AdminHome()
         {
+            ViewBag.Title = "Administrator Home Page";
             var vm = new AdminHomeViewModel();
             using (var db = new UserDBEntities())
             {
@@ -51,6 +54,7 @@ namespace GoalManager.Controllers
         [Authorize]
         public ActionResult MainView()
         {
+            ViewBag.Title = "Main View";
             try
             {
                 var username = User.Identity.GetUserName();
@@ -132,6 +136,7 @@ namespace GoalManager.Controllers
 
         public ActionResult Index()
         {
+            ViewBag.Title = "Home Page - Index";
             return View();
         }
         public ActionResult About()

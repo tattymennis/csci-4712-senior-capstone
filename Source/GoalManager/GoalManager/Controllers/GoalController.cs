@@ -16,6 +16,7 @@ namespace GoalManager.Controllers
         [Authorize]
         public ActionResult CreateGoal()
         {
+            ViewBag.Title = "Create Goal";
             var vm = new CreateGoalViewModel();
             var userSessionData = Session["UserSessionData"] as UserSessionData;
             if (userSessionData == null)
@@ -58,6 +59,7 @@ namespace GoalManager.Controllers
         [HttpPost]
         public ActionResult CreateGoal(CreateGoalViewModel vm)
         {
+            ViewBag.Title = "Create Goal";
             if (vm == null || !User.Identity.IsAuthenticated)
             {
                 // TODO: Error handling
@@ -140,6 +142,7 @@ namespace GoalManager.Controllers
         [HttpGet]
         public ActionResult UpdateGoal(int GIDRef)
         {
+            ViewBag.Title = "Update Goal";
             var vm = new UpdateGoalViewModel();
             vm.GIDRef = GIDRef;
             try
@@ -175,6 +178,7 @@ namespace GoalManager.Controllers
         [HttpPost]
         public ActionResult UpdateGoal(UpdateGoalViewModel vm)
         {
+            ViewBag.Title = "Update Goal";
             var nvm = new UpdateGoalViewModel();
             try
             {
@@ -241,6 +245,7 @@ namespace GoalManager.Controllers
         [Authorize]
         public ActionResult ViewGoal(int GID)
         {
+            ViewBag.Title = "View Goal";
             ViewGoalViewModel vm = new ViewGoalViewModel();
             vm.GID = GID;
             try
@@ -278,6 +283,7 @@ namespace GoalManager.Controllers
         [HttpPost]
         public ActionResult ViewGoal(ViewGoalViewModel vm) 
         {
+            ViewBag.Title = "View Goal";
             try
             {
                 if (ModelState.IsValid)
