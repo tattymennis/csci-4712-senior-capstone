@@ -46,7 +46,7 @@ namespace GoalManager.Controllers
                 foreach (Quarter q in quarts)
                 {
                     quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
-                }             
+                }
             }
 
             vm.CatDropDown = catTempList;
@@ -165,12 +165,11 @@ namespace GoalManager.Controllers
                 //return View("UpdateGoal", vm);
                 return View(vm);
             }
-
             catch (Exception ex)
             {
-
+                ViewBag.Error = ex;
+                RedirectToAction("Shared", "Error");
             }
-            //return View("UpdateGoal", vm);
             return View(vm);
         }
 

@@ -31,17 +31,14 @@ namespace GoalManager.Controllers
         {
             ViewBag.Title = "Create Employee";
             var vm = new CreateEmployeeViewModel();
-
             List<SelectListItem> tempList = new List<SelectListItem>();
-            tempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
 
+            tempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
             using (var db = new UserDBEntities())
             {
                 var depts = db.Departments;
                 foreach (Department d in depts)
-                {
                     tempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
-                }
             }
            
             vm.DeptDropDown = tempList;
@@ -54,34 +51,19 @@ namespace GoalManager.Controllers
         public ActionResult CreateEmployee(CreateEmployeeViewModel vm)
         {
             ViewBag.Title = "Create Employee";
-            User dbuser = new User(); //user to be added to the database
-            //Validation for Each Field
+            User dbuser = new User();
+            //Validation
             //First Name 
-            if (String.IsNullOrWhiteSpace(vm.FirstName))
-            {
-                ModelState.AddModelError("FirstName", "First name can not be blank.");
-            }
-            else
-            {
                 foreach (char x in vm.FirstName)
                 {
                     if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
                     {
-                        ModelState.AddModelError("FirstName", "First name can only contain characters A-z.");
+                        ModelState.AddModelError("FirstName", "First name can only contain letters.");
                         break;
                     }
                 }
-                dbuser.FirstName = vm.FirstName;
-            }
-
+                
             //Last Name
-            if (String.IsNullOrWhiteSpace(vm.LastName))
-            {
-                ModelState.AddModelError("LastName", "Last name can not be blank.");
-            }
-
-            else
-            {
                 foreach (char x in vm.LastName)
                 {
                     if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
@@ -90,39 +72,14 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
-                dbuser.LastName = vm.LastName;
-            }
-
             //Email is error check by the html web browser ahead of time if valid email address
-            if (String.IsNullOrWhiteSpace(vm.Email))
-            {
-                ModelState.AddModelError("Email", "You Must Enter an Email Address");
-            }
-
-            else // TODO: Regex email address?
-            {
                 using (UserDBEntities db = new UserDBEntities())
                 {
                     if (db.Users.Any(x => x.Email == vm.Email))
-                    {
-                        ModelState.AddModelError("Email", "Please enter a new email address.");
-                    }
-                    else
-                    {
-                        dbuser.Email = vm.Email;
-                    }
+                        ModelState.AddModelError("Email", "Email Address Already Exists");
                 }
-            }
 
             //Title
-            if (String.IsNullOrWhiteSpace(vm.Title))
-            {
-                ModelState.AddModelError("Title", "Employee must have a Title");
-            }
-
-            else
-            {
-                //Title can have a digit, e.g "Section 8 Specialist"
                 foreach (char x in vm.Title)
                 {
                     if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
@@ -131,39 +88,27 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
-                dbuser.Title = vm.Title;
-            }
-
             //Role
-            if (vm.Role == "Select Role" || String.IsNullOrWhiteSpace(vm.Role))
-            {
+            if (vm.Role == "Select Role")
                 ModelState.AddModelError("Role", "Must Select a Role");
-            }
-
-            else
-            {
-                dbuser.Role = vm.Role;
-            }
 
             //Department
-            int DepRefChoice = Convert.ToInt32(vm.DepRefChoice); // Try parse in debugging phase
-            if (vm.DepRefChoice == "Select Department") //This field is enclosed under value="0" as a default choice, client side only able to choose default or valid. 
-            {
-                
+            if (vm.DepRefChoice == 0)
                 ModelState.AddModelError("DepRefChoice", "Must Select a Department");
-
-            }
             else // Checking to see if Department exist on the database to prevent error
             {
                 using (var db = new UserDBEntities())
                 {
                     var depts = db.Departments.ToList();
-                    if(!(depts.Exists(x => x.DID == Convert.ToInt32(vm.DepRefChoice))))
-                        ModelState.AddModelError("DepRefChoice", "Department is not Valid");
-                    
+                    if(!(depts.Any(x => x.DID == vm.DepRefChoice)))
+                        ModelState.AddModelError("DepRefChoice", "Department is not Valid");   
                 }
             }
-
+            //Assign Variables
+            dbuser.FirstName = vm.FirstName;
+            dbuser.LastName = vm.LastName;
+            dbuser.Title = vm.Title;
+            dbuser.Role = vm.Role;
             //If no errors, Add to the Database
             if (ModelState.IsValid)
             {
@@ -181,7 +126,7 @@ namespace GoalManager.Controllers
                     dbuser.Username = username;
                     dbuser.Active = true; // Active, active is true for new employees
 
-                    dbuser.Department = db.Departments.Where(x => x.DID == DepRefChoice).FirstOrDefault();
+                    dbuser.Department = db.Departments.Where(x => x.DID == vm.DepRefChoice).FirstOrDefault();
 
                     // Supervisor Property
                     //dbuser.User1 = db.Users.Where(x => x.UID == dbuser.Department.SUID).FirstOrDefault(); // set SUID

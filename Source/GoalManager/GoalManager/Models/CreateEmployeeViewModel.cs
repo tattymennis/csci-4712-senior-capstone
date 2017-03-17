@@ -15,23 +15,29 @@ namespace GoalManager.Models
         // Drop Downs
         public IEnumerable<SelectListItem> DeptDropDown { get; set; }
 
-        public User Employee = new User();
-        // Add Data Notations
-        //Form Fields
-        public int UID { get; set; }
-        public string Email { get; set; }
-        public string Title { get; set; }
-        public string Role { get; set; }
+        //Form Fields 
+        [Required]
+        [DisplayName("First Name")]
+        [StringLength(50)]
         public string FirstName { get; set; }
+        [Required]
+        [DisplayName("Last name")]
+        [StringLength(50)]
         public string LastName { get; set; }
-        public int DID { get; set; }
-        public bool Active { get; set; }
-        public Nullable<int> SUID { get; set; }
-        public string Username { get; set; }
 
-        //Not mapped References
-        [NotMapped]
-        public string DepRefChoice { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string Role { get; set; }
+       
+        [Required]
+        [MaxLength(255)]
+        public int DepRefChoice { get; set; }
     }
 
     public class RegisterEmployeeViewModel
