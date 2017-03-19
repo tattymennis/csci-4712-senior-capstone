@@ -14,12 +14,14 @@ namespace GoalManager.Models
     {
         // Drop Downs
         public IEnumerable<SelectListItem> DeptDropDown { get; set; }
+        public IEnumerable<SelectListItem> RoleDropDown { get; set; }
 
         //Form Fields 
         [Required]
         [DisplayName("First Name")]
         [StringLength(50)]
         public string FirstName { get; set; }
+
         [Required]
         [DisplayName("Last name")]
         [StringLength(50)]
@@ -34,10 +36,9 @@ namespace GoalManager.Models
 
         [Required]
         public string Role { get; set; }
-       
+
         [Required]
-        [MaxLength(255)]
-        public int DepRefChoice { get; set; }
+        public int DepRefChoice = 0;
     }
 
     public class RegisterEmployeeViewModel

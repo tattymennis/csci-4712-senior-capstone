@@ -12,29 +12,84 @@ namespace GoalManager.Controllers
     {
         public ActionResult CreateDepartment()
         {
-            ViewBag.Title = "Create Department";
             var vm = new CreateDepartmentViewModel();
+            ModelState.Clear();
             return View(vm);
         }
 
         [HttpPost]
-        public ActionResult CreateDepartment(Department tempDep)
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateDepartment(CreateDepartmentViewModel vm)
         {
-            ViewBag.Title = "Create Department";
-
-            var tDBDep = new Department(); //optional
+            if (ModelState.IsValid)
+            {
+                //Name 
+                foreach (char x in vm.Name)
+                {
+                    if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    {
+                        ModelState.AddModelError("Name", "Name can only be letters and numbers");
+                        break;
+                    }
+                }
+                //Location
+                foreach (char x in vm.Location)
+                {
+                    if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    {
+                        ModelState.AddModelError("Location", "Location can only be letters and numbers");
+                        break;
+                    }
+                }
+                //Description
+                foreach (char x in vm.Description)
+                {
+                    if (Char.IsControl(x) || Char.IsSymbol(x))
+                    {
+                        ModelState.AddModelError("Description", "You have invlaid symbols in your Description");
+                        break;
+                    }
+                }
+            }
+            Department dbDepartment = new Department();
+            dbDepartment.Name = vm.Name;
+            dbDepartment.Location = vm.Location;
+            dbDepartment.Description = vm.Description;
+            Quarter Quarter1 = new Quarter();
+            Quarter1.Name = vm.Quarter1Name;
+            Quarter1.StartDate = vm.Quarter1Start;
+            Quarter1.EndDate = vm.Quarter1End;
+            Quarter Quarter2 = new Quarter();
+            Quarter2.Name = vm.Quarter2Name;
+            Quarter2.StartDate = vm.Quarter2Start;
+            Quarter2.EndDate = vm.Quarter2End;
+            Quarter Quarter3 = new Quarter();
+            Quarter3.Name = vm.Quarter3Name;
+            Quarter3.StartDate = vm.Quarter3Start;
+            Quarter3.EndDate = vm.Quarter3End;
+            Quarter Quarter4 = new Quarter();
+            Quarter4.Name = vm.Quarter4Name;
+            Quarter4.StartDate = vm.Quarter4Start;
+            Quarter4.EndDate = vm.Quarter4End;
             if (ModelState.IsValid == true)
             {
                 using (var db = new UserDBEntities())
                 {
-                    db.Departments.Add(tDBDep);
-                    db.SaveChangesAsync();
+                    //Save Department
+                    db.Departments.Add(dbDepartment);
+                    db.SaveChanges();
+                    // Save Quarters Associated With the Same Department
+                    Quarter1.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
+                    Quarter2.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
+                    Quarter3.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
+                    Quarter4.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
+                    db.SaveChanges();
                 }
+                RedirectToAction("~/Home/Index");
             }
-            // 
-            RedirectToAction("/Home/Index");
-            CreateDepartmentViewModel vm = new CreateDepartmentViewModel();
-            vm.Department = tempDep;
+
+            CreateDepartmentViewModel nvm = new CreateDepartmentViewModel();
+            nvm = vm;
             return View(vm);
         }
         public ActionResult ModifyDepartment()

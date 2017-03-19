@@ -4,17 +4,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Modify Employee";
 }
-<h1>@ViewBag.Title</h1>
 
+<h1>@ViewBag.Title</h1>
 
 <div class="text-danger">
     @Html.ValidationSummary()
 </div>
-
 <form method="post">
     @Html.AntiForgeryToken()
     <div class="form-group form-horizontal">
-        <label for="firstname">First Name</label>
+        <label for="Firstname">First Name</label>
         <input type="text" class="form-control" name="FirstName" value="@Model.FirstName" />
     </div>
 
@@ -35,40 +34,19 @@
 
     <div class="form-group form-horizontal">
         <label for="Role">Role</label>
-        <select class="form-control" name="Role" value="@Model.Role">
-            <option selected="selected" value="0">Please Select Role</option>
-            <option value="Employee">Employee</option>
-            <option value="Supervisor">Supervisor</option>
-            <option value="Administrator">Administrator</option>
-        </select>
+        @Html.DropDownListFor(x => x.Role, Model.RoleDropDown, new { Name = "Role", Class = "form-control" })
     </div>
 
     <div class="form-group form-horizontal">
         <label for="DepRefChoice">Department</label>
-
         @Html.DropDownListFor(x => x.DepRefChoice, Model.DeptDropDown, new { Name = "DepRefChoice", Class = "form-control" })
     </div>
 
-  
-    <!--Must add values to radio buttons true and false!-->
-    <div class="form-group">
-        <label for="Active"> Currently Active</label>
-        <div class="form-check">
-            <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="Active" id="exampleRadios1" value="true" checked>
-                Active
-            </label>
-        </div>
-        <div class="form-check">
-            <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="Active" id="exampleRadios2" value="false">
-                InActive
-            </label>
-        </div>
-
+    <div class="form-group form-horizontal">
+        <label for="Active">Active</label>
+        @Html.DropDownListFor(x => x.Active, Model.ActiveDropDown, new { Name = "Active", Class = "form-control" })
     </div>
 
-    <input type="hidden" name="IDRef" value="0" />
-    <input type="hidden" name="UID" value="@Model.UID" />
     <input type="submit" />
 </form>
+

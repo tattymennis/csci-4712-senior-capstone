@@ -8,32 +8,70 @@
 <h1>@ViewBag.Title</h1>
 @Html.ValidationSummary()
 
-    <form method="post">
-        <div class="form-group form-horizontal">
-            <label for="name">Department Name:</label>
-            <input type="text" name="" class="form-control" /> <!--Input Department Name-->
-            <small class="form-text text-muted">Note:All users will see this for their respective Department criterias  </small>
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group form-horizontal">
+        <label for="Name">Department Name:</label>
+        <input type="text" name="Name" class="form-control" value="@Model.Name" />
+    </div>
+
+    <div class="form-group form-horizontal">
+        <label for="Location">Location:</label>
+        <input type="text" name="Location" class="form-control" value="@Model.Location" />
+    </div>
+
+    <div class="form-group form-horizontal">
+        <label for="Decription">Department Description:</label>
+        <textarea type="text" name="Description" class="form-control" value="@Model.Description"></textarea>
+    </div>
+
+    <label for="Quarter1">Quarter 1</label>
+        <div class="form-group form-inline">
+            <label for="Quater1Name">Name</label>
+            <input type="text" name="Quarter1Name" class="form-control" value="@Model.Quarter1Name" placeholder="Accounting - Quarter 1"/>
         </div>
-        <div class="form-group">
-            <label for="Supervisor">Supervisor:</label>
-            <select class="form-control">
-                @foreach (var x in Model.Supervisors)
-                {
-                    <option>@x.FirstName @x.LastName</option>
-                }
-            </select>
-            <small class="form-text text-muted">Please Select the Supervisor</small>
-        </div>
-        <div class="form-group form-horizontal">
-            <label for="Location">Location:</label>
-            <input type="text" name="Location" class="form-control" value="@Model.Department.Location"/> <!--Department Location-->
-            <small class="form-text text-muted">Please explain where this department is at.  </small>
+        <div class="form-group form-inline">
+            <label for="Quarter1Start">Start</label>
+            <input type="date" name="Quarter1Start" class="form-control" value="@Model.Quarter1Start">
+            <label for="Quarter1End">End</label>
+            <input type="date" name="Quarter1End" class="form-control" value="@Model.Quarter1End" >
         </div>
 
-        <div class="form-group form-horizontal">
-            <label for="Decription">Department Description:</label>
-            <textarea type="text" name="Description" value="@Model.Department.Description" class="form-control"></textarea>
-            <small class="form-text text-muted">Please type decribe what the Department does </small>
+    <label for="Quarter2">Quarter 2</label>
+        <div class="form-group form-inline">
+            <label for="Quater2Name">Name</label>
+            <input type="text" name="Quarter2Name" class="form-control" value="@Model.Quarter2Name" placeholder="Accounting - Quarter 2"/>
         </div>
-        <input type="submit" />
-    </form>
+        <div class="form-group form-inline">
+            <label for="Quarter2Start">Start</label>
+            <input type="date" name="Quarter2Start" class="form-control" value="@Model.Quarter2Start">
+            <label for="Quarter2End">End</label>
+            <input type="date" name="Quarter2End" class="form-control" value="@Model.Quarter2End">
+        </div>
+
+    <label for="Quarter3">Quarter 3</label>
+        <div class="form-group form-inline">
+            <label for="Quater3Name">Name</label>
+            <input type="text" name="Quarter3Name" class="form-control" value="@Model.Quarter3Name" placeholder="Accounting - Quarter 3"/>
+        </div>
+        <div class="form-group form-inline">
+            <label for="Quarter3Start">Start</label>
+            <input type="date" name="Quarter3Start" class="form-control" value="@Model.Quarter3Start">
+            <label for="Quarter3End">End</label>
+            <input type="date" name="Quarter3End" class="form-control" value="@Model.Quarter3End">
+        </div>
+
+    <label for="Quarter4">Quarter 4</label>
+        <div class="form-group form-inline">
+            <label for="Quater4Name">Name</label>
+            <input type="text" name="Quarter4Name" class="form-control" value="@Model.Quarter4Name" placeholder="Accounting - Quarter 4"/>
+        </div>
+        <div class="form-group form-inline">
+            <label for="Quarter4Start">Start</label>
+            <input type="date" name="Quarter4Start" class="form-control" value="@Model.Quarter4Start">
+            <label for="Quarter4End">End</label>
+            <input type="date" name="Quarter4End" class="form-control" value="@Model.Quarter4End">
+        </div>
+
+    <input type="submit" />
+</form>

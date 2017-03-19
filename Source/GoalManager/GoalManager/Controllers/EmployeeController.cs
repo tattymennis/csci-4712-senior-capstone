@@ -31,17 +31,24 @@ namespace GoalManager.Controllers
         {
             ViewBag.Title = "Create Employee";
             var vm = new CreateEmployeeViewModel();
-            List<SelectListItem> tempList = new List<SelectListItem>();
 
-            tempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
+            List<SelectListItem> DtempList = new List<SelectListItem>();
+            DtempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
             using (var db = new UserDBEntities())
             {
                 var depts = db.Departments;
                 foreach (Department d in depts)
-                    tempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
+                    DtempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
             }
-           
-            vm.DeptDropDown = tempList;
+            vm.DeptDropDown = DtempList;
+
+            List<SelectListItem> RtempList = new List<SelectListItem>();
+            RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true});
+            RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
+            RtempList.Add(new SelectListItem { Value = "Supervisor", Text = "Supervisor", Selected = false });
+            RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
+            vm.RoleDropDown = RtempList;
+
             return View(vm);
         }
 
@@ -53,17 +60,20 @@ namespace GoalManager.Controllers
             ViewBag.Title = "Create Employee";
             User dbuser = new User();
             //Validation
-            //First Name 
+            if (ModelState.IsValid)
+            {
+
+
+                //First Name 
                 foreach (char x in vm.FirstName)
                 {
-                    if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    if (Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
                     {
                         ModelState.AddModelError("FirstName", "First name can only contain letters.");
                         break;
                     }
                 }
-                
-            //Last Name
+                //Last Name
                 foreach (char x in vm.LastName)
                 {
                     if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
@@ -72,14 +82,14 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
-            //Email is error check by the html web browser ahead of time if valid email address
+                //Email
                 using (UserDBEntities db = new UserDBEntities())
                 {
                     if (db.Users.Any(x => x.Email == vm.Email))
                         ModelState.AddModelError("Email", "Email Address Already Exists");
                 }
 
-            //Title
+                //Title
                 foreach (char x in vm.Title)
                 {
                     if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
@@ -88,8 +98,9 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
+            }
             //Role
-            if (vm.Role == "Select Role")
+            if (vm.Role == "Select Role" || String.IsNullOrEmpty(vm.Role))
                 ModelState.AddModelError("Role", "Must Select a Role");
 
             //Department
@@ -116,6 +127,7 @@ namespace GoalManager.Controllers
                 {
                     // generate username
                     int count = 1;
+                    //Username
                     string username = (vm.FirstName[0] + vm.LastName).ToLower();
                     while (db.Users.Any(x => x.Username == username) || count > 100) // username collision
                     {
@@ -125,7 +137,7 @@ namespace GoalManager.Controllers
                     }
                     dbuser.Username = username;
                     dbuser.Active = true; // Active, active is true for new employees
-
+                    //Deparment Association
                     dbuser.Department = db.Departments.Where(x => x.DID == vm.DepRefChoice).FirstOrDefault();
 
                     // Supervisor Property
@@ -135,7 +147,7 @@ namespace GoalManager.Controllers
                     db.SaveChanges();
                 }
 
-                // Account creation
+                // Account Creation
                 RegisterEmployeeViewModel revm = new RegisterEmployeeViewModel();
                 revm.Email = dbuser.Email;
                 revm.Username = dbuser.Username;
@@ -146,19 +158,24 @@ namespace GoalManager.Controllers
 
             // New ViewModel when validation fails
             CreateEmployeeViewModel nvm = new CreateEmployeeViewModel();
-            //Assigning individual values
             nvm = vm;
-            List<SelectListItem> tempList = new List<SelectListItem>();
-            tempList.Add(new SelectListItem { Text = "Select Department", Selected = true });
+            //Shoudl Move ViewModel drop downs to Get and Set
+            List<SelectListItem> DtempList = new List<SelectListItem>();
+            DtempList.Add(new SelectListItem { Text = "Select Department", Selected = true });
             using (var db = new UserDBEntities())
             {
                 var depts = db.Departments;
                 foreach (Department d in depts)
-                {
-                    tempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
-                }
+                    DtempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
             }
-            nvm.DeptDropDown = tempList;
+            nvm.DeptDropDown = DtempList;
+
+            List<SelectListItem> RtempList = new List<SelectListItem>();
+            RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true });
+            RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
+            RtempList.Add(new SelectListItem { Value = "Supervisor", Text = "Supervisor", Selected = false });
+            RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
+            vm.RoleDropDown = RtempList;
             return View(nvm);
         }
 
@@ -196,72 +213,72 @@ namespace GoalManager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ModifyEmployee(ModifyEmployeeViewModel vm)
         {
-            ViewBag.Title = "Modify Employee";
             ModifyEmployeeViewModel nvm = new ModifyEmployeeViewModel();
-            List<SelectListItem> tempList = new List<SelectListItem>();
+
+            List<SelectListItem> RtempList = new List<SelectListItem>();
+            List<SelectListItem> DtempList = new List<SelectListItem>();
+            List<SelectListItem> AtempList = new List<SelectListItem>();
 
             if (vm.IDRef != 0) // Reserved for inital entry in method.
             {
                 User tempuser;
 
                 using (var db = new UserDBEntities())
-                {
                     tempuser = db.Users.Where(x => x.UID == vm.IDRef).FirstOrDefault();
 
-                }
                 //Assigning individual values into viewmodel to be passed
                 nvm.FirstName = tempuser.FirstName;
                 nvm.LastName = tempuser.LastName;
                 nvm.Role = tempuser.Role;
                 nvm.Title = tempuser.Title;
-                nvm.Username = tempuser.Username;
                 nvm.Email = tempuser.Email;
-                nvm.UID = vm.IDRef; //Must carry ID into view model
-
-
-                // Department drop down
-
-                tempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
+                nvm.ID = vm.IDRef;
+                nvm.Active = tempuser.Active;
+                
+               
                 using (var db = new UserDBEntities())
                 {
+                    DtempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
                     var depts = db.Departments;
+
                     foreach (Department d in depts)
-                    {
-                        tempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
-                    }
+                        DtempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name.ToString(), Selected = false });
                 }
-                nvm.DeptDropDown = tempList;
+                nvm.DeptDropDown = DtempList;
+                //Must Select the department the user resides
+                
+                RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true });
+                RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
+                RtempList.Add(new SelectListItem { Value = "Supervisor", Text = "Supervisor", Selected = false });
+                RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
+                nvm.RoleDropDown = RtempList;
+                
+
+                AtempList.Add(new SelectListItem { Value = "true", Text = "True", Selected = true });
+                AtempList.Add(new SelectListItem { Value = "false", Text = "False", Selected = true });
+                nvm.ActiveDropDown = AtempList;
+
+                ModelState.Clear();
                 return View(nvm);
             }
-
-            User dbuser = new User(); //user to be added to the database
+            
+            
             //Validation for Each Field
             //First Name 
-            if (String.IsNullOrWhiteSpace(vm.FirstName))
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("FirstName", "First name can not be blank.");
-            }
-            else
-            {
+
+
+                //First Name 
                 foreach (char x in vm.FirstName)
                 {
-                    if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    if (Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
                     {
-                        ModelState.AddModelError("FirstName", "First name can only contain characters A-z.");
+                        ModelState.AddModelError("FirstName", "First name can only contain letters.");
                         break;
                     }
                 }
-                dbuser.FirstName = vm.FirstName;
-            }
-
-            //Last Name
-            if (String.IsNullOrWhiteSpace(vm.LastName))
-            {
-                ModelState.AddModelError("LastName", "Last name can not be blank.");
-            }
-
-            else
-            {
+                //Last Name
                 foreach (char x in vm.LastName)
                 {
                     if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
@@ -270,29 +287,14 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
-                dbuser.LastName = vm.LastName;
-            }
+                //Email
+                using (UserDBEntities db = new UserDBEntities())
+                {
+                    if (db.Users.Any(x => x.Email == vm.Email))
+                        ModelState.AddModelError("Email", "Email Address Already Exists");
+                }
 
-            //Email is error check by the html web browser ahead of time if valid email address
-            if (String.IsNullOrWhiteSpace(vm.Email))
-            {
-                ModelState.AddModelError("Email", "You Must Enter an Email Address");
-            }
-
-            else // TODO: Regex email address?
-            {
-                dbuser.Email = vm.Email;
-            }
-
-            //Title
-            if (String.IsNullOrWhiteSpace(vm.Title))
-            {
-                ModelState.AddModelError("Title", "Employee must have a Title");
-            }
-
-            else
-            {
-                //Title can have a digit, e.g "Section 8 Specialist"
+                //Title
                 foreach (char x in vm.Title)
                 {
                     if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
@@ -301,24 +303,23 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
-                dbuser.Title = vm.Title;
             }
 
             //Role
-            if (vm.Role == "0" || String.IsNullOrWhiteSpace(vm.Role))
-            {
+            if (vm.Role == "Select Role" || String.IsNullOrEmpty(vm.Role))
                 ModelState.AddModelError("Role", "Must Select a Role");
-            }
-
-            else
-            {
-                dbuser.Role = vm.Role;
-            }
 
             //Department
-            if (vm.DepRefChoice == 0) //This field is enclosed under value="0" as a default choice, client side only able to choose default or valid. 
-            {
+            if (vm.DepRefChoice == 0)
                 ModelState.AddModelError("DepRefChoice", "Must Select a Department");
+            else // Checking to see if Department exist on the database to prevent error
+            {
+                using (var db = new UserDBEntities())
+                {
+                    var depts = db.Departments.ToList();
+                    if (!(depts.Any(x => x.DID == vm.DepRefChoice)))
+                        ModelState.AddModelError("DepRefChoice", "Department is not Valid");
+                }
             }
 
             //If no errors, Add to the Database
@@ -328,15 +329,15 @@ namespace GoalManager.Controllers
                 {
                     //Assign reference of database entity to variable, the assign variable, might do individual fields
 
-                    User User = db.Users.Where(x => x.UID == vm.UID).FirstOrDefault();
+                    User User = db.Users.Where(x => x.UID == vm.ID).FirstOrDefault();
 
-                    User.FirstName = dbuser.FirstName;
-                    User.LastName = dbuser.LastName;
-                    //User.Email = dbuser.Email; //need to update user table and asp .net
-                    User.Title = dbuser.Title;
-                    User.Role = dbuser.Role;
-                    // must pull department to reassign department
-                    //must check active status
+                    User.FirstName = vm.FirstName;
+                    User.LastName = vm.LastName;
+                    //User.Email = dbuser.Email; //Must Update in ASP .Net User table also
+                    User.Title = vm.Title;
+                    User.Role = vm.Role;
+                    User.Active = vm.Active;
+                    User.Department = db.Departments.Where(x => x.DID == vm.DepRefChoice).FirstOrDefault();
 
                     db.SaveChanges();
 
@@ -346,17 +347,28 @@ namespace GoalManager.Controllers
 
             // Creating new view model if validation failed
             nvm = vm;
-            tempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
+            DtempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
             using (var db = new UserDBEntities())
             {
                 var depts = db.Departments;
                 foreach (Department d in depts)
                 {
-                    tempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
+                    DtempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name, Selected = false });
                 }
 
             }
-            nvm.DeptDropDown = tempList;
+            nvm.DeptDropDown = DtempList;
+
+            RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true });
+            RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
+            RtempList.Add(new SelectListItem { Value = "Supervisor", Text = "Supervisor", Selected = false });
+            RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
+            nvm.RoleDropDown = RtempList;
+
+            AtempList.Add(new SelectListItem { Value = "true", Text = "True", Selected = true });
+            AtempList.Add(new SelectListItem { Value = "false", Text = "False", Selected = true });
+            nvm.ActiveDropDown = AtempList;
+
             return View(nvm);
         }
     }

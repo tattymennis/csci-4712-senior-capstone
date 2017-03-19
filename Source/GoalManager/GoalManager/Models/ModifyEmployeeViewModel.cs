@@ -12,25 +12,39 @@ namespace GoalManager.Models
 {
     public class ModifyEmployeeViewModel
     {
+        // Drop Downs
         public IEnumerable<SelectListItem> DeptDropDown { get; set; }
-        public User Employee = new User();
-        //add data annotations
+        public IEnumerable<SelectListItem> RoleDropDown { get; set; }
+        public IEnumerable<SelectListItem> ActiveDropDown { get; set; }
 
-
-        public int UID { get; set; }
-        public string Email { get; set; }
-        public string Title { get; set; }
-        public string Role { get; set; }
+        //Form Fields 
+        [Required]
+        [DisplayName("First Name")]
+        [StringLength(50)]
         public string FirstName { get; set; }
+        [Required]
+        [DisplayName("Last name")]
+        [StringLength(50)]
         public string LastName { get; set; }
-        public int DID { get; set; }
-        public bool Active { get; set; }
-        public Nullable<int> SUID { get; set; }
-        public string Username { get; set; }
 
-        [NotMapped]
-        public int DepRefChoice { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string Role { get; set; }
+
+        public int DepRefChoice = 0;
+
+        [Required]
+        public bool Active { get; set; }
+
         [NotMapped]
         public int IDRef { get; set; } //Used for Initial entry into the page, must require an id to reference 
+
+        public int ID { get; set; }
     }
 }
