@@ -34,8 +34,14 @@ namespace GoalManager.Controllers
         [Authorize]
         public ActionResult SupervisorHome()
         {
-            ViewBag.Title = "Supervisor Home Page";
-            return View();
+            var vm = new SupervisorHomeViewModel();
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
+            using (var db = new UserDBEntities())
+            {
+                vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
+            }
+                return View(vm);
+
         }
 
         [Authorize]
@@ -137,6 +143,7 @@ namespace GoalManager.Controllers
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page - Index";
+
             return View();
         }
         public ActionResult About()

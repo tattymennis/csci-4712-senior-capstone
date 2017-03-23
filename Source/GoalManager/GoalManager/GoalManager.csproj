@@ -222,6 +222,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ModifyEmployeeViewModel.cs" />
+    <Compile Include="Models\SupervisorHomeViewModel.cs" />
     <Compile Include="Models\UpdateGoalViewModel.cs" />
     <Compile Include="Models\ViewGoalViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -37,7 +37,8 @@ namespace GoalManager.Models
         [Required]
         public string Role { get; set; }
 
-        public int DepRefChoice = 0;
+
+        public int DepRefChoice { get; set; }
 
         [Required]
         public bool Active { get; set; }

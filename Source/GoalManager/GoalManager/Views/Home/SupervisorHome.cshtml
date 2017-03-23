@@ -1,8 +1,19 @@
-﻿@{
+﻿@using GoalManager.Models
+@model SupervisorHomeViewModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Supervisor Home";
 }
 
 <h1>@ViewBag.Title</h1>
+<h3>Current Departments</h3>
+@if (Model.Departments.Count != 0)
+{
+    foreach (var x in Model.Departments)
+    {
+        <p>@x.Name</p><p>@x.Description</p>
+    }
+}
 <ul class="nav nav-pills">
     <li class="nav-item">
         <a class="nav-item navbar-link active" href="~/Goal/CreateGoal">Create Goal</a>

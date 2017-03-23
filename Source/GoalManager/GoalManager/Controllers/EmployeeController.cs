@@ -267,8 +267,6 @@ namespace GoalManager.Controllers
             //First Name 
             if (ModelState.IsValid)
             {
-
-
                 //First Name 
                 foreach (char x in vm.FirstName)
                 {
@@ -287,12 +285,12 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
-                //Email
-                using (UserDBEntities db = new UserDBEntities())
-                {
-                    if (db.Users.Any(x => x.Email == vm.Email))
-                        ModelState.AddModelError("Email", "Email Address Already Exists");
-                }
+                //Email - Must change the way it remembers and save the email, might take out completely
+                //using (UserDBEntities db = new UserDBEntities())
+                //{
+                //    if (db.Users.Any(x => x.Email == vm.Email))
+                //        ModelState.AddModelError("Email", "Email Address Already Exists");
+                //}
 
                 //Title
                 foreach (char x in vm.Title)
@@ -309,9 +307,9 @@ namespace GoalManager.Controllers
             if (vm.Role == "Select Role" || String.IsNullOrEmpty(vm.Role))
                 ModelState.AddModelError("Role", "Must Select a Role");
 
-            //Department
+            //Department must learn to map to the form field to prevent error
             if (vm.DepRefChoice == 0)
-                ModelState.AddModelError("DepRefChoice", "Must Select a Department");
+            { ModelState.AddModelError("DepRefChoice", "Must Select a Department"); }
             else // Checking to see if Department exist on the database to prevent error
             {
                 using (var db = new UserDBEntities())
@@ -342,7 +340,7 @@ namespace GoalManager.Controllers
                     db.SaveChanges();
 
                 }
-                RedirectToAction("~/Home/Index");
+                return RedirectToAction("MainView", "Home");
             }
 
             // Creating new view model if validation failed

@@ -75,17 +75,24 @@ namespace GoalManager.Controllers
             {
                 using (var db = new UserDBEntities())
                 {
+
                     //Save Department
+                    dbDepartment.User = db.Users.Where(x => x.UID == 2038).FirstOrDefault();
                     db.Departments.Add(dbDepartment);
                     db.SaveChanges();
+
                     // Save Quarters Associated With the Same Department
                     Quarter1.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
                     Quarter2.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
                     Quarter3.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
                     Quarter4.Department = db.Departments.Where(x => x.Name == dbDepartment.Name).FirstOrDefault();
+                    db.Quarters.Add(Quarter1);
+                    db.Quarters.Add(Quarter2);
+                    db.Quarters.Add(Quarter3);
+                    db.Quarters.Add(Quarter4);
                     db.SaveChanges();
                 }
-                RedirectToAction("~/Home/Index");
+                return RedirectToAction("MainView", "Home");
             }
 
             CreateDepartmentViewModel nvm = new CreateDepartmentViewModel();

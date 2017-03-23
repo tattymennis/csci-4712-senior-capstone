@@ -46,7 +46,7 @@
         <label for="Active">Active</label>
         @Html.DropDownListFor(x => x.Active, Model.ActiveDropDown, new { Name = "Active", Class = "form-control" })
     </div>
-
+    <input type="hidden" name="ID" value="@Model.ID" />
     <input type="submit" />
 </form>
 
