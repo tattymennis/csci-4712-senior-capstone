@@ -393,6 +393,8 @@ namespace GoalManager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            // clear Session data
+            Session.Clear();
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }

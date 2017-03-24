@@ -15,39 +15,96 @@ namespace GoalManager.Controllers
         public ActionResult EmployeeHome()
         {
             ViewBag.Title = "Employee Home Page";
-            var userSessionData = Session["UserSessionData"] as UserSessionData;
-            if (userSessionData == null)
+            try
             {
-                // error;
-                return RedirectToAction("Index", "Home");
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+                if (userSessionData == null || userSessionData.Role != "Employee")
+                {
+                    return RedirectToAction("MainView", "Home");
+                }
+
+                var vm = new EmployeeHomeViewModel();
+                using (UserDBEntities db = new UserDBEntities())
+                {
+                    vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+                }
+
+                return View(vm);
             }
 
-            var vm = new EmployeeHomeViewModel();
-            using (UserDBEntities db = new UserDBEntities())
+            catch (ArgumentNullException ex)
             {
-                vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+                // Something went wrong
+                return RedirectToAction("MainView", "Home", new { exception = ex.Message });
             }
 
-            return View(vm);
+            catch (Exception ex)
+            {
+                // Something went wrong
+                return RedirectToAction("MainView", "Home", new { exception = ex.Message });
+            }
         }
 
         [Authorize]
         public ActionResult SupervisorHome()
         {
             var vm = new SupervisorHomeViewModel();
-            var userSessionData = Session["UserSessionData"] as UserSessionData;
-            using (var db = new UserDBEntities())
-            {
-                vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
-            }
-                return View(vm);
 
+            try
+            {
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+                if (userSessionData == null || userSessionData.Role != "Supervisor")
+                {
+                    // Session data is null or incorrect Role; return to MainView
+                    return RedirectToAction("MainView", "Home");
+                }
+
+                using (var db = new UserDBEntities())
+                {
+                    vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
+                }
+                return View(vm);
+            }
+
+            catch (ArgumentNullException ex)
+            {
+                // Something went wrong
+                return RedirectToAction("MainView", "Home", new { exception = ex.Message });
+            }
+
+            catch (Exception ex)
+            {
+                // Something went wrong
+                return RedirectToAction("Index", "Home", new { exception = ex.Message });
+            }
         }
 
         [Authorize]
         public ActionResult AdminHome()
         {
             ViewBag.Title = "Administrator Home Page";
+            try
+            {
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+                if (userSessionData == null || userSessionData.Role != "Administrator")
+                {
+                    // Session data is null or incorrect Role; return to MainView
+                    return RedirectToAction("MainView", "Home");
+                }
+            }
+
+            catch (ArgumentNullException ex)
+            {
+                // Something went wrong
+                return RedirectToAction("MainView", "Home", new { exception = ex.Message });
+            }
+
+            catch (Exception ex)
+            {
+                // Something went wrong
+                return RedirectToAction("MainView", "Home", new { exception = ex.Message });
+            }
+
             var vm = new AdminHomeViewModel();
             using (var db = new UserDBEntities())
             {
@@ -63,8 +120,14 @@ namespace GoalManager.Controllers
             ViewBag.Title = "Main View";
             try
             {
+                if (!User.Identity.IsAuthenticated)
+                {
+                    // not logged in
+                    return RedirectToAction("Index", "Home");
+                }
+
                 var username = User.Identity.GetUserName();
-                var id = User.Identity.GetUserName();
+                var id = User.Identity.GetUserId();
 
                 if (String.IsNullOrWhiteSpace(username) || String.IsNullOrWhiteSpace(id))
                 {
@@ -134,6 +197,12 @@ namespace GoalManager.Controllers
             }
 
             catch(ArgumentNullException ex)
+            {
+                // Something went wrong
+                return RedirectToAction("Index", "Home", new { exception = ex.Message });
+            }
+
+            catch(Exception ex)
             {
                 // Something went wrong
                 return RedirectToAction("Index", "Home", new { exception = ex.Message });
