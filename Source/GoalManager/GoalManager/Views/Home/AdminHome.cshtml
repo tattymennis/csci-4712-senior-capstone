@@ -8,15 +8,11 @@
     <li class="nav-item col-lg-2">
         <a class="nav-item navbar-link active" href="~/Department/CreateDepartment">Create Department</a>
     </li>
-    <li class="nav-item col-lg-2">
-        <a class="nav-item navbar-link active" href="~/Department/ModifyDepartment">Modify Department</a>
-    </li>
+   
     <li class="nav-item col-lg-2">
         <a class="nav-item navbar-link active" href="~/Employee/CreateEmployee">Create Employee</a>
     </li>
-    <li class="nav-item col-lg-2">
-        <a class="nav-item navbar-link active" href="~/Employee/ModifyEmployee">Modify Employee</a>
-    </li>
+   
 </ul>
 
 
@@ -45,6 +41,37 @@
                     @Html.AntiForgeryToken()
                     <form action="/Employee/ModifyEmployee" method="post">
                         <input type="hidden" name="IDRef" value="@x.UID" />
+                        @Html.AntiForgeryToken()
+                        <input type="submit" value="Modify" />
+                    </form>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<table class="row table table-bordered table-hover table-responsive">
+    <thead>
+        <!--update section-->
+        <tr class="active">
+
+            <th>Title</th>
+            <th>Location</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model.Departments)
+        {
+            <tr>
+                <td class="success">@x.Name</td>
+                <td class="success">@x.Location</td>
+                <td class="success">@x.Description</td>
+                <td>
+                    @Html.AntiForgeryToken()
+                    <form action="/Department/ModifyDepartment" method="post">
+                        <input type="hidden" name="IDRef" value="@x.DID" />
                         @Html.AntiForgeryToken()
                         <input type="submit" value="Modify" />
                     </form>

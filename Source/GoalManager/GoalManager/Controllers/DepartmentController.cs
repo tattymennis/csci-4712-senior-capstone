@@ -99,10 +99,78 @@ namespace GoalManager.Controllers
             nvm = vm;
             return View(vm);
         }
-        public ActionResult ModifyDepartment()
+        public ActionResult ModifyDepartment(ModifyDepartmentViewModel vm)
         {
-            ViewBag.Title = "Modify Department";
-            return View();
+
+            ModifyDepartmentViewModel nvm = new ModifyDepartmentViewModel();
+
+            if (vm.IDRef != 0) // Reserved for inital entry in method.
+            {
+                Department tempdep;
+
+                using (var db = new UserDBEntities())
+                    tempdep = db.Departments.Where(x => x.DID == vm.IDRef).FirstOrDefault();
+
+                //Assigning individual values into viewmodel to be passed
+                nvm.Name = tempdep.Name;
+                nvm.Location = tempdep.Location;
+                nvm.Description = tempdep.Description;
+                nvm.DID = vm.IDRef;
+
+                ModelState.Clear();
+                return View(nvm);
+            }
+
+            if (ModelState.IsValid)
+            {
+                //Name 
+                foreach (char x in vm.Name)
+                {
+                    if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    {
+                        ModelState.AddModelError("Name", "Name can only be letters and numbers");
+                        break;
+                    }
+                }
+                //Location
+                foreach (char x in vm.Location)
+                {
+                    if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    {
+                        ModelState.AddModelError("Location", "Location can only be letters and numbers");
+                        break;
+                    }
+                }
+                //Description
+                foreach (char x in vm.Description)
+                {
+                    if (Char.IsControl(x) || Char.IsSymbol(x))
+                    {
+                        ModelState.AddModelError("Description", "You have invlaid symbols in your Description");
+                        break;
+                    }
+                }
+            }
+
+            if(ModelState.IsValid)
+            {
+
+                using (var db = new UserDBEntities())
+                {
+                    //Assign reference of database entity to variable, the assign variable, might do individual fields
+
+                    Department Department= db.Departments.Where(x => x.DID == vm.DID).FirstOrDefault();
+
+                    Department.Name = vm.Name;
+                    Department.Location = vm.Location;
+                    Department.Description = vm.Description;
+
+                    db.SaveChanges();
+                }
+                return RedirectToAction("MainView", "Home");
+            }
+            nvm = vm;
+            return View(nvm);
         }
     }
 }

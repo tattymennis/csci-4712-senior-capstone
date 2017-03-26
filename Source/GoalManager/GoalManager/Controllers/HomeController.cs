@@ -63,6 +63,7 @@ namespace GoalManager.Controllers
                 using (var db = new UserDBEntities())
                 {
                     vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
+<<<<<<< HEAD
                     if (vm.Departments != null)
                     {
                         foreach (Department d in vm.Departments)
@@ -106,6 +107,9 @@ namespace GoalManager.Controllers
                             }
                         }
                     }
+=======
+                    
+>>>>>>> refs/remotes/origin/master
                 }
                 return View(vm);
             }

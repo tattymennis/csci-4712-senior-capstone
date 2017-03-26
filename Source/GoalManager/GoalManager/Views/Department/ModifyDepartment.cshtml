@@ -1,36 +1,28 @@
-﻿@{
+﻿@using GoalManager.Models
+@model ModifyDepartmentViewModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>@ViewBag.Title</h1>
 
 <form method="post">
+    @Html.AntiForgeryToken()
     <div class="form-group form-horizontal">
-        <label for="name">Department Name:</label>
-        <input type="text" class="form-control" value="Accounting"/>
-        <small class="form-text text-muted">Note:All users will see this for their respective Department criterias  </small>
+        <label for="Name">Department Name:</label>
+        <input type="text" name="Name" class="form-control" value="@Model.Name" />
     </div>
-    <div class="form-group">
-        <label for="Supervisor">Supervisor:</label>
-        <select class="form-control">
-            <option>Andrew Keller</option>
-            <option>Matthew Tennis</option>
-            <option>Miguel Morell</option>
-            <option>Mike Dowell</option>
-            <option>Donald Trump</option>
-        </select>
-        <small class="form-text text-muted">Please Select the Supervisor</small>
-    </div>
+
     <div class="form-group form-horizontal">
         <label for="Location">Location:</label>
-        <input type="text" class="form-control" value="West Wing" />
-        <small class="form-text text-muted">Please explain where this department is at.  </small>
+        <input type="text" name="Location" class="form-control" value="@Model.Location" />
     </div>
 
     <div class="form-group form-horizontal">
         <label for="Decription">Department Description:</label>
-        <textarea type="text" class="form-control">Managing the profit-loss statements</textarea>
-        <small class="form-text text-muted">Please type decribe what the Department does </small>
+        <textarea type="text" name="Description" class="form-control">@Model.Description</textarea>
     </div>
+    <input type="hidden" name="IDRef" value="0" />
+    <input type="hidden" name="DID" value="@Model.DID"/>
     <input type="submit" />
 </form>
