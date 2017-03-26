@@ -62,6 +62,7 @@ namespace GoalManager.Controllers
                 using (var db = new UserDBEntities())
                 {
                     vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
+                    
                 }
                 return View(vm);
             }
