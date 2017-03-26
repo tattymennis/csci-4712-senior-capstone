@@ -382,7 +382,6 @@ namespace GoalManager.Controllers
                 }
                 AddErrors(result);
             }
-
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }

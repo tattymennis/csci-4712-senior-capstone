@@ -7,13 +7,48 @@
 
 <h1>@ViewBag.Title</h1>
 <h3>Current Departments</h3>
-@if (Model.Departments.Count != 0)
+@if (Model.Departments != null)
 {
-    foreach (var x in Model.Departments)
+    if (Model.Departments.Count != 0)
     {
-        <p>@x.Name</p><p>@x.Description</p>
+        foreach (var x in Model.Departments)
+        {
+            <p>@x.Name</p><p>@x.Description</p>
+        }
     }
 }
+
+@if (Model.GoalApprovalList != null)
+{
+    <table class="table table-bordered table-hover table-responsive table-condensed">
+        <thead>
+            <tr class="active">
+                <th>Name</th>
+                <th>Title</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Goal Title</th>
+                <th>Goal Start Date</th>
+                <th>Goal Approved?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in Model.GoalApprovalList)
+            {
+                <tr>
+                    <td class="danger">@g.User.FirstName @g.User.LastName</td>
+                    <td class="danger">@g.User.Title</td>
+                    <td class="danger">@g.User.Role</td>
+                    <td class="danger">@g.User.Department</td>
+                    <td class="danger">@g.Title</td>
+                    <td class="danger">@g.StartDate</td>
+                    <td class="danger">@g.Approved</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 <ul class="nav nav-pills">
     <li class="nav-item">
         <a class="nav-item navbar-link active" href="~/Goal/CreateGoal">Create Goal</a>

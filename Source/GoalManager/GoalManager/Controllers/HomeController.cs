@@ -59,9 +59,53 @@ namespace GoalManager.Controllers
                     return RedirectToAction("MainView", "Home");
                 }
 
+                // Query list of GIDs that require approval & Departments associated with this Supervisor
                 using (var db = new UserDBEntities())
                 {
                     vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
+                    if (vm.Departments != null)
+                    {
+                        foreach (Department d in vm.Departments)
+                        {
+                            // Users associated with this Supervisor
+                            List<User> users = db.Users.Where(x => x.SUID == userSessionData.UID).ToList<User>();
+                            foreach (User u in users)
+                            {
+                                // Goals associated with this User where Approved == false
+                                List<Goal> goals = db.Goals.Where(x => x.UID == u.UID && !x.Approved).ToList<Goal>();
+                                if (goals != null)
+                                {
+                                    // Add GIDs of associated Goals where Approved == false
+                                    foreach (Goal g in goals)
+                                    {
+                                        // Either pass by reference or create new Goal
+                                        Goal goal = new Data.Goal
+                                        {
+                                            GID = g.GID,
+                                            Category = g.Category,
+                                            Description = g.Description,
+                                            StartDate = g.StartDate,
+                                            EndDate = g.EndDate,
+                                            Progress = g.Progress,
+                                            Status = g.Status,
+                                            Title = g.Title,
+                                            UID = g.UID,
+                                            Approved = g.Approved,
+                                            User = new Data.User
+                                            {
+                                                FirstName = g.User.FirstName,
+                                                LastName = g.User.LastName,
+                                                Department = g.User.Department,
+                                                Role = g.User.Role,
+                                                Title = g.User.Title
+                                            }
+                                        };
+                                        vm.GoalApprovalList.Add(goal);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 return View(vm);
             }
@@ -215,6 +259,7 @@ namespace GoalManager.Controllers
 
             return View();
         }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
