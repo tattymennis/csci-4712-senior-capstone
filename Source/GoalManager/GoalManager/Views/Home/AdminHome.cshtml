@@ -15,12 +15,10 @@
    
 </ul>
 
-
 <table class="row table table-bordered table-hover table-responsive">
     <thead>
         <!--update section-->
         <tr class="active">
-
             <th>Name</th>
             <th>Role</th>
             <th>Title</th>
@@ -38,7 +36,6 @@
                 <td class="success">@x.Email</td>
                 <td class="success">@x.Active</td>
                 <td>
-                    @Html.AntiForgeryToken()
                     <form action="/Employee/ModifyEmployee" method="post">
                         <input type="hidden" name="IDRef" value="@x.UID" />
                         @Html.AntiForgeryToken()
@@ -69,7 +66,6 @@
                 <td class="success">@x.Location</td>
                 <td class="success">@x.Description</td>
                 <td>
-                    @Html.AntiForgeryToken()
                     <form action="/Department/ModifyDepartment" method="post">
                         <input type="hidden" name="IDRef" value="@x.DID" />
                         @Html.AntiForgeryToken()

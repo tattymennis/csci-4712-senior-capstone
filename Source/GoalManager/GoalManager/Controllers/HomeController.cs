@@ -62,54 +62,50 @@ namespace GoalManager.Controllers
                 // Query list of GIDs that require approval & Departments associated with this Supervisor
                 using (var db = new UserDBEntities())
                 {
+                    // Populate Supervisor's Goals in VM
+                    vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+
                     vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
-<<<<<<< HEAD
                     if (vm.Departments != null)
                     {
-                        foreach (Department d in vm.Departments)
+                        // Users associated with this Supervisor
+                        vm.Employees = db.Users.Where(x => x.SUID == userSessionData.UID).ToList<User>();
+                        foreach (User u in vm.Employees)
                         {
-                            // Users associated with this Supervisor
-                            List<User> users = db.Users.Where(x => x.SUID == userSessionData.UID).ToList<User>();
-                            foreach (User u in users)
+                            // Goals associated with this User where Approved == false
+                            List<Goal> goals = db.Goals.Where(x => x.UID == u.UID && x.Approved == false).ToList<Goal>();
+                            if (goals != null)
                             {
-                                // Goals associated with this User where Approved == false
-                                List<Goal> goals = db.Goals.Where(x => x.UID == u.UID && !x.Approved).ToList<Goal>();
-                                if (goals != null)
+                                // Add GIDs of associated Goals where Approved == false
+                                foreach (Goal g in goals)
                                 {
-                                    // Add GIDs of associated Goals where Approved == false
-                                    foreach (Goal g in goals)
+                                    // Either pass by reference or create new Goal
+                                    Goal goal = new Data.Goal
                                     {
-                                        // Either pass by reference or create new Goal
-                                        Goal goal = new Data.Goal
+                                        GID = g.GID,
+                                        Category = g.Category,
+                                        Description = g.Description,
+                                        StartDate = g.StartDate,
+                                        EndDate = g.EndDate,
+                                        Progress = g.Progress,
+                                        Status = g.Status,
+                                        Title = g.Title,
+                                        UID = g.UID,
+                                        Approved = g.Approved,
+                                        User = new Data.User
                                         {
-                                            GID = g.GID,
-                                            Category = g.Category,
-                                            Description = g.Description,
-                                            StartDate = g.StartDate,
-                                            EndDate = g.EndDate,
-                                            Progress = g.Progress,
-                                            Status = g.Status,
-                                            Title = g.Title,
-                                            UID = g.UID,
-                                            Approved = g.Approved,
-                                            User = new Data.User
-                                            {
-                                                FirstName = g.User.FirstName,
-                                                LastName = g.User.LastName,
-                                                Department = g.User.Department,
-                                                Role = g.User.Role,
-                                                Title = g.User.Title
-                                            }
-                                        };
-                                        vm.GoalApprovalList.Add(goal);
-                                    }
+                                            FirstName = g.User.FirstName,
+                                            LastName = g.User.LastName,
+                                            Department = g.User.Department,
+                                            Role = g.User.Role,
+                                            Title = g.User.Title
+                                        }
+                                    };
+                                    vm.GoalApprovalList.Add(goal);
                                 }
                             }
                         }
                     }
-=======
-                    
->>>>>>> refs/remotes/origin/master
                 }
                 return View(vm);
             }
