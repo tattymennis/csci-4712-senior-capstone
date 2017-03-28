@@ -7,6 +7,11 @@
 
 <h1>@ViewBag.Title</h1>
 
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-item navbar-link active" href="~/Goal/CreateGoal">Create Goal</a>
+    </li>
+</ul>
 @*Approval List*@
 @if (Model.GoalApprovalList.Count != 0)
 {
@@ -25,140 +30,111 @@
         <tbody>
             @foreach (var g in Model.GoalApprovalList)
             {
-                <tr>
-                    <td class="danger">@g.User.FirstName @g.User.LastName</td>
-                    <td class="danger">@g.User.Title</td>
-                    <td class="danger">@g.User.Role</td>
-                    <td class="danger">@g.User.Department.Name</td>
-                    <td class="danger">@g.Title</td>
-                    <td class="danger">@g.StartDate</td>
-                    <td> @*TODO: Approve*@
-                        <form action="" method="post">
-                            <input type="hidden" name="" value=""/>
+                <tr class="danger">
+                    <td>@g.User.FirstName @g.User.LastName
+                        <form method="post">
+                            <input type="hidden" name="" value="" />
                             <input type="submit" value="Approve" />
                         </form>
                     </td>
+                    <td>@g.User.Title</td>
+                    <td>@g.User.Role</td>
+                    <td>@g.User.Department.Name</td>
+                    <td>@g.Title</td>
+                    <td>@g.StartDate</td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
-@*My Goals*@
-@if (Model.Goals.Count != 0)
-{
-    <div>
-        <h3>My Goals</h3>
-        <table class="table table-bordered table-hover table-responsive">
-            <thead>
-                <tr class="active">
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Progress</th>
-                    <th>Deadline</th>
-                    <th>Description</th>
-                    <th>View Goal</th>
-                    <th>Update Goal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var g in Model.Goals)
-                {
-                    <tr>
-                        <td class="success">@g.Title</td>
-                        <td class="success">@g.Category</td>
-                        <td class="success">@g.Progress</td>
-                        <td class="success">@g.StartDate</td> <!--Must update Update table to support Date attribute-->
-                        <td class="success">@g.Description</td>
-                        <td>
-                            <form action="/Goal/ViewGoal" method="get">
-                                <input type="hidden" name="GID" value="@g.GID" />
-                                <input type="submit" value="View" />
-                            </form>
-                        </td>
-                        <td>
-                            <form action="/Goal/UpdateGoal" method="get">
-                                <input type="hidden" name="GIDRef" value="@g.GID" />
-                                <input type="submit" value="Update" />
-                            </form>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="success"></td>
-                        <td class="success"></td>
-                        <td class="success"></td>
-                        <td class="success"></td>
-                        <td class="success"></td>
-                        <td>
-                            <form action="/Goal/CreateGoal" method="get">
-                                <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
-                                <input type="submit" value="Add" />
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
-
-@*Managed Departments*@
-@if (Model.Departments != null)
-{
-    <h3>My Departments</h3>
-    if (Model.Departments.Count != 0)
+    @*My Goals*@
+    @if (Model.Goals.Count != 0)
     {
-        <table class="table table-responsive table-bordered table-hover">
-            <thead>
-                <tr class="active">
-                    <th>Department</th>
-                    <th>Description</th>
-                    <th>Location</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach (var d in Model.Departments)
-                {
-                    <tr>
-                        <td class="success">@d.Name</td>
-                        <td class="success">@d.Description</td>
-                        <td class="success">@d.Location</td>
-                        <td>
-                            @*TODO: ViewReport(Department)*@
-                            <form action="" method="post">
-                                <input type="hidden" name="" value="" />
-                                <input type="submit" value="View Report" />
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        @*Managed Employees*@
-        <h3>Managed Employees</h3>
-        if (Model.Employees.Count != 0)
-        {
+        <div>
+            <h3>My Goals</h3>
             <table class="table table-bordered table-hover table-responsive">
                 <thead>
                     <tr class="active">
-                        <th>Name</th>
                         <th>Title</th>
-                        <th>Department</th>
+                        <th>Category</th>
+                        <th>Progress</th>
+                        <th>Deadline</th>
+                        <th>Description</th>
+                        <th>View Goal</th>
+                        <th>Update Goal</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var e in Model.Employees)
-                    {
-                        <tr>
-                            <td class="success">@e.FirstName @e.LastName</td>
-                            <td class="success">@e.Title</td>
-                            <td class="success">@e.Department.Name</td>
+                    @foreach (var g in Model.Goals)
+                {
+                        <tr class="success">
+                            <td >@g.Title</td>
+                            <td >@g.Category</td>
+                            <td >@g.Progress</td>
+                            <td >@g.StartDate</td> <!--Must update Update table to support Date attribute-->
+                            <td >@g.Description</td>
                             <td>
-                                @*TODO: ViewReport(Employee)*@
-                                <form action="" method="post">
+                                    <form action="/Goal/ViewGoal" method="get">
+                                        <input type="hidden" name="GID" value="@g.GID" />
+                                        <input type="submit" value="View" />
+                                    </form>
+                            </td>
+                            <td>
+                                <form action="/Goal/UpdateGoal" method="get">
+                                    <input type="hidden" name="GIDRef" value="@g.GID" />
+                                    <input type="submit" value="Update" />
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr class="success">
+                            <td> @*need to discuss better logic for going to create goal*@
+                                <form action="/Goal/CreateGoal" method="get">
+                                    <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
+                                    <input type="submit" value="Add" />
+                                </form>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                           
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @*Managed Departments*@
+    @if (Model.Departments != null)
+    {
+        <h3>My Departments</h3>
+        if (Model.Departments.Count != 0)
+        {
+            <table class="table table-responsive table-bordered table-hover">
+                <thead>
+                    <tr class="active">
+                        <th>Department</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Reports</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var d in Model.Departments)
+                    {
+                        <tr class="success">
+                            <td>@d.Name</td>
+                            <td>@d.Description</td>
+                            <td>@d.Location</td>
+                            <td>
+                                @*TODO: ViewReport(Department)*@
+                                <form method="post">
                                     <input type="hidden" name="" value="" />
                                     <input type="submit" value="View Report" />
                                 </form>
@@ -167,24 +143,40 @@
                     }
                 </tbody>
             </table>
+
+            @*Managed Employees*@
+            <h3>Managed Employees</h3>
+            if (Model.Employees.Count != 0)
+            {
+                <table class="table table-bordered table-hover table-responsive">
+                    <thead>
+                        <tr class="active">
+                            <th>Name</th>
+                            <th>Title</th>
+                            <th>Department</th>
+                            <th>Report</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model.Employees)
+                        {
+                            <tr class="success">
+                                <td>@e.FirstName @e.LastName</td>
+                                <td>@e.Title</td>
+                                <td>@e.Department.Name</td>
+                                <td>
+                                    @*TODO: ViewReport(Employee)*@
+                                    <form action="" method="post">
+                                        <input type="hidden" name="" value="" />
+                                        <input type="submit" value="View Report" />
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
         }
     }
-}
 
-<ul class="nav nav-pills">
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Goal/CreateGoal">Create Goal</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Goal/UpdateGoal">Update Goal</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Goal/ViewGoal">View Goal</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Report/ViewDepartmentReport">View Department Report</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-item navbar-link active" href="~/Report/ViewEmployeeReport">View Employee Report</a>
-    </li>  
-</ul>
+    
