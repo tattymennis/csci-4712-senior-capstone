@@ -80,28 +80,28 @@ namespace GoalManager.Controllers
                                 foreach (Goal g in goals)
                                 {
                                     // Either pass by reference or create new Goal
-                                    Goal goal = new Data.Goal
-                                    {
-                                        GID = g.GID,
-                                        Category = g.Category,
-                                        Description = g.Description,
-                                        StartDate = g.StartDate,
-                                        EndDate = g.EndDate,
-                                        Progress = g.Progress,
-                                        Status = g.Status,
-                                        Title = g.Title,
-                                        UID = g.UID,
-                                        Approved = g.Approved,
-                                        User = new Data.User
-                                        {
-                                            FirstName = g.User.FirstName,
-                                            LastName = g.User.LastName,
-                                            Department = g.User.Department,
-                                            Role = g.User.Role,
-                                            Title = g.User.Title
-                                        }
-                                    };
-                                    vm.GoalApprovalList.Add(goal);
+                                    //Goal goal = new Data.Goal
+                                    //{
+                                    //    GID = g.GID,
+                                    //    Category = g.Category,
+                                    //    Description = g.Description,
+                                    //    StartDate = g.StartDate,
+                                    //    EndDate = g.EndDate,
+                                    //    Progress = g.Progress,
+                                    //    Status = g.Status,
+                                    //    Title = g.Title,
+                                    //    UID = g.UID,
+                                    //    Approved = g.Approved,
+                                    //    User = new Data.User
+                                    //    {
+                                    //        FirstName = g.User.FirstName,
+                                    //        LastName = g.User.LastName,
+                                    //        Department = g.User.Department,
+                                    //        Role = g.User.Role,
+                                    //        Title = g.User.Title
+                                    //    }
+                                    //};
+                                    vm.GoalApprovalList.Add(g);
                                 }
                             }
                         }

@@ -67,7 +67,7 @@
                 </thead>
                 <tbody>
                     @foreach (var g in Model.Goals)
-                {
+                    {
                         <tr class="success">
                             <td >@g.Title</td>
                             <td >@g.Category</td>
@@ -75,10 +75,10 @@
                             <td >@g.StartDate</td> <!--Must update Update table to support Date attribute-->
                             <td >@g.Description</td>
                             <td>
-                                    <form action="/Goal/ViewGoal" method="get">
-                                        <input type="hidden" name="GID" value="@g.GID" />
-                                        <input type="submit" value="View" />
-                                    </form>
+                                <form action="/Goal/ViewGoal" method="get">
+                                    <input type="hidden" name="GID" value="@g.GID" />
+                                    <input type="submit" value="View" />
+                                </form>
                             </td>
                             <td>
                                 <form action="/Goal/UpdateGoal" method="get">
@@ -134,8 +134,9 @@
                             <td>@d.Location</td>
                             <td>
                                 @*TODO: ViewReport(Department)*@
-                                <form method="post">
-                                    <input type="hidden" name="" value="" />
+                                <!-- Trying a GET/POST in ReportController-->
+                                <form action="/Report/ViewDepartmentReport" method="get">
+                                    <input type="hidden" name="DeptRefID" value="@d.DID" />
                                     <input type="submit" value="View Report" />
                                 </form>
                             </td>
@@ -154,7 +155,7 @@
                             <th>Name</th>
                             <th>Title</th>
                             <th>Department</th>
-                            <th>Report</th>
+                            <th>Reports</th>
                         </tr>
                     </thead>
                     <tbody>
