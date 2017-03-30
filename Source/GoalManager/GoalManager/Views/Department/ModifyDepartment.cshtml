@@ -11,7 +11,7 @@
 </div>
 <form method="post">
     @Html.AntiForgeryToken()
-    <div>
+    <div class="col-md-6">
         <div class="form-group form-horizontal">
             <label for="Name">Department Name:</label>
             <input type="text" name="Name" class="form-control" value="@Model.Name" />
@@ -74,7 +74,8 @@
             <input type="date" name="Quarter4End" class="form-control" value="@Model.Quarter4End">
             <label for="Quarter4End">End</label>
         </div>
-        <input type="hidden" name="IDRef" value="0" />
-        <input type="hidden" name="DID" value="@Model.DID" />
-        <input type="submit" />
+    </div>
+    <input type="hidden" name="IDRef" value="0" />
+    <input type="hidden" name="DID" value="@Model.DID" />
+    <input type="submit" />
 </form>

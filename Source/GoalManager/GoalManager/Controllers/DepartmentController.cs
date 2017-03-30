@@ -123,7 +123,7 @@ namespace GoalManager.Controllers
         {
 
             ModifyDepartmentViewModel nvm = new ModifyDepartmentViewModel();
-
+            
             if (vm.IDRef != 0) // Reserved for inital entry in method.
             {
                 Department tempdep;

@@ -22,7 +22,7 @@ namespace GoalManager.Models
 
         [Required]
         public DateTime Quarter1Start { get; set; }
-
+      
         [Required]
         public DateTime Quarter1End { get; set; }
 
