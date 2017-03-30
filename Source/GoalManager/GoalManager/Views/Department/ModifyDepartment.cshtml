@@ -6,6 +6,9 @@
 
 <h1>@ViewBag.Title</h1>
 
+<div class="text-danger">
+    @Html.ValidationSummary()
+</div>
 <form method="post">
     @Html.AntiForgeryToken()
     <div>
