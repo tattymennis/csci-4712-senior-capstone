@@ -50,6 +50,26 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
+                if (DateTime.Compare(vm.Quarter1Start, vm.Quarter1End) > 0)
+                    ModelState.AddModelError("Quarter 1", "Quarter 1 End Date can not be Before Quarter 1 Start Date");
+                else if (DateTime.Compare(vm.Quarter1Start, vm.Quarter1End) == 0)
+                    ModelState.AddModelError("Quarter 1", "Quarter 1 End Date can not be the same as Quarter 1 Start Date");
+                else { }
+                if (DateTime.Compare(vm.Quarter2Start, vm.Quarter2End) > 0)
+                    ModelState.AddModelError("Quarter 2", "Quarter 2 End Date can not be Before Quarter 2 Start Date");
+                else if (DateTime.Compare(vm.Quarter2Start, vm.Quarter2End) == 0)
+                    ModelState.AddModelError("Quarter 2", "Quarter 2 End Date can not be the same as Quarter 2 Start Date");
+                else { }
+                if (DateTime.Compare(vm.Quarter3Start, vm.Quarter3End) > 0)
+                    ModelState.AddModelError("Quarter 3", "Quarter 3 End Date can not be Before Quarter 3 Start Date");
+                else if (DateTime.Compare(vm.Quarter3Start, vm.Quarter3End) == 0)
+                    ModelState.AddModelError("Quarter 3", "Quarter 3 End Date can not be the same as Quarter 3 Start Date");
+                else { }
+                if (DateTime.Compare(vm.Quarter4Start, vm.Quarter4End) > 0)
+                    ModelState.AddModelError("Quarter 4", "Quarter 4 End Date can not be Before Quarter 4 Start Date");
+                else if (DateTime.Compare(vm.Quarter4Start, vm.Quarter4End) == 0)
+                    ModelState.AddModelError("Quarter 4", "Quarter 4 End Date can not be the same as Quarter 4 Start Date");
+                else { }
             }
             Department dbDepartment = new Department();
             dbDepartment.Name = vm.Name;
@@ -103,7 +123,7 @@ namespace GoalManager.Controllers
         {
 
             ModifyDepartmentViewModel nvm = new ModifyDepartmentViewModel();
-
+            
             if (vm.IDRef != 0) // Reserved for inital entry in method.
             {
                 Department tempdep;

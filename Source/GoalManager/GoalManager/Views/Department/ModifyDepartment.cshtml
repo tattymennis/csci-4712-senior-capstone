@@ -6,23 +6,76 @@
 
 <h1>@ViewBag.Title</h1>
 
+<div class="text-danger">
+    @Html.ValidationSummary()
+</div>
 <form method="post">
     @Html.AntiForgeryToken()
-    <div class="form-group form-horizontal">
-        <label for="Name">Department Name:</label>
-        <input type="text" name="Name" class="form-control" value="@Model.Name" />
-    </div>
+    <div class="col-md-6">
+        <div class="form-group form-horizontal">
+            <label for="Name">Department Name:</label>
+            <input type="text" name="Name" class="form-control" value="@Model.Name" />
+        </div>
 
-    <div class="form-group form-horizontal">
-        <label for="Location">Location:</label>
-        <input type="text" name="Location" class="form-control" value="@Model.Location" />
-    </div>
+        <div class="form-group form-horizontal">
+            <label for="Location">Location:</label>
+            <input type="text" name="Location" class="form-control" value="@Model.Location" />
+        </div>
 
-    <div class="form-group form-horizontal">
-        <label for="Decription">Department Description:</label>
-        <textarea type="text" name="Description" class="form-control">@Model.Description</textarea>
+        <div class="form-group form-horizontal">
+            <label for="Decription">Department Description:</label>
+            <textarea type="text" name="Description" class="form-control">@Model.Description</textarea>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="Quarter1">Quarter 1</label>
+        <div class="form-group form-horizontal">
+            <label for="Quater1Name">Name</label>
+            <input type="text" name="Quarter1Name" class="form-control" value="@Model.Quarter1Name" placeholder="Accounting - Quarter 1" />
+        </div>
+        <div class="form-group form-inline">
+            <input type="date" name="Quarter1Start" class="form-control" value="@Model.Quarter1Start">
+            <label for="Quarter1Start">Start</label>
+            <input type="date" name="Quarter1End" class="form-control" value="@Model.Quarter1End">
+            <label for="Quarter1End">End</label>
+        </div>
+
+        <label for="Quarter2">Quarter 2</label>
+        <div class="form-group form-horizontal">
+            <label for="Quater2Name">Name</label>
+            <input type="text" name="Quarter2Name" class="form-control" value="@Model.Quarter2Name" placeholder="Accounting - Quarter 2" />
+        </div>
+        <div class="form-group form-inline">
+            <input type="date" name="Quarter2Start" class="form-control" value="@Model.Quarter2Start">
+            <label for="Quarter2Start">Start</label>
+            <input type="date" name="Quarter2End" class="form-control" value="@Model.Quarter2End">
+            <label for="Quarter2End">End</label>
+        </div>
+
+        <label for="Quarter3">Quarter 3</label>
+        <div class="form-group form-horizontal">
+            <label for="Quater3Name">Name</label>
+            <input type="text" name="Quarter3Name" class="form-control" value="@Model.Quarter3Name" placeholder="Accounting - Quarter 3" />
+        </div>
+        <div class="form-group form-inline">
+            <input type="date" name="Quarter3Start" class="form-control" value="@Model.Quarter3Start">
+            <label for="Quarter3Start">Start</label>
+            <input type="date" name="Quarter3End" class="form-control" value="@Model.Quarter3End">
+            <label for="Quarter3End">End</label>
+        </div>
+        <label for="Quarter4">Quarter 4</label>
+        <div class="form-group form-horizontal">
+            <label for="Quater4Name">Name</label>
+            <input type="text" name="Quarter4Name" class="form-control" value="@Model.Quarter4Name" placeholder="Accounting - Quarter 4" />
+        </div>
+        <div class="form-group form-inline">
+            <input type="date" name="Quarter4Start" class="form-control" value="@Model.Quarter4Start">
+            <label for="Quarter4Start">Start</label>
+            <input type="date" name="Quarter4End" class="form-control" value="@Model.Quarter4End">
+            <label for="Quarter4End">End</label>
+        </div>
     </div>
     <input type="hidden" name="IDRef" value="0" />
-    <input type="hidden" name="DID" value="@Model.DID"/>
+    <input type="hidden" name="DID" value="@Model.DID" />
     <input type="submit" />
 </form>
