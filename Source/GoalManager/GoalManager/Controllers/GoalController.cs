@@ -101,7 +101,7 @@ namespace GoalManager.Controllers
                     Update update;
 
                     // populate UID FK in Goal table
-                    goal = new Goal(vm.Title, vm.CategoryName, "Active", 0);
+                    goal = new Goal(vm.Title, vm.CategoryName, "Pending", 0);
                     goal.User = user; // null check?
                     goal.StartDate = DateTime.Now;
                     goal.EndDate = DateTime.Now; // test driver
@@ -137,40 +137,55 @@ namespace GoalManager.Controllers
         }
 
         // GET UpdateGoal
-        // Vulnerable. User can pass any value into Query string
         [Authorize]
         [HttpGet]
-        public ActionResult UpdateGoal(int GIDRef)
+        public ActionResult UpdateGoal(string GIDRef)
         {
             ViewBag.Title = "Update Goal";
             var vm = new UpdateGoalViewModel();
-            vm.GIDRef = GIDRef;
             try
             {
                 var userSessionData = Session["UserSessionData"] as UserSessionData;
-
                 if (userSessionData == null)
                 {
-                    // TODO: Error
+                    throw new ArgumentNullException("userSessionData", "Null session data");
                 }
 
-                else
+                int _GIDRef = -1;
+                if (int.TryParse(GIDRef, out _GIDRef))
                 {
-                    var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
-                    List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
-
-                    //vm.Goal = goal as Goal;
-                    //vm.Updates = updates;
+                    vm.GIDRef = _GIDRef;
+                    if (vm.GIDRef < 0)
+                    {
+                        throw new ArgumentException("Invalid GID reference", "GIDRef");
+                    }
                 }
-                //return View("UpdateGoal", vm);
+
+                var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
+                List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
+
+                vm.Goal = goal;
+                vm.Updates = updates;
                 return View(vm);
             }
+
+            catch (ArgumentNullException ex)
+            {
+                TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
+
+            catch (ArgumentException ex)
+            {
+                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
+
             catch (Exception ex)
             {
-                ViewBag.Error = ex;
-                RedirectToAction("Shared", "Error");
+                TempData["ErrorMessage"] = "Invalid user role. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
             }
-            return View(vm);
         }
 
         [Authorize]
@@ -178,66 +193,76 @@ namespace GoalManager.Controllers
         public ActionResult UpdateGoal(UpdateGoalViewModel vm)
         {
             ViewBag.Title = "Update Goal";
-            var nvm = new UpdateGoalViewModel();
             try
             {
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+                if (userSessionData == null || userSessionData.GoalUpdatesTable == null)
+                {
+                    throw new ArgumentNullException("userSessionData", "Null session data.");
+                }
+
+                if (userSessionData.Role != "Employee" && userSessionData.Role != "Supervisor")
+                {
+                    throw new ArgumentException("Session data role invalid.", "userSessionData");
+                }
+
                 if (!(vm.Progress > -1 && vm.Progress < 101))
                 {
-                    // TODO: Error
+                    ModelState.AddModelError("Progress", "Progress value not bounded [0,100].");
+                }
+
+                var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
+                List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
+
+                // Progress logic - must be >= updated Goal
+                if (vm.Progress < goal.Progress)
+                {
+                    ModelState.AddModelError("Progress", "Updated progress value is less than old progress value.");
                 }
 
                 if (ModelState.IsValid)
                 {
-                    var userSessionData = Session["UserSessionData"] as UserSessionData;
-                    if (userSessionData == null || userSessionData.GoalUpdatesTable == null)
+                    Update update = new Update
                     {
-                        ArgumentNullException ex = new ArgumentNullException("userSessionData", "Problem with Session data.");
-                    }
+                        Subject = vm.Subject,
+                        Notes = vm.Notes,
+                        Time = DateTime.Now,
+                        Progress = vm.Progress,
+                    };
 
-                    else
+                    using (UserDBEntities db = new UserDBEntities())
                     {
-                        var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
-                        List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
+                        update.Goal = db.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
+                        var _goal = db.Goals.Where(g => g.GID == vm.GIDRef).FirstOrDefault();
+                        _goal.Progress = vm.Progress;
 
-                        //vm.Goal = goal as Goal;
-                        //vm.Updates = updates;                       
-
-                        Update update = new Update
-                        {
-                            Subject = vm.Subject,
-                            Notes = vm.Notes,
-                            Time = DateTime.Now,
-                            Progress = vm.Progress,
-                        };
-
-                        nvm.GIDRef = vm.GIDRef;
-                        //nvm.Goal = goal;
-                        //nvm.Updates = updates;
-                        //nvm.Updates.Add(update);
-
-                        using (UserDBEntities db = new UserDBEntities())
-                        {
-                            update.Goal = db.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
-
-                            db.Updates.Add(update);
-                            db.SaveChanges();
-                        }
-                        return RedirectToAction("MainView", "Home");
+                        db.Updates.Add(update);
+                        db.SaveChanges();
                     }
+                    return RedirectToAction("MainView", "Home");                  
                 }
             }
 
             catch (ArgumentNullException ex)
             {
-                // TODO: Error handling
+                TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
             }
+
+            catch (ArgumentException ex)
+            {
+                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
+
             catch (Exception ex)
             {
-                // TODO: Error handling
+                TempData["ErrorMessage"] = "Invalid user role. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
             }
 
             // failed validation
-            return View(nvm);
+            return View(vm.GIDRef.ToString());
         }
 
         // ViewGoal
@@ -315,10 +340,102 @@ namespace GoalManager.Controllers
             return View(vm);
         }
 
-        // GET: Goal
-        public ActionResult Index()
+        // GET: ApproveGoal
+        public ActionResult ApproveGoal(string gid)
         {
-            return View();
+            try
+            {
+                UserSessionData userSessionData = Session["UserSessionData"] as UserSessionData;
+                if (userSessionData == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                if (userSessionData.Role != "Supervisor")
+                {
+                    throw new Exception();
+                }
+
+                int _gid = -1;
+                if(int.TryParse(gid, out _gid))
+                {
+                    if (_gid < 0)
+                    {
+                        throw new Exception(); // error
+                    }
+                    using (UserDBEntities db = new UserDBEntities())
+                    {
+                        var goal = db.Goals.Where(x => x.GID == _gid).FirstOrDefault();
+                        if (goal == null)
+                        {
+                            throw new Exception();
+                        }
+                        goal.Approved = true;
+                        goal.Status = "Active";
+                        db.SaveChanges();   
+                    }
+                }
+                return RedirectToAction("MainView", "Home");
+            }
+
+            // refine exceptions
+            catch (ArgumentNullException ex)
+            {
+                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
+
+            catch (ArgumentException ex)
+            {
+                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
+
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
+        }
+
+        // GET: DenyGoal
+        public ActionResult DenyGoal(string gid)
+        {
+            try
+            {
+                int _gid = -1;
+                if (int.TryParse(gid, out _gid))
+                {
+                    if (_gid < 0)
+                    {
+                        throw new Exception(); // error
+                    }
+                    using (UserDBEntities db = new UserDBEntities())
+                    {
+                        var goal = db.Goals.Where(x => x.GID == _gid).FirstOrDefault();
+                        if (goal == null)
+                        {
+                            throw new Exception();
+                        }
+                        goal.Approved = false;
+                        goal.Status = "Denied";
+                        db.SaveChanges();
+                    }
+                }
+                return RedirectToAction("MainView", "Home");
+            }
+
+            catch (ArgumentException ex)
+            {
+                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
+
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                return RedirectToAction("MainView", "Home");
+            }
         }
     }
 }

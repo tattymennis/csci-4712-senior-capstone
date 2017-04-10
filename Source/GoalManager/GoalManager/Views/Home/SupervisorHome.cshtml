@@ -32,9 +32,13 @@
             {
                 <tr class="danger">
                     <td>@g.User.FirstName @g.User.LastName
-                        <form method="post">
-                            <input type="hidden" name="" value="" />
+                        <form action="/Goal/ApproveGoal/" method="post">
+                            <input type="hidden" name="gid" value="@g.GID" />
                             <input type="submit" value="Approve" />
+                        </form>
+                        <form action="/Goal/DenyGoal/" method="post">
+                            <input type="hidden" name="gid" value="@g.GID" />
+                            <input type="submit" value="Deny" />
                         </form>
                     </td>
                     <td>@g.User.Title</td>
@@ -72,7 +76,7 @@
                             <td >@g.Title</td>
                             <td >@g.Category</td>
                             <td >@g.Progress</td>
-                            <td >@g.StartDate</td> <!--Must update Update table to support Date attribute-->
+                            <td >@g.StartDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
                             <td >@g.Description</td>
                             <td>
                                 <form action="/Goal/ViewGoal" method="get">
@@ -87,23 +91,22 @@
                                 </form>
                             </td>
                         </tr>
-
-                        <tr class="success">
-                            <td> @*need to discuss better logic for going to create goal*@
-                                <form action="/Goal/CreateGoal" method="get">
-                                    <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
-                                    <input type="submit" value="Add" />
-                                </form>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                           
-                        </tr>
                     }
+                    <tr class="success">
+                        <td>
+                            @*need to discuss better logic for going to create goal*@
+                            <form action="/Goal/CreateGoal" method="get">
+                                <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
+                                <input type="submit" value="Add" />
+                            </form>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -133,10 +136,8 @@
                             <td>@d.Description</td>
                             <td>@d.Location</td>
                             <td>
-                                @*TODO: ViewReport(Department)*@
-                                <!-- Trying a GET/POST in ReportController-->
-                                <form action="/Report/ViewDepartmentReport" method="get">
-                                    <input type="hidden" name="DeptRefID" value="@d.DID" />
+                                <form action="/Report/ViewDepartmentReport" method="post">
+                                    <input type="hidden" name="did" value="@d.DID" />
                                     <input type="submit" value="View Report" />
                                 </form>
                             </td>
@@ -167,8 +168,8 @@
                                 <td>@e.Department.Name</td>
                                 <td>
                                     @*TODO: ViewReport(Employee)*@
-                                    <form action="" method="post">
-                                        <input type="hidden" name="" value="" />
+                                    <form action="/Report/ViewEmployeeReport" method="post">
+                                        <input type="hidden" name="uid" value="@e.UID" />
                                         <input type="submit" value="View Report" />
                                     </form>
                                 </td>

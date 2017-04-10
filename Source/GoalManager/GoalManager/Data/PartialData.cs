@@ -78,6 +78,8 @@ namespace GoalManager.Data
             Progress = progress; // type double vs int
             Description = desc;
         }
+
+        public enum GoalStatus { Pending, Approved, Denied, Complete, Failed };
     }
 
     public class GoalMetadata

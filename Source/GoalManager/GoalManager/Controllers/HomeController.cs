@@ -49,7 +49,6 @@ namespace GoalManager.Controllers
         public ActionResult SupervisorHome()
         {
             var vm = new SupervisorHomeViewModel();
-
             try
             {
                 var userSessionData = Session["UserSessionData"] as UserSessionData;
@@ -72,8 +71,11 @@ namespace GoalManager.Controllers
                         vm.Employees = db.Users.Where(x => x.SUID == userSessionData.UID).ToList<User>();
                         foreach (User u in vm.Employees)
                         {
-                            // Goals associated with this User where Approved == false
-                            List<Goal> goals = db.Goals.Where(x => x.UID == u.UID && x.Approved == false).ToList<Goal>();
+                            // Goals associated with this User where Approved == false && Status == "Pending"
+                            List<Goal> goals = db.Goals.Where(x => x.UID == u.UID && 
+                                                              x.Approved == false &&
+                                                              x.Status == "Pending")
+                                                              .ToList<Goal>();
                             if (goals != null)
                             {
                                 // Add GIDs of associated Goals where Approved == false
@@ -242,21 +244,20 @@ namespace GoalManager.Controllers
 
             catch(ArgumentNullException ex)
             {
-                // Something went wrong
-                return RedirectToAction("Index", "Home", new { exception = ex.Message });
+                TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
+                return RedirectToAction("Index", "Home");
             }
 
             catch(Exception ex)
             {
-                // Something went wrong
-                return RedirectToAction("Index", "Home", new { exception = ex.Message });
+                TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
+                return RedirectToAction("Index", "Home");
             }
         }
 
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page - Index";
-
             return View();
         }
 

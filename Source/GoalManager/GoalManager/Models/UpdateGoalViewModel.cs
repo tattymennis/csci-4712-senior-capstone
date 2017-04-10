@@ -23,7 +23,7 @@ namespace GoalManager.Models
         [MaxLength(256, ErrorMessage = "Please enter a valid subject.")]
         public string Notes { get; set; }
 
-        //public List<Update> Updates { get; set; }
-        //public Goal Goal { get; set; }
+        public List<Update> Updates { get; set; }
+        public Goal Goal { get; set; }
     }
 }

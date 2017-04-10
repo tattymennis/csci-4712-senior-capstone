@@ -12,18 +12,23 @@ namespace GoalManager.Models
     public class ViewDepartmentReportViewModel
     {
         // get/set?
+        public User Supervisor { get; set; }
         public Department Department = new Department();
         public List<User> Employees = new List<User>();
         public Dictionary<int, List<Goal>> EmployeeGoals = new Dictionary<int, List<Goal>>();
         public Dictionary<int, List<Update>> GoalUpdates = new Dictionary<int, List<Update>>();
-        //public string DeptRefKey { get; set; }
         public int DeptRefID { get; set; }
     }
 
     public class ViewEmployeeReportViewModel
     {
         public User Employee = new User();
-        public List<Goal> Goals = new List<Goal>();
-        public int EmployeeRefID = -1;
+        public Department Department { get; set; }
+        public List<Goal> PendingGoals = new List<Goal>();
+        public List<Goal> FailedGoals = new List<Goal>();
+        public List<Goal> DeniedGoals = new List<Goal>();
+        public List<Goal> ActiveGoals = new List<Goal>();
+        public Dictionary<int, List<Update>> EmployeeUpdates = new Dictionary<int, List<Update>>();
+        public int EmployeeRefID { get; set; }
     }
 }

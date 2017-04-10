@@ -8,10 +8,10 @@
 
 @Html.ValidationSummary()
 <div>
-    @*<h1>@ViewBag.Title</h1>
-    <h2>@Model.Goal.Title</h2>
-    <h3>Start Date: @Model.Goal.StartDate.ToString()</h3>
-    <h3>End Date: @Model.Goal.EndDate.ToString()</h3>*@
+    <h1>@ViewBag.Title</h1>
+    <h2>Goal: @Model.Goal.Title</h2>
+    <h3>Start Date: @Model.Goal.StartDate.ToString("D")</h3>
+    <h3>End Date: @Model.Goal.EndDate.ToString("D")</h3>
 </div>
 
 @Html.AntiForgeryToken()
@@ -23,7 +23,7 @@
     </div>
     <div class="form-group form-horizontal">
         <label for="Progress">Progress</label>
-        <input type="number" class="form-control" name="Progress" value="@Model.Progress"/>
+        <input type="number" class="form-control" name="Progress" value="@Model.Goal.Progress"/> <!--value="Model.Progress"-->
     </div>
     <div class="form-group form-horizontal">
         <label for="Notes">Notes</label>

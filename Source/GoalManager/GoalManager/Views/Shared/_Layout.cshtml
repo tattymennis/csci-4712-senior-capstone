@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title -  Tax Slayer Goal Manager</title>
+    <title>@ViewBag.Title | TaxSlayer GoalManager</title>
+    <link rel="icon" href="@Url.Content("~/Images/taxslayer_icon.ico")"/>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -27,7 +28,7 @@
     <div class="container body-content">
         @RenderBody()
         <footer>
-            <p>&copy; @DateTime.Now.Year - Tax Slayer's Goal Manager</p>
+            <p>&copy; @DateTime.Now.Year - TaxSlayer | GoalManager</p>
         </footer>
     </div>
 
