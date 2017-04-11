@@ -123,7 +123,7 @@ namespace GoalManager.Controllers
         {
 
             ModifyDepartmentViewModel nvm = new ModifyDepartmentViewModel();
-            
+
             if (vm.IDRef != 0) // Reserved for inital entry in method.
             {
                 Department tempdep;
@@ -172,14 +172,14 @@ namespace GoalManager.Controllers
                 }
             }
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
 
                 using (var db = new UserDBEntities())
                 {
                     //Assign reference of database entity to variable, the assign variable, might do individual fields
 
-                    Department Department= db.Departments.Where(x => x.DID == vm.DID).FirstOrDefault();
+                    Department Department = db.Departments.Where(x => x.DID == vm.DID).FirstOrDefault();
 
                     Department.Name = vm.Name;
                     Department.Location = vm.Location;
@@ -192,5 +192,11 @@ namespace GoalManager.Controllers
             nvm = vm;
             return View(nvm);
         }
+        public ActionResult AddCategory()
+        {
+
+            return View();
+        }
     }
+
 }

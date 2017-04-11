@@ -175,6 +175,7 @@
     <Compile Include="Controllers\GoalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Models\AddCategoryViewModel.cs" />
     <Compile Include="Models\ModifyDepartmentViewModel.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Data\Category.cs">
@@ -322,6 +323,7 @@
     <Content Include="Views\Home\SupervisorHome.cshtml" />
     <Content Include="Views\Home\AdminHome.cshtml" />
     <Content Include="Views\Account\RegisterEmployee.cshtml" />
+    <Content Include="Views\Department\AddCategory.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
