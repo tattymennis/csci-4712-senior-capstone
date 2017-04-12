@@ -1,6 +1,12 @@
-﻿body {
+﻿@font-face {
+    font-family: 'Futura_ICG';
+    src: url('Futura_ICG.ttf') format('truetype');
+}
+
+body {
     padding-top: 75px;
     padding-bottom: 20px;
+    font-family: Futura_ICG;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -23,7 +29,27 @@ textarea {
     max-width: 280px;
 }
 
-#bannerlogo
-{
-    height:50px;
+#jumbotron{
+ background: url(JBBackground.jpg);
+ background-size:cover;
+ color:white;
+}
+#conlogo{
+    padding:5px;
+}
+#bannerlogo{
+    height: 50px;
+    align-content:center;
+}
+#navtext{
+    background-color:green;
+    color:white;
+    margin:0;
+    padding:20px;
+    font-size:15px;
+
+}
+#adminbar{
+    background-color:crimson;
+    margin:0px;
 }
