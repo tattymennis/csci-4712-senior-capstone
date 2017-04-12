@@ -133,6 +133,8 @@ namespace GoalManager.Data
 
         public int DID { get; set; }
 
+        public string DeptName { get; set; }
+
         public List<Goal> Goals { get; set; }
 
         public Dictionary<int,List<Update>> GoalUpdatesTable { get; set; }

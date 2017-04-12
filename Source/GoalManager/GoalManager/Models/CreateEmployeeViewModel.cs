@@ -38,7 +38,7 @@ namespace GoalManager.Models
         public string Role { get; set; }
 
         [Required]
-        public int DepRefChoice = 0;
+        public string DeptRefChoice { get; set; }
     }
 
     public class RegisterEmployeeViewModel

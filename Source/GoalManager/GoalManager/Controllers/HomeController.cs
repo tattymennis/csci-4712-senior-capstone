@@ -156,6 +156,13 @@ namespace GoalManager.Controllers
             {
                 vm.Departments.AddRange(db.Departments);
                 vm.Employees.AddRange(db.Users);
+                vm.Employees = db.Users.Where(u => !u.Role.Equals("Administrator")).ToList<User>();
+                vm.Administrators = db.Users.Where(u => u.Role.Equals("Administrator")).ToList<User>();
+                foreach (Department d in vm.Departments)
+                {
+                    User super = db.Users.Where(u => u.UID == d.SUID).FirstOrDefault();
+                    vm.SupervisorNames[super.UID] = super.FirstName + " " + super.LastName;
+                }
             }
             return View(vm);
         }
@@ -215,6 +222,7 @@ namespace GoalManager.Controllers
                     {
                         UID = user.UID,
                         DID = dept.DID,
+                        DeptName = dept.Name,
                         Username = username,
                         Role = role,
                         Goals = goals,

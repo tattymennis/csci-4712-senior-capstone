@@ -13,17 +13,22 @@
     @Html.AntiForgeryToken()
     <div class="col-md-6">
         <div class="form-group form-horizontal">
-            <label for="Name">Department Name:</label>
+            <label for="Name">Department Name</label>
             <input type="text" name="Name" class="form-control" value="@Model.Name" />
         </div>
 
         <div class="form-group form-horizontal">
-            <label for="Location">Location:</label>
+            <label for="Location">Location</label>
             <input type="text" name="Location" class="form-control" value="@Model.Location" />
         </div>
 
         <div class="form-group form-horizontal">
-            <label for="Decription">Department Description:</label>
+            <label for="SupervisorChoice">Supervisor</label>
+            @Html.DropDownListFor(x => x.SupervisorChoice, Model.SupervisorsDropDown)
+        </div>
+
+        <div class="form-group form-horizontal">
+            <label for="Decription">Description</label>
             <textarea type="text" name="Description" class="form-control" value="@Model.Description"></textarea>
         </div>
     </div>
@@ -31,7 +36,7 @@
         <label for="Quarter1">Quarter 1</label>
         <div class="form-group form-horizontal">
             <label for="Quater1Name">Name</label>
-            <input type="text" name="Quarter1Name" class="form-control" value="@Model.Quarter1Name" placeholder="Accounting - Quarter 1" />
+            <input type="text" name="Quarter1Name" class="form-control" value="@Model.Quarter1Name" placeholder="Department Name - Quarter 1" />
         </div>
         <div class="form-group form-inline">
             <input type="date" name="Quarter1Start" class="form-control" value="@Model.Quarter1Start">
@@ -43,7 +48,7 @@
         <label for="Quarter2">Quarter 2</label>
         <div class="form-group form-horizontal">
             <label for="Quater2Name">Name</label>
-            <input type="text" name="Quarter2Name" class="form-control" value="@Model.Quarter2Name" placeholder="Accounting - Quarter 2" />
+            <input type="text" name="Quarter2Name" class="form-control" value="@Model.Quarter2Name" placeholder="Department Name - Quarter 2" />
         </div>
         <div class="form-group form-inline">
             <input type="date" name="Quarter2Start" class="form-control" value="@Model.Quarter2Start">
@@ -55,7 +60,7 @@
         <label for="Quarter3">Quarter 3</label>
         <div class="form-group form-horizontal">
             <label for="Quater3Name">Name</label>
-            <input type="text" name="Quarter3Name" class="form-control" value="@Model.Quarter3Name" placeholder="Accounting - Quarter 3" />
+            <input type="text" name="Quarter3Name" class="form-control" value="@Model.Quarter3Name" placeholder="Department Name - Quarter 3" />
         </div>
         <div class="form-group form-inline">
             <input type="date" name="Quarter3Start" class="form-control" value="@Model.Quarter3Start">
@@ -66,7 +71,7 @@
         <label for="Quarter4">Quarter 4</label>
         <div class="form-group form-horizontal">
             <label for="Quater4Name">Name</label>
-            <input type="text" name="Quarter4Name" class="form-control" value="@Model.Quarter4Name" placeholder="Accounting - Quarter 4" />
+            <input type="text" name="Quarter4Name" class="form-control" value="@Model.Quarter4Name" placeholder="Department Name - Quarter 4" />
         </div>
         <div class="form-group form-inline">
             <input type="date" name="Quarter4Start" class="form-control" value="@Model.Quarter4Start">

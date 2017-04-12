@@ -26,6 +26,7 @@ namespace GoalManager.Controllers
                 _userManager = value;
             }
         }
+
         [Authorize]
         public ActionResult CreateEmployee()
         {
@@ -58,108 +59,118 @@ namespace GoalManager.Controllers
         public ActionResult CreateEmployee(CreateEmployeeViewModel vm)
         {
             ViewBag.Title = "Create Employee";
-            User dbuser = new User();
-            //Validation
-            if (ModelState.IsValid)
+            try
             {
-
-
-                //First Name 
-                foreach (char x in vm.FirstName)
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+                if (userSessionData == null)
                 {
-                    if (Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    throw new ArgumentNullException();
+                }
+
+                if (userSessionData.Role != "Admin" && userSessionData.Role != "Administrator")
+                {
+                    throw new ArgumentException();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    //First Name 
+                    foreach (char x in vm.FirstName)
                     {
-                        ModelState.AddModelError("FirstName", "First name can only contain letters.");
-                        break;
+                        if (Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                        {
+                            ModelState.AddModelError("FirstName", "First name can only contain letters.");
+                            break;
+                        }
                     }
-                }
-                //Last Name
-                foreach (char x in vm.LastName)
-                {
-                    if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    //Last Name
+                    foreach (char x in vm.LastName)
                     {
-                        ModelState.AddModelError("LastName", "Last name can only contain A-z.");
-                        break;
+                        if (System.Char.IsDigit(x) || Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                        {
+                            ModelState.AddModelError("LastName", "Last name can only contain A-z.");
+                            break;
+                        }
                     }
-                }
-                //Email
-                using (UserDBEntities db = new UserDBEntities())
-                {
-                    if (db.Users.Any(x => x.Email == vm.Email))
-                        ModelState.AddModelError("Email", "Email Address Already Exists");
-                }
-
-                //Title
-                foreach (char x in vm.Title)
-                {
-                    if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    //Email
+                    using (UserDBEntities db = new UserDBEntities())
                     {
-                        ModelState.AddModelError("Title", "Title can only contain A-Z or numbers");
-                        break;
+                        if (db.Users.Any(x => x.Email == vm.Email))
+                            ModelState.AddModelError("Email", "Email Address Already Exists");
+                    }
+
+                    //Title
+                    foreach (char x in vm.Title)
+                    {
+                        if (Char.IsControl(x) || Char.IsPunctuation(x))
+                        {
+                            ModelState.AddModelError("Title", "Title can only contain A-Z or numbers");
+                            break;
+                        }
+                    }
+
+                    //Role
+                    if (vm.Role == "Select Role" || String.IsNullOrEmpty(vm.Role))
+                        ModelState.AddModelError("Role", "Must Select a Role");
+
+                    //Department
+                    if (String.IsNullOrWhiteSpace(vm.DeptRefChoice) || vm.DeptRefChoice.Equals("Select a Department"))
+                    {
+                        ModelState.AddModelError("DepRefChoice", "Must Select a Department");
+                    }
+
+                    int _did = -1;
+                    if (int.TryParse(vm.DeptRefChoice, out _did))
+                    {
+                        using (var db = new UserDBEntities())
+                        {
+                            // generate username
+                            int count = 1;
+                            string username = (vm.FirstName[0] + vm.LastName).ToLower();
+                            while (db.Users.Any(x => x.Username == username) || count > 100) // username collision
+                            {
+                                username = (vm.FirstName[0] + vm.LastName).ToLower();
+                                username += count.ToString();
+                                count++;
+                            }
+
+                            User user = new Data.User
+                            {
+                                FirstName = vm.FirstName,
+                                LastName = vm.LastName,
+                                Role = vm.Role,
+                                Title = vm.Title,
+                                Email = vm.Email,
+                                Username = username,
+                                Active = true,
+                                Department = db.Departments.Where(d => d.DID == _did).FirstOrDefault()
+                            };
+
+                            // Supervisor Property
+                            User super = db.Users.Where(u => u.UID == user.Department.SUID).FirstOrDefault();
+                            user.User1 = super;
+
+                            // Account Creation
+                            RegisterEmployeeViewModel revm = new RegisterEmployeeViewModel();
+                            revm.Email = user.Email;
+                            revm.Username = user.Username;
+                            revm.Role = user.Role;
+                            Session["RegisterEmployeeVM"] = revm;
+
+                            db.Users.Add(user);
+                            db.SaveChanges();
+                            return RedirectToAction("RegisterEmployee");
+                        }                 
                     }
                 }
             }
-            //Role
-            if (vm.Role == "Select Role" || String.IsNullOrEmpty(vm.Role))
-                ModelState.AddModelError("Role", "Must Select a Role");
 
-            //Department
-            if (vm.DepRefChoice == 0)
-                ModelState.AddModelError("DepRefChoice", "Must Select a Department");
-            else // Checking to see if Department exist on the database to prevent error
-            {
-                using (var db = new UserDBEntities())
-                {
-                    var depts = db.Departments.ToList();
-                    if(!(depts.Any(x => x.DID == vm.DepRefChoice)))
-                        ModelState.AddModelError("DepRefChoice", "Department is not Valid");   
-                }
-            }
-            //Assign Variables
-            dbuser.FirstName = vm.FirstName;
-            dbuser.LastName = vm.LastName;
-            dbuser.Title = vm.Title;
-            dbuser.Role = vm.Role;
-            //If no errors, Add to the Database
-            if (ModelState.IsValid)
-            {
-                using (var db = new UserDBEntities())
-                {
-                    // generate username
-                    int count = 1;
-                    //Username
-                    string username = (vm.FirstName[0] + vm.LastName).ToLower();
-                    while (db.Users.Any(x => x.Username == username) || count > 100) // username collision
-                    {
-                        username = (vm.FirstName[0] + vm.LastName).ToLower();
-                        username += count.ToString();
-                        count++;
-                    }
-                    dbuser.Username = username;
-                    dbuser.Active = true; // Active, active is true for new employees
-                    //Deparment Association
-                    dbuser.Department = db.Departments.Where(x => x.DID == vm.DepRefChoice).FirstOrDefault();
+            catch { }
 
-                    // Supervisor Property
-                    //dbuser.User1 = db.Users.Where(x => x.UID == dbuser.Department.SUID).FirstOrDefault(); // set SUID
-
-                    db.Users.Add(dbuser);
-                    db.SaveChanges();
-                }
-
-                // Account Creation
-                RegisterEmployeeViewModel revm = new RegisterEmployeeViewModel();
-                revm.Email = dbuser.Email;
-                revm.Username = dbuser.Username;
-                revm.Role = dbuser.Role;
-                Session["RegisterEmployeeVM"] = revm;
-                return RedirectToAction("RegisterEmployee");
-            }
-
-            // New ViewModel when validation fails
+            // New ViewModel if validation fails
             CreateEmployeeViewModel nvm = new CreateEmployeeViewModel();
             nvm = vm;
-            //Shoudl Move ViewModel drop downs to Get and Set
+
             List<SelectListItem> DtempList = new List<SelectListItem>();
             DtempList.Add(new SelectListItem { Text = "Select Department", Selected = true });
             using (var db = new UserDBEntities())

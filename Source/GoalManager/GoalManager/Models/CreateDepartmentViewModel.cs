@@ -5,14 +5,12 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GoalManager.Data;
-
+using System.Web.Mvc;
 
 namespace GoalManager.Models
 {
     public class CreateDepartmentViewModel
     {
-        
-
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -24,6 +22,11 @@ namespace GoalManager.Models
         [Required]
         [StringLength(255)]
         public string Description { get; set; }
+
+        public IEnumerable<SelectListItem> SupervisorsDropDown { get; set; }
+
+        [Required]
+        public string SupervisorChoice { get; set; }
 
         [Required]
         [StringLength(50)]
