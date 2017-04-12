@@ -35,7 +35,7 @@
         </tr>
     </thead>
         <tbody>
-            @if (Model.Goals == null)
+            @if (Model.Goals == null || Model.Goals.Count == 0)
             { }
 
             else

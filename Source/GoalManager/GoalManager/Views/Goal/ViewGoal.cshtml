@@ -9,8 +9,8 @@
 
 <h1>@ViewBag.Title</h1>
 <h3>Goal : @Model.Goal.Title</h3>
-<h4>Start Date : @Model.Goal.StartDate</h4>
-<h4>End Date : @Model.Goal.EndDate</h4>
+<h4>Start Date : @Model.Goal.StartDate.ToString("D")</h4>
+<h4>End Date : @Model.Goal.EndDate.ToString("D")</h4>
 <h3>Total Progress: </h3>
 <table class="table  table-bordered table-hover table-responsive">
     <thead>
@@ -27,7 +27,7 @@
         {
             <tr>
                 <td class="success">@x.Subject</td>
-                <td class="success">@x.Time</td>
+                <td class="success">@x.Time.ToString("D")</td>
                 <td class="success">@x.Progress</td>
                 <td class="success">@x.Notes</td>
             </tr>
