@@ -12,41 +12,51 @@
         <a class="nav-item navbar-link active" href="~/Goal/CreateGoal">Create Goal</a>
     </li>
 </ul>
-
-<div class="container">
 @*Approval List*@
-    <div class="col-md-6">
-        <h3>New Employee Goals</h3>
-        <table class="table table-bordered table-hover table-responsive table-condensed">
-            <thead>
-                <tr class="active">
-                    <th>Name</th>
-                    <th>Title</th>
-                    <th>Goal Title</th>
-                    <th>Goal Start Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var Goal in Model.GoalApprovalList)
+@if (Model.GoalApprovalList.Count != 0)
+{
+    <h3>New Employee Goals</h3>
+    <table class="table table-bordered table-hover table-responsive table-condensed">
+        <thead>
+            <tr class="active">
+                <th>Name</th>
+                <th>Title</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Goal Title</th>
+                <th>Goal Start Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in Model.GoalApprovalList)
             {
-                    <tr class="danger">
-                        <td>
-                            @Goal.User.FirstName @Goal.User.LastName
-                            <form method="post">
-                                <input type="hidden" name="" value="" />
-                                <input type="submit" value="Approve" />
-                            </form>
-                        </td>
-                        <td>@Goal.User.Title</td>
-                        <td>@Goal.Title</td>
-                        <td>@Goal.StartDate</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                <tr class="danger">
+                    <td>
+                        @g.User.FirstName @g.User.LastName
+                        <form action="/Goal/ApproveGoal/" method="post">
+                            <input type="hidden" name="gid" value="@g.GID" />
+                            <input type="submit" value="Approve" />
+                        </form>
+                        <form action="/Goal/DenyGoal/" method="post">
+                            <input type="hidden" name="gid" value="@g.GID" />
+                            <input type="submit" value="Deny" />
+                        </form>
+                    </td>
+                    <td>@g.User.Title</td>
+                    <td>@g.User.Role</td>
+                    <td>@g.User.Department.Name</td>
+                    <td>@g.Title</td>
+                    <td>@g.StartDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
     @*My Goals*@
-    <div class="col-md-6">
+    @if (Model.Goals.Count != 0)
+    {
+        <div>
             <h3>My Goals</h3>
             <table class="table table-bordered table-hover table-responsive">
                 <thead>
@@ -61,73 +71,86 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var Goal in Model.Goals)
+                    @foreach (var g in Model.Goals)
                     {
                         <tr class="success">
-                            <td>@Goal.Title</td>
-                            <td>@Goal.Category</td>
-                            <td>@Goal.Progress</td>
-                            <td>@Goal.StartDate</td> <!--Must update Update table to support Date attribute-->
-                            <td>@Goal.Description</td>
+                            <td>@g.Title</td>
+                            <td>@g.Category</td>
+                            <td>@g.Progress</td>
+                            <td>@g.StartDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                            <td>@g.Description</td>
                             <td>
                                 <form action="/Goal/ViewGoal" method="get">
-                                    <input type="hidden" name="GID" value="@Goal.GID" />
+                                    <input type="hidden" name="GID" value="@g.GID" />
                                     <input type="submit" value="View" />
                                 </form>
                             </td>
                             <td>
                                 <form action="/Goal/UpdateGoal" method="get">
-                                    <input type="hidden" name="GIDRef" value="@Goal.GID" />
+                                    <input type="hidden" name="GIDRef" value="@g.GID" />
                                     <input type="submit" value="Update" />
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    <tr class="success">
+                        <td>
+                            @*need to discuss better logic for going to create goal*@
+                            <form action="/Goal/CreateGoal" method="get">
+                                <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
+                                <input type="submit" value="Add" />
+                            </form>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @*Managed Departments*@
+    @if (Model.Departments != null)
+    {
+        <h3>My Departments</h3>
+        if (Model.Departments.Count != 0)
+        {
+            <table class="table table-responsive table-bordered table-hover">
+                <thead>
+                    <tr class="active">
+                        <th>Department</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Reports</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var d in Model.Departments)
+                    {
+                        <tr class="success">
+                            <td>@d.Name</td>
+                            <td>@d.Description</td>
+                            <td>@d.Location</td>
+                            <td>
+                                <form action="/Report/ViewDepartmentReport" method="post">
+                                    <input type="hidden" name="did" value="@d.DID" />
+                                    <input type="submit" value="View Report" />
                                 </form>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-        </div>
-    </div>
-    @*Managed Departments*@
-    <div class="container">
-        @if (Model.Departments != null)
-        {
-           
-            <div class="col-md-6">
-                <h3>My Departments</h3>
-                <table class="table table-responsive table-bordered table-hover">
-                    <thead>
-                        <tr class="active">
-                            <th>Department</th>
-                            <th>Description</th>
-                            <th>Location</th>
-                            <th>Reports</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var Department in Model.Departments)
-                        {
-                            <tr class="success">
-                                <td>@Department.Name</td>
-                                <td>@Department.Description</td>
-                                <td>@Department.Location</td>
-                                <td>
-                                    @*TODO: ViewReport(Department)*@
-                                    <!-- Trying a GET/POST in ReportController-->
-                                    <form action="/Report/ViewDepartmentReport" method="get">
-                                        <input type="hidden" name="DeptRefID" value="@Department.DID" />
-                                        <input type="submit" value="View Report" />
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
 
             @*Managed Employees*@
-            <div class="col-md-6">
-                <h3>Managed Employees</h3>
+            <h3>Managed Employees</h3>
+            if (Model.Employees.Count != 0)
+            {
                 <table class="table table-bordered table-hover table-responsive">
                     <thead>
                         <tr class="active">
@@ -138,15 +161,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var Employee in Model.Employees)
+                        @foreach (var e in Model.Employees)
                         {
                             <tr class="success">
-                                <td>@Employee.FirstName @Employee.LastName</td>
-                                <td>@Employee.Title</td>
+                                <td>@e.FirstName @e.LastName</td>
+                                <td>@e.Title</td>
+                                <td>@e.Department.Name</td>
                                 <td>
                                     @*TODO: ViewReport(Employee)*@
-                                    <form action="" method="post">
-                                        <input type="hidden" name="" value="" />
+                                    <form action="/Report/ViewEmployeeReport" method="post">
+                                        <input type="hidden" name="uid" value="@e.UID" />
                                         <input type="submit" value="View Report" />
                                     </form>
                                 </td>
@@ -154,7 +178,6 @@
                         }
                     </tbody>
                 </table>
-            </div>
-
+            }
         }
-    </div>
+    }
