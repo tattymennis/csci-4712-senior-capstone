@@ -266,6 +266,7 @@
       <DependentUpon>DataModel.edmx</DependentUpon>
     </Content>
     <Content Include="fonts\Futura_ICG.ttf" />
+    <Content Include="Content\Futura_ICG.ttf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

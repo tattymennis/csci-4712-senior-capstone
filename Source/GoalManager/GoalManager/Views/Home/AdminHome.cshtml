@@ -5,115 +5,118 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>@ViewBag.Title</h1>
-<ul class="nav nav-pills row">
-    <li class="nav-item col-lg-2">
-        <a class="nav-item navbar-link active" href="~/Department/CreateDepartment">Create Department</a>
-    </li>
-   
-    <li class="nav-item col-lg-2">
-        <a class="nav-item navbar-link active" href="~/Employee/CreateEmployee">Create Employee</a>
-    </li>
-   
-</ul>
+<div class="container">
+    <div class="navbar" id="adminbar">
+        <ul class="nav nav-pills row">
+            <li class="nav-item col-lg-2">
+                <a class="nav-item navbar-link active" href="~/Department/CreateDepartment">Create Department</a>
+            </li>
 
-<h3>Administrators</h3>
-<table class="row table table-bordered table-hover table-responsive">
-    <thead>
-        <!-- Administrators -->
-        <tr class="active">
-            <th>Name</th>
-            <th>Title</th>
-            <th>Role</th>
-            <th>Email</th>
-            <th>Active</th>
-            <th>Modify</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var x in Model.Administrators)
-        {
-            <tr>
-                <td class="success">@x.FirstName @x.LastName</td>
-                <td class="success">@x.Title</td>
-                <td class="success">@x.Role</td>
-                <td class="success">@x.Email</td>
-                <td class="success">@x.Active</td>
-                <td>
-                    <form action="/Employee/ModifyEmployee" method="post">
-                        <input type="hidden" name="IDRef" value="@x.UID" />
-                        @Html.AntiForgeryToken()
-                        <input type="submit" value="Modify" />
-                    </form>
+            <li class="nav-item col-lg-2">
+                <a class="nav-item navbar-link active" href="~/Employee/CreateEmployee">Create Employee</a>
+            </li>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </ul>
+    </div>
+</div>
+<div class="container" id="Administrators">
+    <div class="col-lg-12" id="AdminList">
+        <h3 for="EmpList">Administrator List</h3>
+        <table class="row table table-bordered table-hover table-responsive table-condensed">
+            <thead>
+                <!--update section-->
+                <tr class="active">
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Title</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Admin in Model.Administrators)
+            {
+                    <tr class="success">
+                        <td>@Admin.FirstName @Admin.LastName</td>
+                        <td>@Admin.Role</td>
+                        <td>@Admin.Title</td>
+                        <td>
+                            <form action="/Employee/ModifyEmployee" method="post">
+                                <input type="hidden" name="IDRef" value="@Admin.UID" />
+                                @Html.AntiForgeryToken()
+                                <input type="submit" value="Modify" />
+                            </form>
 
-<h3>Departments</h3>
-<table class="row table table-bordered table-hover table-responsive">
-    <thead>
-        <!-- Departments -->
-        <tr class="active">
-            <th>Title</th>
-            <th>Location</th>
-            <th>Description</th>
-            <th>Supervisor</th>
-            <th>Modify</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var x in Model.Departments)
-        {
-            <tr>
-                <td class="success">@x.Name</td>
-                <td class="success">@x.Location</td>
-                <td class="success">@x.Description</td>
-                <td class="success">@Model.SupervisorNames[x.SUID]</td>
-                <td>
-                    <form action="/Department/ModifyDepartment" method="post">
-                        <input type="hidden" name="IDRef" value="@x.DID" />
-                        @Html.AntiForgeryToken()
-                        <input type="submit" value="Modify" />
-                    </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="container" id="AdminLists">
+    <div class="col-md-6" id="EmpList">
+        <h3 for="EmpList">Employee List</h3>
+        <table class="row table table-bordered table-hover table-responsive">
+            <thead>
+                <!--update section-->
+                <tr class="active">
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Title</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Employee in Model.Employees)
+            {
+                    <tr class="success">
+                        <td>@Employee.FirstName @Employee.LastName</td>
+                        <td>@Employee.Role</td>
+                        <td>@Employee.Title</td>
+                        <td>
+                            <form action="/Employee/ModifyEmployee" method="post">
+                                <input type="hidden" name="IDRef" value="@Employee.UID" />
+                                @Html.AntiForgeryToken()
+                                <input type="submit" value="Modify" />
+                            </form>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6" id="DeptList">
+        <h3 for="Department List">Department List</h3>
+        <table class="row table table-bordered table-hover table-responsive">
+            <thead>
+                <!--update section-->
+                <tr class="active">
 
-<h3>Employees</h3>
-<table class="row table table-bordered table-hover table-responsive">
-    <thead>
-        <tr class="active">
-            <th>Name</th>
-            <th>Title</th>
-            <th>Role</th>
-            <th>Email</th>
-            <th>Active</th>
-            <th>Modify</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var x in Model.Employees)
-        {
-            <tr>
-                <td class="success">@x.FirstName @x.LastName</td>
-                <td class="success">@x.Title</td>
-                <td class="success">@x.Role</td>
-                <td class="success">@x.Email</td>
-                <td class="success">@x.Active</td>
-                <td>
-                    <form action="/Employee/ModifyEmployee" method="post">
-                        <input type="hidden" name="IDRef" value="@x.UID" />
-                        @Html.AntiForgeryToken()
-                        <input type="submit" value="Modify" />
-                    </form>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Department in Model.Departments)
+            {
+                    <tr class="success">
+                        <td>@Department.Name</td>
+                        <td>@Department.Location</td>
+                        <td>@Department.Description</td>
+                        <td>
+                            <form action="/Department/ModifyDepartment" method="post">
+                                <input type="hidden" name="IDRef" value="@Department.DID" />
+                                @Html.AntiForgeryToken()
+                                <input type="submit" value="Modify" />
+                            </form>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

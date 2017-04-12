@@ -1,12 +1,11 @@
 ﻿@font-face {
     font-family: 'Futura_ICG';
-    src: url('../fonts/Futura_ICG.ttf') format('truetype');
+    src: url('Futura_ICG.ttf') format('truetype');
 }
 
 body {
     padding-top: 75px;
     padding-bottom: 20px;
-    /*font-family: Futura_ICG;*/
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -15,7 +14,7 @@ body {
     padding-right: 15px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
+/* Override ;the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
 .dl-horizontal dt {
@@ -29,10 +28,11 @@ textarea {
     max-width: 280px;
 }
 
-.jumbotron{
- background-image: url("../Images/JBBackground.jpg");
+#jumbotron{
+ background: url(../Images/JBBackground.jpg);
  background-size:cover;
  color:white;
+ font-family:Futura_ICG;
 }
 #conlogo{
     padding:5px;
@@ -47,9 +47,10 @@ textarea {
     margin:0;
     padding:20px;
     font-size:15px;
+    font-family:Futura_ICG;
 
 }
 #adminbar{
-    background-color:crimson;
+    background-color:lightblue;
     margin:0px;
 }
