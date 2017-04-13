@@ -100,13 +100,16 @@ namespace GoalManager.Controllers
                     Goal goal;
                     Update update;
 
+
                     // populate UID FK in Goal table
                     goal = new Goal(vm.Title, vm.CategoryName, "Pending", 0);
                     goal.User = user; // null check?
                     goal.StartDate = DateTime.Now;
-                    goal.EndDate = DateTime.Now; // test driver
-                    //goal.EndDate = Convert.ToDateTime(vm.QuarterTime);
                     goal.Category = vm.CategoryName;
+
+                    // Find Quarter associated with QuartTime
+                    Quarter quart = db.Quarters.Where(q => q.Name == vm.QuarterTime).FirstOrDefault();
+                    goal.EndDate = quart.EndDate;
 
                     // Description
                     if (!String.IsNullOrWhiteSpace(vm.Description))

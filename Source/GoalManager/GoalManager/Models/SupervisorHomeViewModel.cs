@@ -12,5 +12,6 @@ namespace GoalManager.Models
         public List<Goal> Goals = new List<Goal>();
         public List<Goal> GoalApprovalList = new List<Goal>();
         public List<User> Employees = new List<User>();
+        public Dictionary<int, string> EmployeeDeptName = new Dictionary<int, string>();
     }
 }

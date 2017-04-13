@@ -65,6 +65,15 @@ namespace GoalManager.Models
 
         [Required]
         public DateTime Quarter4End { get; set; }
+
+        [Required]
+        public string Category1Name { get; set; }
+
+        public string Category2Name { get; set; }
+
+        public string Category3Name { get; set; }
+
+        public string Category4Name { get; set; }
     }
 
 }

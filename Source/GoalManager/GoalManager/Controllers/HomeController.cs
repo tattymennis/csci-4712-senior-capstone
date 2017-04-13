@@ -27,8 +27,23 @@ namespace GoalManager.Controllers
                 using (UserDBEntities db = new UserDBEntities())
                 {
                     vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+                    vm.PendingGoals = db.Goals.Where(g => 
+                        g.UID == userSessionData.UID && 
+                        g.Status == "Pending").
+                        ToList<Goal>();
+                    vm.FailedGoals = db.Goals.Where(g =>
+                        g.UID == userSessionData.UID &&
+                        g.Status == "Failed").
+                        ToList<Goal>();
+                    vm.ActiveGoals = db.Goals.Where(g =>
+                        g.UID == userSessionData.UID &&
+                        g.Status == "Active").
+                        ToList<Goal>();
+                    vm.DeniedGoals = db.Goals.Where(g =>
+                        g.UID == userSessionData.UID &&
+                        g.Status == "Denied").
+                        ToList<Goal>();
                 }
-
                 return View(vm);
             }
 
@@ -63,7 +78,6 @@ namespace GoalManager.Controllers
                 {
                     // Populate Supervisor's Goals in VM
                     vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
-
                     vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
                     if (vm.Departments != null)
                     {
@@ -105,6 +119,11 @@ namespace GoalManager.Controllers
                                     //};
                                     vm.GoalApprovalList.Add(g);
                                 }
+
+                                // Assign each Employee's Department Name into Dictionary
+                                vm.EmployeeDeptName[u.UID] = db.Departments.
+                                    Where(d => d.DID == u.DID).
+                                    FirstOrDefault().Name;
                             }
                         }
                     }

@@ -170,7 +170,7 @@
                             <tr class="success">
                                 <td>@e.FirstName @e.LastName</td>
                                 <td>@e.Title</td>
-                                <td>@e.Department.Name</td>
+                                <td>@Model.EmployeeDeptName[e.UID]</td>
                                 <td>
                                     @*TODO: ViewReport(Employee)*@
                                     <form action="/Report/ViewEmployeeReport" method="post">
