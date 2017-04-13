@@ -204,7 +204,7 @@ namespace GoalManager.Controllers
 
         public ActionResult ModifyDepartment(ModifyDepartmentViewModel vm)
         {
-
+            ViewBag.Title = "Modify Department";
             ModifyDepartmentViewModel nvm = new ModifyDepartmentViewModel();
 
             if (vm.IDRef != 0) // Reserved for inital entry in method.
@@ -277,8 +277,54 @@ namespace GoalManager.Controllers
         }
         public ActionResult AddCategory()
         {
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
 
-            return View();
+            AddCategoryViewModel vm = new AddCategoryViewModel();
+
+            using (var db = new UserDBEntities())
+            {
+               vm.Categories = db.Categories.Where(x => x.DepID == userSessionData.DID).ToList();
+            }
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddCategory(AddCategoryViewModel vm)
+        {
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
+
+            if (ModelState.IsValid == true)
+            {
+                foreach (char x in vm.Name)
+                {
+                    if (Char.IsControl(x) || Char.IsPunctuation(x) || Char.IsSymbol(x))
+                    {
+                        ModelState.AddModelError("Name", "Name can only be letters and numbers");
+                        break;
+                    }
+                }
+            }
+            if (ModelState.IsValid == true)
+            {
+
+                using (var db = new UserDBEntities())
+                {
+                    Category DBCategory = new Category();
+                    DBCategory.Name = vm.Name;
+                    DBCategory.Department = db.Departments.Where(x => x.DID == userSessionData.DID).FirstOrDefault();
+                    db.Categories.Add(DBCategory);
+                    db.SaveChanges();
+                }
+            }
+
+            AddCategoryViewModel nvm = vm;
+            using (var db = new UserDBEntities())
+            {
+                nvm.Categories = db.Categories.Where(x => x.DepID == userSessionData.DID).ToList();
+            }
+                return View(nvm);
         }
     }
 

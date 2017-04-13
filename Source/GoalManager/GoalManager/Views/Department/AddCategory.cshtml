@@ -1,4 +1,30 @@
-﻿@{
-    Layout = "~/View/Shared/_Layout.html";
+﻿@using GoalManager.Models
+@model AddCategoryViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Add Category";
 }
 
+<div class="text-danger">
+    @Html.ValidationSummary()
+</div>
+
+<div class="container">
+    <div class="col-lg-6">
+        <form method="post">
+            <div class="form-group form-horizontal">
+                <label for="Name">Category Name</label>
+                <input type="text" name="Name" class="form-control" value="@Model.Name" />
+            </div>
+                   @Html.AntiForgeryToken()
+            <input type="submit" />
+        </form>
+    </div>
+    <div class="col-lg-6">
+        <h3>Existing Categories For this Department</h3>
+        <ul>
+            @foreach (var Category in Model.Categories)
+                { <li>@Category.Name</li> }
+        </ul>
+    </div>
+</div>
