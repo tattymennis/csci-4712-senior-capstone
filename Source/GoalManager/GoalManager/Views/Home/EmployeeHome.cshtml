@@ -22,6 +22,8 @@
 
 <div>
     <h1>Employee Home</h1>
+
+    <h2>Pending Goals</h2>
     <table class="table  table-bordered table-hover table-responsive">
     <thead>
         <tr class="active">
@@ -30,22 +32,23 @@
             <th>Progress</th>
             <th>Deadline</th>
             <th>Description</th>
+            <th>Status</th>
             <th>View Goal</th>
             <th>Update Goal</th>
         </tr>
     </thead>
         <tbody>
-            @if (Model.Goals == null)
+            @if (Model.PendingGoals == null || Model.PendingGoals.Count == 0)
             { }
 
             else
             {
-                foreach (var g in Model.Goals)
+                var approval = "";
+                foreach (var g in Model.PendingGoals)
                 {
-                    var approval = "";
                     if (g.Status == "Pending")
                     {
-                        approval = "danger";
+                        approval = "alert-info";
                     }
 
                     else
@@ -56,8 +59,9 @@
                         <td class=@approval>@g.Title</td>
                         <td class=@approval>@g.Category</td>
                         <td class=@approval>@g.Progress</td>
-                        <td class=@approval>@g.StartDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                        <td class=@approval>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
                         <td class=@approval>@g.Description</td>
+                        <td class=@approval>@g.Status</td>
                         <td>
                             <form action="/Goal/ViewGoal" method="get">
                                 <input type="hidden" name="GID" value="@g.GID" />
@@ -73,11 +77,13 @@
                     </tr>
                 }
                 <tr>
-                    <td class="success"></td>
-                    <td class="success"></td>
-                    <td class="success"></td>
-                    <td class="success"></td>
-                    <td class="success"></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td></td>
                     <td>
                         <form action="/Goal/CreateGoal" method="get">
                             <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
@@ -87,5 +93,225 @@
                 </tr>
             }
         </tbody>
-    </table>           
+    </table>
+    
+    <!-- Active Goals -->
+    <h2>Active Goals</h2>
+    <table class="table table-bordered table-hover table-responsive">
+        <thead>
+            <tr class="active">
+                <th>Title</th>
+                <th>Category</th>
+                <th>Progress</th>
+                <th>Deadline</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>View Goal</th>
+                <th>Update Goal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ActiveGoals == null || Model.ActiveGoals.Count == 0)
+            { }
+
+            else
+            {
+                var approval = "";
+                foreach (var g in Model.ActiveGoals)
+                {
+                    if (g.Status == "Pending")
+                    {
+                        approval = "danger";
+                    }
+
+                    else
+                    {
+                        approval = "success";
+                    }
+                    <tr>
+                        <td class=@approval>@g.Title</td>
+                        <td class=@approval>@g.Category</td>
+                        <td class=@approval>@g.Progress</td>
+                        <td class=@approval>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                        <td class=@approval>@g.Description</td>
+                        <td class=@approval>@g.Status</td>
+                        <td>
+                            <form action="/Goal/ViewGoal" method="get">
+                                <input type="hidden" name="GID" value="@g.GID" />
+                                <input type="submit" value="View" />
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/Goal/UpdateGoal" method="get">
+                                <input type="hidden" name="GIDRef" value="@g.GID" />
+                                <input type="submit" value="Update" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td></td>
+                    <td>
+                        <form action="/Goal/CreateGoal" method="get">
+                            <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
+                            <input type="submit" value="Create Goal" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <!-- Denied Goals -->
+    <h2>Denied Goals</h2>
+    <table class="table  table-bordered table-hover table-responsive">
+        <thead>
+            <tr class="active">
+                <th>Title</th>
+                <th>Category</th>
+                <th>Progress</th>
+                <th>Deadline</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>View Goal</th>
+                <th>Update Goal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.DeniedGoals == null || Model.DeniedGoals.Count == 0)
+            { }
+
+            else
+            {
+                var approval = "";
+                foreach (var g in Model.DeniedGoals)
+                {
+                    if (g.Status == "Denied")
+                    {
+                        approval = "danger";
+                    }
+
+                    else
+                    {
+                        approval = "success";
+                    }
+                    <tr>
+                        <td class=@approval>@g.Title</td>
+                        <td class=@approval>@g.Category</td>
+                        <td class=@approval>@g.Progress</td>
+                        <td class=@approval>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                        <td class=@approval>@g.Description</td>
+                        <td class=@approval>@g.Status</td>
+                        <td>
+                            <form action="/Goal/ViewGoal" method="get">
+                                <input type="hidden" name="GID" value="@g.GID" />
+                                <input type="submit" value="View" />
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/Goal/UpdateGoal" method="get">
+                                <input type="hidden" name="GIDRef" value="@g.GID" />
+                                <input type="submit" value="Update" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td></td>
+                    <td>
+                        <form action="/Goal/CreateGoal" method="get">
+                            <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
+                            <input type="submit" value="Create Goal" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <!-- Failed Goals -->
+    <h2>Failed Goals</h2>
+    <table class="table table-bordered table-hover table-responsive">
+        <thead>
+            <tr class="active">
+                <th>Title</th>
+                <th>Category</th>
+                <th>Progress</th>
+                <th>Deadline</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>View Goal</th>
+                <th>Update Goal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.FailedGoals == null || Model.FailedGoals.Count == 0)
+            { }
+
+            else
+            {
+                var approval = "";
+                foreach (var g in Model.FailedGoals)
+                {
+                if (g.Status == "Failed")
+                {
+                    approval = "danger";
+                }
+
+                else
+                {
+                    approval = "success";
+                }
+                    <tr>
+                        <td class=@approval>@g.Title</td>
+                        <td class=@approval>@g.Category</td>
+                        <td class=@approval>@g.Progress</td>
+                        <td class=@approval>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                        <td class=@approval>@g.Description</td>
+                        <td class=@approval>@g.Status</td>
+                        <td>
+                            <form action="/Goal/ViewGoal" method="get">
+                                <input type="hidden" name="GID" value="@g.GID" />
+                                <input type="submit" value="View" />
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/Goal/UpdateGoal" method="get">
+                                <input type="hidden" name="GIDRef" value="@g.GID" />
+                                <input type="submit" value="Update" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td class=@approval></td>
+                    <td></td>
+                    <td>
+                        <form action="/Goal/CreateGoal" method="get">
+                            <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
+                            <input type="submit" value="Create Goal" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>               
+               
 </div>
