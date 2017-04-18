@@ -12,7 +12,7 @@ namespace GoalManager.Controllers
     {
         [Authorize]
         [HttpPost]
-        public ActionResult ViewDepartmentReport(string did)
+        public ActionResult ViewDepartmentReport(int DeptRefID)
         {
             ViewBag.Title = "Department Report";
             ViewDepartmentReportViewModel vm = new ViewDepartmentReportViewModel();
@@ -30,39 +30,32 @@ namespace GoalManager.Controllers
                     throw new ArgumentException("Invalid user role", "userSessionData.Role");
                 }
 
-                int _did = -1;
-                if (int.TryParse(did, out _did))
+
+                using (UserDBEntities db = new UserDBEntities())
                 {
-                    vm.DeptRefID = _did;
-                    if (vm.DeptRefID < 0)
+                    vm.Supervisor = db.Users.Where(u => u.UID == userSessionData.UID).FirstOrDefault();
+                    // TODO: Expand LINQ query to check Supervisor's UID/SUID
+                    vm.Department = db.Departments.Where(x => x.DID == DeptRefID).FirstOrDefault();
+                    // TODO: Expand LINQ query to check Supervisor's UID/SUID
+                    vm.Employees = db.Users.Where(x => x.DID == DeptRefID).ToList<User>();
+                    if (vm.Employees.Count != 0)
                     {
-                        throw new ArgumentException("Invalid DeptRefID", "DeptRefID");
-                    }
-                    using (UserDBEntities db = new UserDBEntities())
-                    {
-                        vm.Supervisor = db.Users.Where(u => u.UID == userSessionData.UID).FirstOrDefault();
-                        // TODO: Expand LINQ query to check Supervisor's UID/SUID
-                        vm.Department = db.Departments.Where(x => x.DID == vm.DeptRefID).FirstOrDefault();
-                        // TODO: Expand LINQ query to check Supervisor's UID/SUID
-                        vm.Employees = db.Users.Where(x => x.DID == vm.DeptRefID).ToList<User>();
-                        if (vm.Employees.Count != 0)
+                        // Get each managed Department's Employee's Goals
+                        foreach (User u in vm.Employees)
                         {
-                            // Get each managed Department's Employee's Goals
-                            foreach (User u in vm.Employees)
+                            vm.EmployeeGoals[u.UID] = db.Goals.Where(x => x.UID == u.UID).ToList<Goal>();
+                            if (vm.EmployeeGoals[u.UID] != null)
                             {
-                                vm.EmployeeGoals[u.UID] = db.Goals.Where(x => x.UID == u.UID).ToList<Goal>();
-                                if (vm.EmployeeGoals[u.UID] != null)
+                                // Get each Employee's Goal's Updates
+                                foreach (Goal g in vm.EmployeeGoals[u.UID])
                                 {
-                                    // Get each Employee's Goal's Updates
-                                    foreach (Goal g in vm.EmployeeGoals[u.UID])
-                                    {
-                                        vm.GoalUpdates[g.GID] = db.Updates.Where(x => x.GID == g.GID).ToList<Update>();
-                                    }
+                                    vm.GoalUpdates[g.GID] = db.Updates.Where(x => x.GID == g.GID).ToList<Update>();
                                 }
                             }
                         }
                     }
                 }
+
             }
 
             catch (ArgumentNullException ex)
@@ -86,9 +79,11 @@ namespace GoalManager.Controllers
             return View(vm);
         }
 
+
+
         [HttpPost]
-        [Authorize]
-        public ActionResult ViewEmployeeReport(string uid)
+        //[Authorize]
+        public ActionResult ViewEmployeeReport(int EmployeeRefID)
         {
             ViewBag.Title = "Employee Report";
             ViewEmployeeReportViewModel vm = new ViewEmployeeReportViewModel();
@@ -106,50 +101,41 @@ namespace GoalManager.Controllers
                     return RedirectToAction("MainView", "Home");
                 }
 
-                if (String.IsNullOrWhiteSpace(uid))
-                {
-                    throw new ArgumentNullException();
-                }
 
-                int _uid = -1;
-                if (int.TryParse(uid, out _uid))
+
+
+
+
+                using (UserDBEntities db = new UserDBEntities())
                 {
-                    if (_uid < 0)
+                    var user = db.Users.Where(u => u.UID == EmployeeRefID).FirstOrDefault();
+                    if (user == null)
                     {
-                        throw new ArgumentException();
+                        throw new ArgumentNullException();
                     }
 
-                    vm.EmployeeRefID = _uid;
-                    using (UserDBEntities db = new UserDBEntities())
+                    var goals = db.Goals.Where(g => g.UID == user.UID).ToList<Goal>();
+                    foreach (Goal g in goals)
                     {
-                        var user = db.Users.Where(u => u.UID == vm.EmployeeRefID).FirstOrDefault();
-                        if (user == null)
-                        {
-                            throw new ArgumentNullException();
-                        }
+                        var updates = db.Updates.Where(u => u.GID == g.GID).ToList<Update>();
+                        vm.EmployeeUpdates[g.GID] = updates;
 
-                        var goals = db.Goals.Where(g => g.UID == user.UID).ToList<Goal>();
-                        foreach (Goal g in goals)
-                        {
-                            var updates = db.Updates.Where(u => u.GID == g.GID).ToList<Update>();
-                            vm.EmployeeUpdates[g.GID] = updates;
-
-                            if (g.Status == "Pending")
-                                vm.PendingGoals.Add(g);
-                            else if (g.Status == "Denied")
-                                vm.DeniedGoals.Add(g);
-                            else if (g.Status == "Failed")
-                                vm.FailedGoals.Add(g);
-                            else if (g.Status == "Active")
-                                vm.ActiveGoals.Add(g);
-                        }
-                        vm.Employee = user;
-                        vm.Department = db.Departments.Where(d => d.DID == vm.Employee.DID).FirstOrDefault(); 
+                        if (g.Status == "Pending")
+                            vm.PendingGoals.Add(g);
+                        else if (g.Status == "Denied")
+                            vm.DeniedGoals.Add(g);
+                        else if (g.Status == "Failed")
+                            vm.FailedGoals.Add(g);
+                        else if (g.Status == "Active")
+                            vm.ActiveGoals.Add(g);
                     }
+                    vm.Employee = user;
+                    vm.Department = db.Departments.Where(d => d.DID == vm.Employee.DID).FirstOrDefault();
                 }
+
                 return View(vm);
             }
-           
+
             catch (ArgumentNullException ex)
             {
                 TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;

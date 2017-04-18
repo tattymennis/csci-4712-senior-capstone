@@ -114,7 +114,7 @@
                                 <td>
                                     @*TODO: ViewReport(Department)*@
                                     <!-- Trying a GET/POST in ReportController-->
-                                    <form action="/Report/ViewDepartmentReport" method="get">
+                                    <form action="/Report/ViewDepartmentReport" method="post">
                                         <input type="hidden" name="DeptRefID" value="@Department.DID" />
                                         <input type="submit" value="View Report" />
                                     </form>
@@ -132,8 +132,7 @@
                     <thead>
                         <tr class="active">
                             <th>Name</th>
-                            <th>Title</th>
-                            <th>Department</th>
+                            <th>Title</th>           
                             <th>Reports</th>
                         </tr>
                     </thead>
@@ -145,8 +144,8 @@
                                 <td>@Employee.Title</td>
                                 <td>
                                     @*TODO: ViewReport(Employee)*@
-                                    <form action="" method="post">
-                                        <input type="hidden" name="" value="" />
+                                    <form action="/Report/ViewEmployeeReport" method="post">
+                                        <input type="hidden" name="EmployeeRefID" value="@Employee.UID" />
                                         <input type="submit" value="View Report" />
                                     </form>
                                 </td>
