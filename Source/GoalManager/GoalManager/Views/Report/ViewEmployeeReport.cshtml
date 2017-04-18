@@ -4,279 +4,288 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "View Employee Report";
 }
-<h1>View Report - Employee</h1>
 
 @if (Model.Employee != null && Model.Department != null)
 {
-    <h1>Name: @Model.Employee.FirstName @Model.Employee.LastName</h1>
-    <h2>Department: @Model.Department.Name</h2> <!--must had deparment name-->
-
-
-
-
-     <!-- HTML -->
     <div class="container">
-    <div id="chartdiv"></div>
+        <div class="col-md-6">
+            <h4>Name: @Model.Employee.FirstName @Model.Employee.LastName</h4>
+        </div>
+        <div class="col-md-6">
+            <h4>Department: @Model.Department.Name</h4>
+        </div>
     </div>
-
-
-        <!-- Pending goals -->
-    <div class="container">     
-        @if (Model.PendingGoals.Count > 0)
-        {
-            <h3>Pending Goals</h3>
-            foreach (var g in Model.PendingGoals)
-            {
-                <table class="table table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr class="alert-info">
-                            <th>Goal Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Progress</th>
-                            <th>Goal Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr class="alert-info">
-                            <td>@g.Title</td>
-                            <td>@g.Description</td>
-                            <td>@g.StartDate.ToString("D")</td>
-                            <td>@g.EndDate.ToString("D")</td>
-                            <td>@g.Progress</td>
-                            <td>@g.Status</td>
-                        </tr>
-
-                        <!--UPDATES-->
-                        @if (Model.EmployeeUpdates.ContainsKey(g.GID))
-                        {
-                            <tr>
-                                <th>    </th>
-                                <th>    </th>
-                                <th>Update</th>
-                                <th>Notes</th>
-                                <th>Progress</th>
-                                <th>Date</th>
-                            </tr>
-
-                            foreach (var u in Model.EmployeeUpdates[g.GID])
-                            {
-                                <tr class="alert-info">
-                                    <td>    </td>
-                                    <td>    </td>
-                                    <td>@u.Subject</td>
-                                    <td>@u.Notes</td>
-                                    <td>@u.Progress</td>
-                                    <td>@u.Time.ToString("D")</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            }
-        }
-
-        <!-- Active goals -->
-        @if (Model.ActiveGoals.Count > 0)
-        {
-            <h3>Active Goals</h3>
-            var goalStatus = "";
-            foreach (var g in Model.ActiveGoals)
-            {
-                <table class="table table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr class="active">
-                            <th>Goal Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Progress</th>
-                            <th>Goal Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @if (g.Approved && g.Status == "Active")
-                        {
-                            goalStatus = "success";
-                        }
-
-                        @if (g.Approved == false)
-                        {
-                            goalStatus = "alert-info";
-                        }
-
-                        @if (g.Status == "Failed" || g.Status == "Denied")
-                        {
-                            goalStatus = "danger";
-                        }
-                        <tr class=@goalStatus>
-                            <td>@g.Title</td>
-                            <td>@g.Description</td>
-                            <td>@g.StartDate.ToString("D")</td>
-                            <td>@g.EndDate.ToString("D")</td>
-                            <td>@g.Progress</td>
-                            <td>@g.Status</td>
-                        </tr>
-
-                        @if (Model.EmployeeUpdates.ContainsKey(g.GID))
-                        {
-                        <!--UPDATES-->
-                            <tr>
-                                <th>    </th>
-                                <th>    </th>
-                                <th>Update</th>
-                                <th>Notes</th>
-                                <th>Progress</th>
-                                <th>Date</th>
-                            </tr>
-
-                            foreach (var u in Model.EmployeeUpdates[g.GID])
-                            {
-                                <tr class="@goalStatus">
-                                    <td>    </td>
-                                    <td>    </td>
-                                    <td>@u.Subject</td>
-                                    <td>@u.Notes</td>
-                                    <td>@u.Progress</td>
-                                    <td>@u.Time.ToString("D")</td>
-                                </tr>
-                            }
-                        }
-
-                    </tbody>
-                </table>
-            }
-        }
-
-        <!-- Denied goals -->
-        @if (Model.DeniedGoals.Count > 0)
-        {
-            <h3>Denied Goals</h3>
-            foreach (var g in Model.DeniedGoals)
-            {
-                <table class="table table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr class="active">
-                            <th>Goal Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Progress</th>
-                            <th>Goal Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr class="alert-danger">
-                            <td>@g.Title</td>
-                            <td>@g.Description</td>
-                            <td>@g.StartDate.ToString("D")</td>
-                            <td>@g.EndDate.ToString("D")</td>
-                            <td>@g.Progress</td>
-                            <td>@g.Status</td>
-                        </tr>
-
-                        <!--UPDATES-->
-                        @if (Model.EmployeeUpdates.ContainsKey(g.GID))
-                        {
-                            <tr class="active">
-                                <th>    </th>
-                                <th>    </th>
-                                <th>Update</th>
-                                <th>Notes</th>
-                                <th>Progress</th>
-                                <th>Date</th>
-                            </tr>
-
-                            foreach (var u in Model.EmployeeUpdates[g.GID])
-                            {
-                                <tr class="alert-danger">
-                                    <td>    </td>
-                                    <td>    </td>
-                                    <td>@u.Subject</td>
-                                    <td>@u.Notes</td>
-                                    <td>@u.Progress</td>
-                                    <td>@u.Time.ToString("D")</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            }
-        }
-
-        <!-- Failed goals -->
-        @if (Model.FailedGoals.Count > 0)
-        {
-            <h3>Failed Goals</h3>
-            foreach (var g in Model.FailedGoals)
-            {
-                <table class="table table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr class="active">
-                            <th>Goal Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Progress</th>
-                            <th>Goal Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr class="alert-danger">
-                            <td>@g.Title</td>
-                            <td>@g.Description</td>
-                            <td>@g.StartDate.ToString("D")</td>
-                            <td>@g.EndDate.ToString("D")</td>
-                            <td>@g.Progress</td>
-                            <td>@g.Status</td>
-                        </tr>
-
-                        <!--UPDATES-->
-                        @if (Model.EmployeeUpdates.ContainsKey(g.GID))
-                        {
-                            <tr class="active">
-                                <th>    </th>
-                                <th>    </th>
-                                <th>Update</th>
-                                <th>Notes</th>
-                                <th>Progress</th>
-                                <th>Date</th>
-                            </tr>
-
-                            foreach (var u in Model.EmployeeUpdates[g.GID])
-                            {
-                                <tr class="alert-danger">
-                                    <td>    </td>
-                                    <td>    </td>
-                                    <td>@u.Subject</td>
-                                    <td>@u.Notes</td>
-                                    <td>@u.Progress</td>
-                                    <td>@u.Time.ToString("D")</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            }
-        }
-</div>        
 }
 
-  <!-- Styles -->
+
+
+<!-- HTML -->
+<div class="container">
+    <div id="chartdiv"></div>
+</div>
+
+
+<!-- Pending goals -->
+<div class="container">
+    @if (Model.PendingGoals.Count > 0)
+    {
+        <h5>Pending Goals</h5>
+        foreach (var g in Model.PendingGoals)
+        {
+            <table class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr class="alert-info">
+                        <th>Goal Title</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Progress</th>
+                        <th>Goal Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr class="alert-info">
+                        <td>@g.Title</td>
+                        <td>@g.Description</td>
+                        <td>@g.StartDate.ToString("D")</td>
+                        <td>@g.EndDate.ToString("D")</td>
+                        <td>@g.Progress</td>
+                        <td>@g.Status</td>
+                    </tr>
+
+                    <!--UPDATES-->
+                    @if (Model.EmployeeUpdates.ContainsKey(g.GID))
+                    {
+                        <tr>
+                            <th>    </th>
+                            <th>    </th>
+                            <th>Update</th>
+                            <th>Notes</th>
+                            <th>Progress</th>
+                            <th>Date</th>
+                        </tr>
+
+                        foreach (var u in Model.EmployeeUpdates[g.GID])
+                        {
+                            <tr class="alert-info">
+                                <td>    </td>
+                                <td>    </td>
+                                <td>@u.Subject</td>
+                                <td>@u.Notes</td>
+                                <td>@u.Progress</td>
+                                <td>@u.Time.ToString("D")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+    }
+
+    <!-- Active goals -->
+    @if (Model.ActiveGoals.Count > 0)
+    {
+        <h5>Active Goals</h5>
+        var goalStatus = "";
+        foreach (var g in Model.ActiveGoals)
+        {
+            <table class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr class="active">
+                        <th>Goal Title</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Progress</th>
+                        <th>Goal Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (g.Approved && g.Status == "Active")
+                    {
+                        goalStatus = "success";
+                    }
+
+                    @if (g.Approved == false)
+                    {
+                        goalStatus = "alert-info";
+                    }
+
+                    @if (g.Status == "Failed" || g.Status == "Denied")
+                    {
+                        goalStatus = "danger";
+                    }
+                    <tr class=@goalStatus>
+                        <td>@g.Title</td>
+                        <td>@g.Description</td>
+                        <td>@g.StartDate.ToString("D")</td>
+                        <td>@g.EndDate.ToString("D")</td>
+                        <td>@g.Progress</td>
+                        <td>@g.Status</td>
+                    </tr>
+
+                    @if (Model.EmployeeUpdates.ContainsKey(g.GID))
+                    {
+                        <!--UPDATES-->
+                        <tr>
+                            <th>    </th>
+                            <th>    </th>
+                            <th>Update</th>
+                            <th>Notes</th>
+                            <th>Progress</th>
+                            <th>Date</th>
+                        </tr>
+
+                        foreach (var u in Model.EmployeeUpdates[g.GID])
+                        {
+                            <tr class="@goalStatus">
+                                <td>    </td>
+                                <td>    </td>
+                                <td>@u.Subject</td>
+                                <td>@u.Notes</td>
+                                <td>@u.Progress</td>
+                                <td>@u.Time.ToString("D")</td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        }
+    }
+
+    <!-- Denied goals -->
+    @if (Model.DeniedGoals.Count > 0)
+    {
+        <h5>Denied Goals</h5>
+
+        <table class="table table-bordered table-hover table-responsive">
+            <thead>
+                <tr class="active">
+                    <th>Goal Title</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Progress</th>
+                    <th>Goal Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var g in Model.DeniedGoals)
+                {
+                    <tr class="alert-danger">
+                        <td>@g.Title</td>
+                        <td>@g.Description</td>
+                        <td>@g.StartDate.ToString("D")</td>
+                        <td>@g.EndDate.ToString("D")</td>
+                        <td>@g.Progress</td>
+                        <td>@g.Status</td>
+                    </tr>
+
+                        <!--UPDATES-->
+                    if(Model.EmployeeUpdates.ContainsKey(g.GID))
+                    {
+                        <tr class="active">
+                            <th>    </th>
+                            <th>    </th>
+                            <th>Update</th>
+                            <th>Notes</th>
+                            <th>Progress</th>
+                            <th>Date</th>
+                        </tr>
+
+                        foreach (var u in Model.EmployeeUpdates[g.GID])
+                        {
+                            <tr class="alert-danger">
+                                <td>    </td>
+                                <td>    </td>
+                                <td>@u.Subject</td>
+                                <td>@u.Notes</td>
+                                <td>@u.Progress</td>
+                                <td>@u.Time.ToString("D")</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
+
+
+
+    <!-- Failed goals -->
+    @if (Model.FailedGoals.Count > 0)
+    {
+        <h5>Failed Goals</h5>
+        foreach (var g in Model.FailedGoals)
+        {
+            <table class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr class="active">
+                        <th>Goal Title</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Progress</th>
+                        <th>Goal Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr class="alert-danger">
+                        <td>@g.Title</td>
+                        <td>@g.Description</td>
+                        <td>@g.StartDate.ToString("D")</td>
+                        <td>@g.EndDate.ToString("D")</td>
+                        <td>@g.Progress</td>
+                        <td>@g.Status</td>
+                    </tr>
+
+                    <!--UPDATES-->
+                    @if (Model.EmployeeUpdates.ContainsKey(g.GID))
+                    {
+                        <tr class="active">
+                            <th>    </th>
+                            <th>    </th>
+                            <th>Update</th>
+                            <th>Notes</th>
+                            <th>Progress</th>
+                            <th>Date</th>
+                        </tr>
+
+                        foreach (var u in Model.EmployeeUpdates[g.GID])
+                        {
+                            <tr class="alert-danger">
+                                <td>    </td>
+                                <td>    </td>
+                                <td>@u.Subject</td>
+                                <td>@u.Notes</td>
+                                <td>@u.Progress</td>
+                                <td>@u.Time.ToString("D")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+    }
+</div>
+    }
+
+<!-- Styles -->
 <style>
     #chartdiv {
         width: 100%;
         height: 500px;
     }
+
     .amcharts-export-menu-top-right {
-  top: 10px;
-  right: 0;
-}
+        top: 10px;
+        right: 0;
+    }
 </style>
 
 <!-- Resources -->
@@ -293,65 +302,65 @@
 
     <!-- Chart code -->
     <script>
-            var chart = AmCharts.makeChart("chartdiv", {
-                "theme": "light",
-                "type": "serial",
-                "marginRight": 70,
-                "dataProvider": [{
-                    "country": "Completed",
-                    "visits": 5,
-                    "color": "#FF0F00"
-                }, {
-                    "country": "Active",
-                    "visits": @Model.ActiveGoals.Count,
-                    "color": "#0D8ECF"
-                }, {
-                    "country": "Denied",
-                    "visits": @Model.DeniedGoals.Count,
-                    "color": "#FF9E01"
-                }, {
-                    "country": "Failed",
-                    "visits": @Model.FailedGoals.Count,
-                    "color": "#FCD202"
-                }],
-                "valueAxes": [{
-                    "axisAlpha": 0,
-                    "position": "left",
-                    "title": "Employee Goal Status Chart"
-                }],
-                "startDuration": 1,
-                    "graphs": [{
-                        "balloonText": "<b>[[category]]: [[value]]</b>",
-                        "fillColorsField": "color",
-                        "fillAlphas": 0.9,
-                        "lineAlpha": 0.2,
-                        "type": "column",
-                        "valueField": "visits"
-                    }],
-                    "chartCursor": {
-                        "categoryBalloonEnabled": false,
-                        "cursorAlpha": 0,
-                        "zoomable": false
-                    },
-                "categoryField": "country",
-                "categoryAxis": {
-                    "gridPosition": "start",
-                    "labelRotation": 0,
-                    "position": "left"
-                },
-                "export": {
-                    "enabled": true
-                }
-            });
-
-            function sumGoals(goalStat, statusNumber) {
-                if (statusNumber == 1) //status is Active
-                {
-                    
-
-                    return 50;
-                }
+        var chart = AmCharts.makeChart("chartdiv", {
+            "theme": "light",
+            "type": "serial",
+            "marginRight": 70,
+            "dataProvider": [{
+                "country": "Completed",
+                "visits": 5,
+                "color": "#FF0F00"
+            }, {
+                "country": "Active",
+                "visits": @Model.ActiveGoals.Count,
+                "color": "#0D8ECF"
+            }, {
+                "country": "Denied",
+                "visits": @Model.DeniedGoals.Count,
+                "color": "#FF9E01"
+            }, {
+                "country": "Failed",
+                "visits": @Model.FailedGoals.Count,
+                "color": "#FCD202"
+            }],
+            "valueAxes": [{
+                "axisAlpha": 0,
+                "position": "left",
+                "title": "Employee Goal Status Chart"
+            }],
+            "startDuration": 1,
+            "graphs": [{
+                "balloonText": "<b>[[category]]: [[value]]</b>",
+                "fillColorsField": "color",
+                "fillAlphas": 0.9,
+                "lineAlpha": 0.2,
+                "type": "column",
+                "valueField": "visits"
+            }],
+            "chartCursor": {
+                "categoryBalloonEnabled": false,
+                "cursorAlpha": 0,
+                "zoomable": false
+            },
+            "categoryField": "country",
+            "categoryAxis": {
+                "gridPosition": "start",
+                "labelRotation": 0,
+                "position": "left"
+            },
+            "export": {
+                "enabled": true
             }
+        });
+
+        function sumGoals(goalStat, statusNumber) {
+            if (statusNumber == 1) //status is Active
+            {
+
+
+                return 50;
+            }
+        }
     </script>
 }
 

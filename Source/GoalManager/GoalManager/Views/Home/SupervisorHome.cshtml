@@ -16,6 +16,7 @@
     </li>
 
 </ul>
+
 @*Approval List*@
 @if (Model.GoalApprovalList.Count != 0)
 {
@@ -97,21 +98,6 @@
                             </td>
                         </tr>
                     }
-                    <tr class="success">
-                        <td>
-                            @*need to discuss better logic for going to create goal*@
-                            <form action="/Goal/CreateGoal" method="get">
-                                <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
-                                <input type="submit" value="Add" />
-                            </form>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -133,7 +119,7 @@
                     </tr>
                 </thead>
 
-<<<<<<< HEAD
+
                     <tbody>
                         @foreach (var Department in Model.Departments)
                         {
@@ -153,31 +139,13 @@
                         }
                     </tbody>
                 </table>
-            </div>
-=======
-                <tbody>
-                    @foreach (var d in Model.Departments)
-                    {
-                        <tr class="success">
-                            <td>@d.Name</td>
-                            <td>@d.Description</td>
-                            <td>@d.Location</td>
-                            <td>
-                                <form action="/Report/ViewDepartmentReport" method="post">
-                                    <input type="hidden" name="did" value="@d.DID" />
-                                    <input type="submit" value="View Report" />
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
->>>>>>> master
-
+                      
+      
             @*Managed Employees*@
+
             <h3>Managed Employees</h3>
             if (Model.Employees.Count != 0)
-            {
+                {
                 <table class="table table-bordered table-hover table-responsive">
                     <thead>
                         <tr class="active">
@@ -187,20 +155,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var e in Model.Employees)
-                        {
+                        @foreach (var Employee in Model.Employees)
+    {
                             <tr class="success">
-                                <td>@e.FirstName @e.LastName</td>
-                                <td>@e.Title</td>
-                                <td>@Model.EmployeeDeptName[e.UID]</td>
+                                <td>@Employee.FirstName @Employee.LastName</td>
+                                <td>@Employee.Title</td>
                                 <td>
                                     @*TODO: ViewReport(Employee)*@
                                     <form action="/Report/ViewEmployeeReport" method="post">
-<<<<<<< HEAD
+
                                         <input type="hidden" name="EmployeeRefID" value="@Employee.UID" />
-=======
-                                        <input type="hidden" name="uid" value="@e.UID" />
->>>>>>> master
                                         <input type="submit" value="View Report" />
                                     </form>
                                 </td>
