@@ -17,8 +17,6 @@
     </div>
 }
 
-
-
 <!-- HTML -->
 <div class="container">
     <div id="chartdiv"></div>
@@ -63,7 +61,7 @@
                             <th>Update</th>
                             <th>Notes</th>
                             <th>Progress</th>
-                            <th>Date</th>
+                            <th>Goal Status</th>
                         </tr>
 
                         foreach (var u in Model.EmployeeUpdates[g.GID])
@@ -273,7 +271,6 @@
         }
     }
 </div>
-    }
 
 <!-- Styles -->
 <style>
@@ -321,7 +318,7 @@
             }, {
                 "country": "Failed",
                 "visits": @Model.FailedGoals.Count,
-                "color": "#FCD202"
+                "color": "#FF0F00"
             }],
             "valueAxes": [{
                 "axisAlpha": 0,

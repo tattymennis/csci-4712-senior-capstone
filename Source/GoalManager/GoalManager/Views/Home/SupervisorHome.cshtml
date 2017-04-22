@@ -106,8 +106,9 @@
     @*Managed Departments*@
     @if (Model.Departments != null)
     {
+        <div>
         <h3>My Departments</h3>
-        if (Model.Departments.Count != 0)
+        @if (Model.Departments.Count != 0)
         {
             <table class="table table-responsive table-bordered table-hover">
                 <thead>
@@ -139,12 +140,13 @@
                         }
                     </tbody>
                 </table>
-                      
-      
+            }
+        </div>
+    }
             @*Managed Employees*@
 
             <h3>Managed Employees</h3>
-            if (Model.Employees.Count != 0)
+            @if (Model.Employees.Count != 0)
                 {
                 <table class="table table-bordered table-hover table-responsive">
                     <thead>
@@ -173,5 +175,3 @@
                     </tbody>
                 </table>
             }
-        }
-    }
