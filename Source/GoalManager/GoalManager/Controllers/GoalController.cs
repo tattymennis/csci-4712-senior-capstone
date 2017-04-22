@@ -24,6 +24,16 @@ namespace GoalManager.Controllers
                 // TODO: Error handling
             }
 
+            if (userSessionData.Role != "Supervisor" && userSessionData.Role != "Employee")
+            {
+                // TODO: Error handling
+            }
+
+            if (userSessionData.Role == "Supervisor")
+                vm.Role = "Supervisor";
+            else
+                vm.Role = "Employee";
+
             List<SelectListItem> catTempList = new List<SelectListItem>();
             catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
 
@@ -45,7 +55,7 @@ namespace GoalManager.Controllers
 
                 foreach (Quarter q in quarts)
                 {
-                    quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
+                    quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name + " - " + q.EndDate.ToString("D"), Selected = false });
                 }
             }
 
@@ -71,6 +81,21 @@ namespace GoalManager.Controllers
                 // TODO: Error handling
             }
 
+            if (userSessionData.Role != "Supervisor" && userSessionData.Role != "Employee")
+            {
+                // TODO: Error handling
+            }
+
+            if (vm.Role != "Supervisor" && vm.Role != "Employee")
+            {
+                // TODO: Error handling
+            }
+
+            if (userSessionData.Role == "Supervisor")
+                vm.Role = "Supervisor";
+            else
+                vm.Role = "Employee";
+
             List<SelectListItem> catTempList = new List<SelectListItem>();
             catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
 
@@ -94,16 +119,15 @@ namespace GoalManager.Controllers
 
                     foreach (Quarter q in quarts)
                     {
-                        quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
+                        quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name + " - " + q.EndDate.ToString("D"), Selected = false });
                     }
 
                     Goal goal;
                     Update update;
 
-
                     // populate UID FK in Goal table
                     goal = new Goal(vm.Title, vm.CategoryName, "Pending", 0);
-                    goal.User = user; // null check?
+                    goal.User = user;
                     goal.StartDate = DateTime.Now;
                     goal.Category = vm.CategoryName;
 
@@ -126,9 +150,35 @@ namespace GoalManager.Controllers
                         Time = goal.StartDate
                     };
 
-                    update.Goal = db.Goals.Add(goal);
-                    db.Updates.Add(update);
-                    db.SaveChanges();
+                    if (vm.Role == "Supervisor" && vm.PushToDept == true)
+                    {
+                        List<User> users = db.Users.Where(u => u.SUID == user.UID).ToList<User>();
+                        foreach (User u in users)
+                        {
+                            goal.User = u;
+                            goal.Approved = true;
+                            goal.Status = "Active";
+                            update.Goal = db.Goals.Add(goal); // add Goal for each EE
+                            db.Updates.Add(update); // add Update for each EE
+                            db.SaveChanges();
+                        }
+                    }
+
+                    else if (vm.Role == "Supervisor" && vm.PushToDept == false)
+                    {
+                        goal.Approved = true; // Super goal is approved automatically
+                        goal.Status = "Active";
+                        update.Goal = db.Goals.Add(goal);
+                        db.Updates.Add(update);
+                        db.SaveChanges();
+                    }
+
+                    else
+                    {
+                        update.Goal = db.Goals.Add(goal);
+                        db.Updates.Add(update);
+                        db.SaveChanges();
+                    }
                 }
                 return RedirectToAction("MainView", "Home");
             }
@@ -136,6 +186,7 @@ namespace GoalManager.Controllers
             var nvm = new CreateGoalViewModel();
             nvm.CatDropDown = catTempList;
             nvm.QuartDropDown = quartTempList;
+            nvm.Role = userSessionData.Role;
             return View(nvm);
         }
 
