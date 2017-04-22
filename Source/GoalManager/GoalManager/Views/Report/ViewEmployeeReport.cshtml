@@ -30,7 +30,7 @@
         <h5>Pending Goals</h5>
         foreach (var g in Model.PendingGoals)
         {
-            <table class="table table-bordered table-hover table-responsive">
+            <table class="table table-bordered table-hover table-responsive table-condensed">
                 <thead>
                     <tr class="alert-info">
                         <th>Goal Title</th>
@@ -88,7 +88,7 @@
         var goalStatus = "";
         foreach (var g in Model.ActiveGoals)
         {
-            <table class="table table-bordered table-hover table-responsive">
+            <table class="table table-bordered table-hover table-responsive table-condensed">
                 <thead>
                     <tr class="active">
                         <th>Goal Title</th>
@@ -159,7 +159,7 @@
     {
         <h5>Denied Goals</h5>
 
-        <table class="table table-bordered table-hover table-responsive">
+        <table class="table table-bordered table-hover table-responsive table-condensed">
             <thead>
                 <tr class="active">
                     <th>Goal Title</th>
@@ -220,7 +220,7 @@
         <h5>Failed Goals</h5>
         foreach (var g in Model.FailedGoals)
         {
-            <table class="table table-bordered table-hover table-responsive">
+            <table class="table table-bordered table-hover table-responsive table-condensed">
                 <thead>
                     <tr class="active">
                         <th>Goal Title</th>

@@ -27,22 +27,19 @@ namespace GoalManager.Controllers
                 using (UserDBEntities db = new UserDBEntities())
                 {
                     vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
-                    vm.PendingGoals = db.Goals.Where(g => 
-                        g.UID == userSessionData.UID && 
-                        g.Status == "Pending").
-                        ToList<Goal>();
-                    vm.FailedGoals = db.Goals.Where(g =>
-                        g.UID == userSessionData.UID &&
-                        g.Status == "Failed").
-                        ToList<Goal>();
-                    vm.ActiveGoals = db.Goals.Where(g =>
-                        g.UID == userSessionData.UID &&
-                        g.Status == "Active").
-                        ToList<Goal>();
-                    vm.DeniedGoals = db.Goals.Where(g =>
-                        g.UID == userSessionData.UID &&
-                        g.Status == "Denied").
-                        ToList<Goal>();
+                }
+                foreach (var Goal in vm.Goals)
+                {
+                    if(Goal.Status == "Pending")
+                    { vm.PendingGoals.Add(Goal); }
+                    else if(Goal.Status == "Active")
+                    { vm.ActiveGoals.Add(Goal); }
+                    else if(Goal.Status == "Failed")
+                    { vm.FailedGoals.Add(Goal); }
+                    else if(Goal.Status == "Denied")
+                    { vm.DeniedGoals.Add(Goal); }
+                    else if (Goal.Status == "Completed")
+                    { vm.CompletedGoals.Add(Goal); }
                 }
                 return View(vm);
             }
@@ -94,31 +91,7 @@ namespace GoalManager.Controllers
                             {
                                 // Add GIDs of associated Goals where Approved == false
                                 foreach (Goal g in goals)
-                                {
-                                    // Either pass by reference or create new Goal
-                                    //Goal goal = new Data.Goal
-                                    //{
-                                    //    GID = g.GID,
-                                    //    Category = g.Category,
-                                    //    Description = g.Description,
-                                    //    StartDate = g.StartDate,
-                                    //    EndDate = g.EndDate,
-                                    //    Progress = g.Progress,
-                                    //    Status = g.Status,
-                                    //    Title = g.Title,
-                                    //    UID = g.UID,
-                                    //    Approved = g.Approved,
-                                    //    User = new Data.User
-                                    //    {
-                                    //        FirstName = g.User.FirstName,
-                                    //        LastName = g.User.LastName,
-                                    //        Department = g.User.Department,
-                                    //        Role = g.User.Role,
-                                    //        Title = g.User.Title
-                                    //    }
-                                    //};
-                                    vm.GoalApprovalList.Add(g);
-                                }
+                                { vm.GoalApprovalList.Add(g); }
 
                                 // Assign each Employee's Department Name into Dictionary
                                 vm.EmployeeDeptName[u.UID] = db.Departments.
