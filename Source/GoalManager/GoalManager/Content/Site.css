@@ -50,10 +50,12 @@ textarea {
     font-family:Futura_ICG;
 
 }
-
 .nav-item{
     color:white;
     font-weight:bold;
     background-color:deepskyblue;
-    border-color:red;
+    padding:5px;
+    font-family:Futura_ICG;
+}
+#navhome {
 }

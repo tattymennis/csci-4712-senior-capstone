@@ -30,16 +30,21 @@ namespace GoalManager.Controllers
                 }
                 foreach (var Goal in vm.Goals)
                 {
-                    if(Goal.Status == "Pending")
+                    if (Goal.Status == "Pending")
                     { vm.PendingGoals.Add(Goal); }
-                    else if(Goal.Status == "Active")
+                    else if (Goal.Status == "Active")
                     { vm.ActiveGoals.Add(Goal); }
-                    else if(Goal.Status == "Failed")
+                    else if (Goal.Status == "Failed")
                     { vm.FailedGoals.Add(Goal); }
-                    else if(Goal.Status == "Denied")
+                    else if (Goal.Status == "Denied")
                     { vm.DeniedGoals.Add(Goal); }
                     else if (Goal.Status == "Completed")
                     { vm.CompletedGoals.Add(Goal); }
+                }
+                foreach (var Goal in vm.ActiveGoals)
+                {
+                    if (DateTime.Compare(DateTime.Now, Goal.EndDate) > 0)
+                    { Goal.Status = "Failed"; }
                 }
                 return View(vm);
             }
@@ -83,7 +88,7 @@ namespace GoalManager.Controllers
                         foreach (User u in vm.Employees)
                         {
                             // Goals associated with this User where Approved == false && Status == "Pending"
-                            List<Goal> goals = db.Goals.Where(x => x.UID == u.UID && 
+                            List<Goal> goals = db.Goals.Where(x => x.UID == u.UID &&
                                                               x.Approved == false &&
                                                               x.Status == "Pending")
                                                               .ToList<Goal>();
@@ -99,6 +104,24 @@ namespace GoalManager.Controllers
                                     FirstOrDefault().Name;
                             }
                         }
+                    }
+
+                    vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+                    foreach (var Goal in vm.Goals)
+                    {
+                        if (DateTime.Compare(DateTime.Now, Goal.EndDate) > 0)
+                        { Goal.Status = "Failed"; }
+
+                        if (Goal.Status == "Pending")
+                        { vm.PendingGoals.Add(Goal); }
+                        else if (Goal.Status == "Active")
+                        { vm.ActiveGoals.Add(Goal); }
+                        else if (Goal.Status == "Failed")
+                        { vm.FailedGoals.Add(Goal); }
+                        else if (Goal.Status == "Denied")
+                        { vm.DeniedGoals.Add(Goal); }
+                        else if (Goal.Status == "Completed")
+                        { vm.CompletedGoals.Add(Goal); }
                     }
                 }
                 return View(vm);
@@ -237,18 +260,18 @@ namespace GoalManager.Controllers
                         // Invalid Role 
                         Exception ex = new Exception($"Invalid Role for Role: {userSessionData.Role}");
                         Session.Clear(); // if failed, clean Session 
-                        return RedirectToAction("Index", "Home", new { exception = ex.Message});             
+                        return RedirectToAction("Index", "Home", new { exception = ex.Message });
                 }
-                
+
             }
 
-            catch(ArgumentNullException ex)
+            catch (ArgumentNullException ex)
             {
                 TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
                 return RedirectToAction("Index", "Home");
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
                 return RedirectToAction("Index", "Home");

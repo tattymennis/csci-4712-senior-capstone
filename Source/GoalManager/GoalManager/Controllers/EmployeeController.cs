@@ -122,44 +122,47 @@ namespace GoalManager.Controllers
                     int _did = -1;
                     if (int.TryParse(vm.DeptRefChoice, out _did))
                     {
-                        using (var db = new UserDBEntities())
+                        if (ModelState.IsValid)
                         {
-                            // generate username
-                            int count = 1;
-                            string username = (vm.FirstName[0] + vm.LastName).ToLower();
-                            while (db.Users.Any(x => x.Username == username) || count > 100) // username collision
+                            using (var db = new UserDBEntities())
                             {
-                                username = (vm.FirstName[0] + vm.LastName).ToLower();
-                                username += count.ToString();
-                                count++;
+                                // generate username
+                                int count = 1;
+                                string username = (vm.FirstName[0] + vm.LastName).ToLower();
+                                while (db.Users.Any(x => x.Username == username) || count > 100) // username collision
+                                {
+                                    username = (vm.FirstName[0] + vm.LastName).ToLower();
+                                    username += count.ToString();
+                                    count++;
+                                }
+
+                                User user = new Data.User
+                                {
+                                    FirstName = vm.FirstName,
+                                    LastName = vm.LastName,
+                                    Role = vm.Role,
+                                    Title = vm.Title,
+                                    Email = vm.Email,
+                                    Username = username,
+                                    Active = true,
+                                    Department = db.Departments.Where(d => d.DID == _did).FirstOrDefault()
+                                };
+
+                                // Supervisor Property
+                                User super = db.Users.Where(u => u.UID == user.Department.SUID).FirstOrDefault();
+                                user.User1 = super;
+
+                                // Account Creation
+                                RegisterEmployeeViewModel revm = new RegisterEmployeeViewModel();
+                                revm.Email = user.Email;
+                                revm.Username = user.Username;
+                                revm.Role = user.Role;
+                                Session["RegisterEmployeeVM"] = revm;
+
+                                db.Users.Add(user);
+                                db.SaveChanges();
+                                return RedirectToAction("RegisterEmployee");
                             }
-
-                            User user = new Data.User
-                            {
-                                FirstName = vm.FirstName,
-                                LastName = vm.LastName,
-                                Role = vm.Role,
-                                Title = vm.Title,
-                                Email = vm.Email,
-                                Username = username,
-                                Active = true,
-                                Department = db.Departments.Where(d => d.DID == _did).FirstOrDefault()
-                            };
-
-                            // Supervisor Property
-                            User super = db.Users.Where(u => u.UID == user.Department.SUID).FirstOrDefault();
-                            user.User1 = super;
-
-                            // Account Creation
-                            RegisterEmployeeViewModel revm = new RegisterEmployeeViewModel();
-                            revm.Email = user.Email;
-                            revm.Username = user.Username;
-                            revm.Role = user.Role;
-                            Session["RegisterEmployeeVM"] = revm;
-
-                            db.Users.Add(user);
-                            db.SaveChanges();
-                            return RedirectToAction("RegisterEmployee");
                         }                 
                     }
                 }
@@ -342,7 +345,7 @@ namespace GoalManager.Controllers
 
                     User.FirstName = vm.FirstName;
                     User.LastName = vm.LastName;
-                    //User.Email = dbuser.Email; //Must Update in ASP .Net User table also
+                    User.Email = vm.Email;
                     User.Title = vm.Title;
                     User.Role = vm.Role;
                     User.Active = vm.Active;

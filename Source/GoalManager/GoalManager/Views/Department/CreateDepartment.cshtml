@@ -24,7 +24,7 @@
 
         <div class="form-group form-horizontal">
             <label for="SupervisorChoice">Supervisor</label>
-            @Html.DropDownListFor(x => x.SupervisorChoice, Model.SupervisorsDropDown)
+            @Html.DropDownListFor(x => x.SupervisorChoice, Model.SupervisorsDropDown, new { Class = "form-control" })
         </div>
 
         <div class="form-group form-horizontal">

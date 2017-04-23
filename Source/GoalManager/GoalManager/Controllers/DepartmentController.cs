@@ -264,8 +264,9 @@ namespace GoalManager.Controllers
                         db.Quarters.Add(Quarter4);
                         db.SaveChanges();
                     }
+                    return RedirectToAction("MainView", "Home");
                 }
-                return RedirectToAction("MainView", "Home");
+                
             }
 
             catch (ArgumentNullException ex)
