@@ -22,7 +22,18 @@ namespace GoalManager.Controllers
                 {
                     return RedirectToAction("MainView", "Home");
                 }
+                //Validate Goals
+                using (var db = new UserDBEntities())
+                {
+                    var Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
 
+                    foreach (var Goal in Goals)
+                    {
+                        if (DateTime.Compare(DateTime.Now, Goal.EndDate) > 0)
+                        { Goal.Status = "Failed"; }
+                    }
+                    db.SaveChanges();
+                }
                 var vm = new EmployeeHomeViewModel();
                 using (UserDBEntities db = new UserDBEntities())
                 {
@@ -41,11 +52,7 @@ namespace GoalManager.Controllers
                     else if (Goal.Status == "Completed")
                     { vm.CompletedGoals.Add(Goal); }
                 }
-                foreach (var Goal in vm.ActiveGoals)
-                {
-                    if (DateTime.Compare(DateTime.Now, Goal.EndDate) > 0)
-                    { Goal.Status = "Failed"; }
-                }
+              
                 return View(vm);
             }
 
@@ -75,11 +82,24 @@ namespace GoalManager.Controllers
                     return RedirectToAction("MainView", "Home");
                 }
 
+                //Validate Goals
+                using (var db = new UserDBEntities())
+                {
+                    vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+
+                    foreach (var Goal in vm.Goals)
+                    {
+                        if (DateTime.Compare(DateTime.Now, Goal.EndDate) > 0)
+                        { Goal.Status = "Failed"; }
+                    }
+                    db.SaveChanges();
+                }
                 // Query list of GIDs that require approval & Departments associated with this Supervisor
                 using (var db = new UserDBEntities())
                 {
                     // Populate Supervisor's Goals in VM
                     vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
+
                     vm.Departments = db.Departments.Where(x => x.SUID == userSessionData.UID).ToList();
                     if (vm.Departments != null)
                     {
@@ -109,9 +129,6 @@ namespace GoalManager.Controllers
                     vm.Goals = db.Goals.Where(x => x.UID == userSessionData.UID).ToList<Goal>();
                     foreach (var Goal in vm.Goals)
                     {
-                        if (DateTime.Compare(DateTime.Now, Goal.EndDate) > 0)
-                        { Goal.Status = "Failed"; }
-
                         if (Goal.Status == "Pending")
                         { vm.PendingGoals.Add(Goal); }
                         else if (Goal.Status == "Active")
