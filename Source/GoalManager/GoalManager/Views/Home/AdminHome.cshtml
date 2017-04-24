@@ -21,6 +21,44 @@
         </ul>
     </div>
 </div>
+
+@if (Model.PlaceholderDepartments.Count > 0)
+{
+    <div class="container" id="PlaceholderDepartments">
+        <div class="col-lg-12" id="DeptList">
+            <h3>Pending Departments</h3>
+            <table class="row table table-bordered table-hover table-responsive table-condensed">
+                <thead>
+                    <tr class="active">
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Supervisor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var Department in Model.PlaceholderDepartments)
+                    {
+                        <tr class="alert-danger">
+                            <td>@Department.Name</td>
+                            <td>@Department.Location</td>
+                            <td>@Department.Description</td>
+                            <td>
+                                <form action="/Department/ModifyDepartment" method="get">
+                                    <input type="hidden" name="IDRef" value="@Department.DID.ToString()" />
+                                    @Html.AntiForgeryToken()
+                                    <input type="submit" value="Modify" />
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
 <div class="container" id="Administrators">
     <div class="col-lg-12" id="AdminList">
         <h3 for="EmpList">Administrator List</h3>
@@ -36,7 +74,7 @@
             </thead>
             <tbody>
                 @foreach (var Admin in Model.Administrators)
-            {
+                {
                     <tr class="success">
                         <td>@Admin.FirstName @Admin.LastName</td>
                         <td>@Admin.Role</td>
@@ -114,7 +152,6 @@
                                 @Html.AntiForgeryToken()
                                 <input type="submit" value="Modify" />
                             </form>
-
                         </td>
                     </tr>
                 }

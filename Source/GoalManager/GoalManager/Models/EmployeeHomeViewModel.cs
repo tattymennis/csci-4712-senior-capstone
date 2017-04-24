@@ -12,6 +12,9 @@ namespace GoalManager.Models
         public List<Goal> DeniedGoals = new List<Goal>();
         public List<Goal> ActiveGoals = new List<Goal>();
         public List<Goal> FailedGoals = new List<Goal>();
-        public List<Goal> PendingGoals = new List<Goal>();       
+        public List<Goal> PendingGoals = new List<Goal>();
+        public List<Goal> CompletedGoals = new List<Goal>();
+        
+        
     }
 }

@@ -29,6 +29,12 @@ namespace GoalManager.Models
         public IEnumerable<SelectListItem> CatDropDown { get; set; } 
 
         public string QuarterTime { get; set; } // parse to DateTime
-        public IEnumerable<SelectListItem> QuartDropDown { get; set; } 
+        public IEnumerable<SelectListItem> QuartDropDown { get; set; }
+        
+        // Role based auth
+        public string Role { get; set; }
+        
+        // Radio button value 
+        public bool PushToDept { get; set; }
     }
 }

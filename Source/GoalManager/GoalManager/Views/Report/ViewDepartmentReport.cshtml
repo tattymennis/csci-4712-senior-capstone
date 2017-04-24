@@ -15,18 +15,22 @@
 </div>
 
 <div class="container">
+<<<<<<< HEAD
      <!-- HTML -->
 <div id="chartdiv-pie"></div>
 </div>
 
 
 <div class="container">
+=======
+>>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
     @if (Model.Department != null)
     {
         <h2>@Model.Department.Name</h2>
         <h3>Supervisor: @Model.Supervisor.FirstName @Model.Supervisor.LastName</h3>
         <h3>Title:  @Model.Department.User.Title</h3>
 
+<<<<<<< HEAD
         if (Model.Employees.Count != 0)
         {
             foreach (var e in Model.Employees)
@@ -39,6 +43,39 @@
                             <th>Department</th>
                             <th>    </th>
                             <th>    </th>
+=======
+        if(Model.Employees.Count != 0)
+        {
+            foreach(var e in Model.Employees)
+            {
+            <table class="table table-bordered table-hover table-responsive table-condensed">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Title</th>
+                        <th>Department</th>
+                        <th>    </th>
+                        <th>    </th>
+                        <td>    </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr class="alert-info">
+                        <td>@e.FirstName @e.LastName</td>
+                        <td>@e.Title</td>
+                        <td>@e.Department.Name</td>
+                        <td>    </td>
+                        <td>    </td>
+                        <td>    </td>
+                    </tr>
+
+                    @*@if (Model.EmployeeGoals.Count != 0)*@
+                    @if (Model.EmployeeGoals.ContainsKey(e.UID))
+                    {
+                        <!--Goal section-->
+                        <tr class="active">
+>>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
                             <td>    </td>
                         </tr>
                     </thead>
@@ -264,7 +301,91 @@ var chart = AmCharts.makeChart( "chartdiv-pie", {
 </script>  
 }
 
+<!-- Styles -->
+<style>
+    #chartdiv {
+        width: 100%;
+        height: 500px;
+    }
+</style>
 
+<!-- Resources -->
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+
+@section Scripts {
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+
+    <!-- Chart code -->
+    <script>
+        var chart = AmCharts.makeChart("chartdiv", {
+            "type": "serial",
+            "theme": "light",
+            "depth3D": 20,
+            "angle": 30,
+            "legend": {
+                "horizontalGap": 10,
+                "useGraphSettings": true,
+                "markerSize": 10
+            },
+            "dataProvider": LoadViewReport(),
+            "graphs": [ {
+                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+                "fillAlphas": 0.8,
+                "labelText": "[[value]]",
+                "lineAlpha": 0.3,
+                "title": "Completed",
+                "type": "column",
+                "newStack":true,
+                "color": "#000000",
+                "valueField": "completed"
+            }, {
+                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+                "fillAlphas": 0.8,
+                "labelText": "[[value]]",
+                "lineAlpha": 0.3,
+                "title": "Active",
+                "type": "column",
+                "newstack":true,
+                "color": "#000000",
+                "valueField": "active"
+            }, {
+                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+                "fillAlphas": 0.8,
+                "labelText": "[[value]]",
+                "lineAlpha": 0.3,
+                "title": "Denied",
+                "type": "column",
+                "newStack": true,
+                "color": "#000000",
+                "valueField": "denied"
+            }, {
+                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+                "fillAlphas": 0.8,
+                "labelText": "[[value]]",
+                "lineAlpha": 0.3,
+                "title": "Failed",
+                "type": "column",
+                "newstack":true,
+                "color": "#000000",
+                "valueField": "failed"
+            }],
+            "categoryField": "year",
+            "categoryAxis": {
+                "gridPosition": "start",
+                "axisAlpha": 0,
+                "gridAlpha": 0,
+                "position": "left"
+            },
+            "export": {
+                "enabled": true
+            }
+
+        });
+
+<<<<<<< HEAD
 
 
 
@@ -272,3 +393,24 @@ var chart = AmCharts.makeChart( "chartdiv-pie", {
   
     
     
+=======
+        function LoadViewReport() {
+            var data = [];
+
+
+            var index = "0";
+            @{
+                int numEE = Model.Employees.Count;
+                //var u = Model.Supervisor.FirstName;
+                for (int n = 0; n < numEE; n++)
+                {
+                    @:data.push({ "year":  @Html.Raw(Json.Encode((Model.Employees.ElementAt(n).FirstName + ' ' + Model.Employees.ElementAt(n).LastName))), "completed": 5, "active":4, "denied": 1, "failed": 2 })
+                            }
+            }
+
+            return data;
+
+        }
+    </script>
+}
+>>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed

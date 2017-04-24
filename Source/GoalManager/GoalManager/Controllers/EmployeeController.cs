@@ -32,7 +32,7 @@ namespace GoalManager.Controllers
         {
             ViewBag.Title = "Create Employee";
             var vm = new CreateEmployeeViewModel();
-
+            //Pulling Department List for Drop Down
             List<SelectListItem> DtempList = new List<SelectListItem>();
             DtempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
             using (var db = new UserDBEntities())
@@ -43,8 +43,9 @@ namespace GoalManager.Controllers
             }
             vm.DeptDropDown = DtempList;
 
+            //Creating Employee Role DropDown List
             List<SelectListItem> RtempList = new List<SelectListItem>();
-            RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true});
+            RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true });
             RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
             RtempList.Add(new SelectListItem { Value = "Supervisor", Text = "Supervisor", Selected = false });
             RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
@@ -61,18 +62,16 @@ namespace GoalManager.Controllers
             ViewBag.Title = "Create Employee";
             try
             {
+                //Validating Session Data
                 var userSessionData = Session["UserSessionData"] as UserSessionData;
                 if (userSessionData == null)
-                {
-                    throw new ArgumentNullException();
-                }
+                { throw new ArgumentNullException(); }
 
                 if (userSessionData.Role != "Admin" && userSessionData.Role != "Administrator")
-                {
-                    throw new ArgumentException();
-                }
+                { throw new ArgumentException(); }
 
-                if (ModelState.IsValid)
+
+                if (ModelState.IsValid) //Checking for Validation Error in View Model Annotation before the following Custom Validation, Refer to this View Model to see these Validations  
                 {
                     //First Name 
                     foreach (char x in vm.FirstName)
@@ -120,7 +119,12 @@ namespace GoalManager.Controllers
                     }
 
                     int _did = -1;
-                    if (int.TryParse(vm.DeptRefChoice, out _did))
+                    if (!int.TryParse(vm.DeptRefChoice, out _did)) //Validating that beyond our selectable choices, no other string type variable was posted not corresponding to a department
+                    {
+                        ModelState.AddModelError("DepRefChoice", "Must Select a Department");
+                    }
+
+                    if (ModelState.IsValid)
                     {
                         using (var db = new UserDBEntities())
                         {
@@ -157,20 +161,21 @@ namespace GoalManager.Controllers
                             revm.Role = user.Role;
                             Session["RegisterEmployeeVM"] = revm;
 
+                            //Database Change
                             db.Users.Add(user);
                             db.SaveChanges();
                             return RedirectToAction("RegisterEmployee");
-                        }                 
-                    }
-                }
-            }
+                        } //End of DataBase Changes
+                    } //End of ModeState Validation - Custom Validation
+                } //End of ModeState Validation - ViewModel Validation 
+            } //End of Try
 
             catch { }
 
-            // New ViewModel if validation fails
+            // Failed Validation, Recreating View Model
             CreateEmployeeViewModel nvm = new CreateEmployeeViewModel();
             nvm = vm;
-
+            //Creating Department
             List<SelectListItem> DtempList = new List<SelectListItem>();
             DtempList.Add(new SelectListItem { Text = "Select Department", Selected = true });
             using (var db = new UserDBEntities())
@@ -181,6 +186,7 @@ namespace GoalManager.Controllers
             }
             nvm.DeptDropDown = DtempList;
 
+            //Creating Roles Drop Down
             List<SelectListItem> RtempList = new List<SelectListItem>();
             RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true });
             RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
@@ -188,7 +194,7 @@ namespace GoalManager.Controllers
             RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
             vm.RoleDropDown = RtempList;
             return View(nvm);
-        }
+        } //End of Method
 
         [Authorize]
         public async Task<ActionResult> RegisterEmployee()
@@ -245,8 +251,8 @@ namespace GoalManager.Controllers
                 nvm.Email = tempuser.Email;
                 nvm.ID = vm.IDRef;
                 nvm.Active = tempuser.Active;
-                
-               
+
+
                 using (var db = new UserDBEntities())
                 {
                     DtempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
@@ -256,27 +262,26 @@ namespace GoalManager.Controllers
                         DtempList.Add(new SelectListItem { Value = d.DID.ToString(), Text = d.Name.ToString(), Selected = false });
                 }
                 nvm.DeptDropDown = DtempList;
-                //Must Select the department the user resides
-                
+
+                //Creating Department DropDown
                 RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true });
                 RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
                 RtempList.Add(new SelectListItem { Value = "Supervisor", Text = "Supervisor", Selected = false });
                 RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
                 nvm.RoleDropDown = RtempList;
-                
 
+                //Creating Active Drop Down
                 AtempList.Add(new SelectListItem { Value = "true", Text = "True", Selected = true });
                 AtempList.Add(new SelectListItem { Value = "false", Text = "False", Selected = true });
                 nvm.ActiveDropDown = AtempList;
 
-                ModelState.Clear();
+                ModelState.Clear(); //Clearing Errors from the View Model Annotation, because this is first entry into page.
                 return View(nvm);
-            }
+            } //End of Intial Entry 
+
+
             
-            
-            //Validation for Each Field
-            //First Name 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) //Checking for Validation Error in View Model Annotation before the following Custom Validation, Refer to this View Model to see these Validations  
             {
                 //First Name 
                 foreach (char x in vm.FirstName)
@@ -296,13 +301,7 @@ namespace GoalManager.Controllers
                         break;
                     }
                 }
-                //Email - Must change the way it remembers and save the email, might take out completely
-                //using (UserDBEntities db = new UserDBEntities())
-                //{
-                //    if (db.Users.Any(x => x.Email == vm.Email))
-                //        ModelState.AddModelError("Email", "Email Address Already Exists");
-                //}
-
+                
                 //Title
                 foreach (char x in vm.Title)
                 {
@@ -331,18 +330,18 @@ namespace GoalManager.Controllers
                 }
             }
 
-            //If no errors, Add to the Database
-            if (ModelState.IsValid)
+            
+            if (ModelState.IsValid) //Custom Validation Check
             {
                 using (var db = new UserDBEntities())
                 {
-                    //Assign reference of database entity to variable, the assign variable, might do individual fields
+                    //Pulling employee and changing fields
 
                     User User = db.Users.Where(x => x.UID == vm.ID).FirstOrDefault();
 
                     User.FirstName = vm.FirstName;
                     User.LastName = vm.LastName;
-                    //User.Email = dbuser.Email; //Must Update in ASP .Net User table also
+                    User.Email = vm.Email;
                     User.Title = vm.Title;
                     User.Role = vm.Role;
                     User.Active = vm.Active;
@@ -351,11 +350,12 @@ namespace GoalManager.Controllers
                     db.SaveChanges();
 
                 }
-                return RedirectToAction("MainView", "Home");
+                return RedirectToAction("MainView", "Home"); //Successful Return
             }
 
-            // Creating new view model if validation failed
+            // Failed Validation, Creating New ViewModel
             nvm = vm;
+            //Creating Department drop down
             DtempList.Add(new SelectListItem { Value = "0", Text = "Select a Department", Selected = true });
             using (var db = new UserDBEntities())
             {
@@ -367,18 +367,18 @@ namespace GoalManager.Controllers
 
             }
             nvm.DeptDropDown = DtempList;
-
+            //Role Dropdown
             RtempList.Add(new SelectListItem { Value = "0", Text = "Select Role", Selected = true });
             RtempList.Add(new SelectListItem { Value = "Employee", Text = "Employee", Selected = false });
             RtempList.Add(new SelectListItem { Value = "Supervisor", Text = "Supervisor", Selected = false });
             RtempList.Add(new SelectListItem { Value = "Administrator", Text = "Administrator", Selected = false });
             nvm.RoleDropDown = RtempList;
-
+            //Active status Drop Down
             AtempList.Add(new SelectListItem { Value = "true", Text = "True", Selected = true });
             AtempList.Add(new SelectListItem { Value = "false", Text = "False", Selected = true });
             nvm.ActiveDropDown = AtempList;
 
             return View(nvm);
-        }
+        }//End Modify Employee Method
     }
 }

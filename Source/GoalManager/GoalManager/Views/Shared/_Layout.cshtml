@@ -11,13 +11,15 @@
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
-            <div class="navbar-header col-lg-2 col-md-2 hidden-sm pull-left" role="navigation" id="logonav">
+            <div class="navbar-header col-lg-2 col-md-2 hidden-sm hidden-xs pull-left" role="navigation" id="logonav">
                 <a class="navbar-brand" href="~/Home/Index" id="conlogo">
                     <img alt="TaxSlayerLogo" src="~/Images/TaxSlayerLogo.png" id=bannerlogo> <!--must resize inline here-->
                 </a>
             </div>
-            <p class="navbar-text" id="navtext">@ViewBag.Title</p>
-
+            <p class="navbar-text hidden-sm  hidden-xs" id="navtext">@ViewBag.Title</p>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/Home/MainView">Home</a></li>
+                </ul>
             @Html.Partial("_LoginPartial")
         </div>
     </nav>

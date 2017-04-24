@@ -24,6 +24,16 @@ namespace GoalManager.Controllers
                 // TODO: Error handling
             }
 
+            if (userSessionData.Role != "Supervisor" && userSessionData.Role != "Employee")
+            {
+                // TODO: Error handling
+            }
+
+            if (userSessionData.Role == "Supervisor")
+                vm.Role = "Supervisor";
+            else
+                vm.Role = "Employee";
+
             List<SelectListItem> catTempList = new List<SelectListItem>();
             catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
 
@@ -45,7 +55,7 @@ namespace GoalManager.Controllers
 
                 foreach (Quarter q in quarts)
                 {
-                    quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
+                    quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name + " - " + q.EndDate.ToString("D"), Selected = false });
                 }
             }
 
@@ -71,6 +81,21 @@ namespace GoalManager.Controllers
                 // TODO: Error handling
             }
 
+            if (userSessionData.Role != "Supervisor" && userSessionData.Role != "Employee")
+            {
+                // TODO: Error handling
+            }
+
+            if (vm.Role != "Supervisor" && vm.Role != "Employee")
+            {
+                // TODO: Error handling
+            }
+
+            if (userSessionData.Role == "Supervisor")
+                vm.Role = "Supervisor";
+            else
+                vm.Role = "Employee";
+
             List<SelectListItem> catTempList = new List<SelectListItem>();
             catTempList.Add(new SelectListItem { Value = "1", Text = "Select a Category", Selected = true });
 
@@ -94,16 +119,15 @@ namespace GoalManager.Controllers
 
                     foreach (Quarter q in quarts)
                     {
-                        quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name, Selected = false });
+                        quartTempList.Add(new SelectListItem { Value = q.Name, Text = q.Name + " - " + q.EndDate.ToString("D"), Selected = false });
                     }
 
                     Goal goal;
                     Update update;
 
-
                     // populate UID FK in Goal table
                     goal = new Goal(vm.Title, vm.CategoryName, "Pending", 0);
-                    goal.User = user; // null check?
+                    goal.User = user;
                     goal.StartDate = DateTime.Now;
                     goal.Category = vm.CategoryName;
 
@@ -126,9 +150,35 @@ namespace GoalManager.Controllers
                         Time = goal.StartDate
                     };
 
-                    update.Goal = db.Goals.Add(goal);
-                    db.Updates.Add(update);
-                    db.SaveChanges();
+                    if (vm.Role == "Supervisor" && vm.PushToDept == true)
+                    {
+                        List<User> users = db.Users.Where(u => u.SUID == user.UID).ToList<User>();
+                        foreach (User u in users)
+                        {
+                            goal.User = u;
+                            goal.Approved = true;
+                            goal.Status = "Active";
+                            update.Goal = db.Goals.Add(goal); // add Goal for each EE
+                            db.Updates.Add(update); // add Update for each EE
+                            db.SaveChanges();
+                        }
+                    }
+
+                    else if (vm.Role == "Supervisor" && vm.PushToDept == false)
+                    {
+                        goal.Approved = true; // Super goal is approved automatically
+                        goal.Status = "Active";
+                        update.Goal = db.Goals.Add(goal);
+                        db.Updates.Add(update);
+                        db.SaveChanges();
+                    }
+
+                    else
+                    {
+                        update.Goal = db.Goals.Add(goal);
+                        db.Updates.Add(update);
+                        db.SaveChanges();
+                    }
                 }
                 return RedirectToAction("MainView", "Home");
             }
@@ -136,136 +186,129 @@ namespace GoalManager.Controllers
             var nvm = new CreateGoalViewModel();
             nvm.CatDropDown = catTempList;
             nvm.QuartDropDown = quartTempList;
+            nvm.Role = userSessionData.Role;
             return View(nvm);
         }
 
-        // GET UpdateGoal
-        [Authorize]
-        [HttpGet]
-        public ActionResult UpdateGoal(string GIDRef)
-        {
-            ViewBag.Title = "Update Goal";
-            var vm = new UpdateGoalViewModel();
-            try
-            {
-                var userSessionData = Session["UserSessionData"] as UserSessionData;
-                if (userSessionData == null)
-                {
-                    throw new ArgumentNullException("userSessionData", "Null session data");
-                }
-
-                int _GIDRef = -1;
-                if (int.TryParse(GIDRef, out _GIDRef))
-                {
-                    vm.GIDRef = _GIDRef;
-                    if (vm.GIDRef < 0)
-                    {
-                        throw new ArgumentException("Invalid GID reference", "GIDRef");
-                    }
-                }
-
-                var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
-                List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
-
-                vm.Goal = goal;
-                vm.Updates = updates;
-                return View(vm);
-            }
-
-            catch (ArgumentNullException ex)
-            {
-                TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
-                return RedirectToAction("MainView", "Home");
-            }
-
-            catch (ArgumentException ex)
-            {
-                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
-                return RedirectToAction("MainView", "Home");
-            }
-
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = "Invalid user role. " + ex.Message;
-                return RedirectToAction("MainView", "Home");
-            }
-        }
+        // POST UpdateGoal
 
         [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult UpdateGoal(UpdateGoalViewModel vm)
         {
             ViewBag.Title = "Update Goal";
-            try
+            var userSessionData = Session["UserSessionData"] as UserSessionData;
+            var goal = new Goal();
+            List<Update> updates;
+            //inital entry
+            if (vm.GIDRef != 0)
             {
-                var userSessionData = Session["UserSessionData"] as UserSessionData;
+                goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
+                updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
+                try
+                {
+                    if (userSessionData == null)
+                    { throw new ArgumentNullException("userSessionData", "Null session data"); }
+                    if (vm.GIDRef < 0)
+                    { throw new ArgumentException("Invalid GID reference", "GIDRef"); }
+
+                    vm.Goal = goal;
+                    vm.Updates = updates;
+                    vm.Progress = (int)goal.Progress;
+                    vm.MinProgress = (int)goal.Progress;
+                    vm.GoalRef = vm.GIDRef;
+                    vm.GIDRef = 0;   
+                }
+                catch (ArgumentNullException ex)
+                {
+                    TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
+                    return RedirectToAction("MainView", "Home");
+                }
+
+                catch (ArgumentException ex)
+                {
+                    TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                    return RedirectToAction("MainView", "Home");
+                }
+
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Invalid user role. " + ex.Message;
+                    return RedirectToAction("MainView", "Home");
+                }
+                ModelState.Clear();
+                return View(vm);
+            }
+
+           //Second entry and after
+                try
+                {
+                goal = userSessionData.Goals.Where(x => x.GID == vm.GoalRef).FirstOrDefault();
+                updates = userSessionData.GoalUpdatesTable[vm.GoalRef].ToList();
                 if (userSessionData == null || userSessionData.GoalUpdatesTable == null)
-                {
-                    throw new ArgumentNullException("userSessionData", "Null session data.");
-                }
-
-                if (userSessionData.Role != "Employee" && userSessionData.Role != "Supervisor")
-                {
-                    throw new ArgumentException("Session data role invalid.", "userSessionData");
-                }
-
-                if (!(vm.Progress > -1 && vm.Progress < 101))
-                {
-                    ModelState.AddModelError("Progress", "Progress value not bounded [0,100].");
-                }
-
-                var goal = userSessionData.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
-                List<Update> updates = userSessionData.GoalUpdatesTable[vm.GIDRef].ToList<Update>();
-
-                // Progress logic - must be >= updated Goal
-                if (vm.Progress < goal.Progress)
-                {
-                    ModelState.AddModelError("Progress", "Updated progress value is less than old progress value.");
-                }
-
-                if (ModelState.IsValid)
-                {
-                    Update update = new Update
                     {
-                        Subject = vm.Subject,
-                        Notes = vm.Notes,
-                        Time = DateTime.Now,
-                        Progress = vm.Progress,
-                    };
-
-                    using (UserDBEntities db = new UserDBEntities())
-                    {
-                        update.Goal = db.Goals.Where(x => x.GID == vm.GIDRef).FirstOrDefault();
-                        var _goal = db.Goals.Where(g => g.GID == vm.GIDRef).FirstOrDefault();
-                        _goal.Progress = vm.Progress;
-
-                        db.Updates.Add(update);
-                        db.SaveChanges();
+                        throw new ArgumentNullException("userSessionData", "Null session data.");
                     }
-                    return RedirectToAction("MainView", "Home");                  
+
+                    if (userSessionData.Role != "Employee" && userSessionData.Role != "Supervisor")
+                    {
+                        throw new ArgumentException("Session data role invalid.", "userSessionData");
+                    }
+
+                    if (vm.Progress < vm.MinProgress || vm.Progress > 100)
+                    { ModelState.AddModelError("Progress", ("Progress must be be between " + vm.MinProgress + " and 100")); }
+
+
+                        //Successful validation
+                    if (ModelState.IsValid)
+                    {
+                        Update update = new Update
+                        {
+                            Subject = vm.Subject,
+                            Notes = vm.Notes,
+                            Time = DateTime.Now,
+                            Progress = vm.Progress,
+                        };
+
+                        using (UserDBEntities db = new UserDBEntities())
+                        {
+                            update.Goal = db.Goals.Where(x => x.GID == vm.GoalRef).FirstOrDefault();
+                            var _goal = db.Goals.Where(g => g.GID == vm.GoalRef).FirstOrDefault();
+                            _goal.Progress = vm.Progress;
+                            
+                            if (_goal.Progress == 100)
+                              { _goal.Status = "Completed"; }
+
+                            db.Updates.Add(update);
+                            db.SaveChanges();
+                        }
+                        return RedirectToAction("MainView", "Home");
+                    }
                 }
-            }
 
-            catch (ArgumentNullException ex)
-            {
-                TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
-                return RedirectToAction("MainView", "Home");
-            }
+                catch (ArgumentNullException ex)
+                {
+                    TempData["ErrorMessage"] = "Invalid session data. " + ex.Message;
+                    return RedirectToAction("MainView", "Home");
+                }
 
-            catch (ArgumentException ex)
-            {
-                TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
-                return RedirectToAction("MainView", "Home");
-            }
+                catch (ArgumentException ex)
+                {
+                    TempData["ErrorMessage"] = "Invalid GID reference. " + ex.Message;
+                    return RedirectToAction("MainView", "Home");
+                }
 
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = "Invalid user role. " + ex.Message;
-                return RedirectToAction("MainView", "Home");
-            }
-
-            // failed validation
-            return View(vm.GIDRef.ToString());
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Invalid user role. " + ex.Message;
+                    return RedirectToAction("MainView", "Home");
+                }
+            // Failed validation, Creating New ViewModel 
+            UpdateGoalViewModel nvm = vm;
+            nvm.Goal = goal;
+            nvm.Updates = updates;
+            return View(nvm);
         }
 
         // ViewGoal

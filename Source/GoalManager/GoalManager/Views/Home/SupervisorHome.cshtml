@@ -59,50 +59,35 @@
 }
 
     @*My Goals*@
-    @if (Model.Goals.Count != 0)
+    @if (Model.PendingGoals.Count != 0)
     {
-        <div>
-            <h3>My Goals</h3>
-            <table class="table table-bordered table-hover table-responsive">
-                <thead>
-                    <tr class="active">
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Progress</th>
-                        <th>Deadline</th>
-                        <th>Description</th>
-                        <th>View Goal</th>
-                        <th>Update Goal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var g in Model.Goals)
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Pending Goals</h2>
+                    <table class="table  table-bordered table-responsive table-condensed">
+                        <thead>
+                            <tr class="active">
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Progress</th>
+                                <th>Deadline</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>View Goal</th>
+                                <th>Update Goal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var g in Model.PendingGoals)
+                {
+                    string approval = "";
+                    if (g.Status == "Pending")
                     {
-                        <tr class="success">
-                            <td>@g.Title</td>
-                            <td>@g.Category</td>
-                            <td>@g.Progress</td>
-                            <td>@g.StartDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
-                            <td>@g.Description</td>
-                            <td>
-                                <form action="/Goal/ViewGoal" method="get">
-                                    <input type="hidden" name="GID" value="@g.GID" />
-                                    <input type="submit" value="View" />
-                                </form>
-                            </td>
-                            <td>
-                                <form action="/Goal/UpdateGoal" method="get">
-                                    <input type="hidden" name="GIDRef" value="@g.GID" />
-                                    <input type="submit" value="Update" />
-                                </form>
-                            </td>
-                        </tr>
+                        approval = "alert-info";
                     }
-                </tbody>
-            </table>
-        </div>
-    }
 
+<<<<<<< HEAD
     @*Managed Departments*@
     @if (Model.Departments != null)
     {
@@ -119,8 +104,89 @@
                             <th>Reports</th>
                         </tr>
                     </thead>
+=======
+                    else
+                    {
+                        approval = "success";
+                    }
+                    <tr class="@approval">
+                        <td>@g.Title</td>
+                        <td>@g.Category</td>
+                        <td>@g.Progress</td>
+                        <td>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                        <td>@g.Description</td>
+                        <td>@g.Status</td>
+                        <td>
+                            <form action="/Goal/ViewGoal" method="get">
+                                <input type="hidden" name="GID" value="@g.GID" />
+                                <input type="submit" value="View" />
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/Goal/UpdateGoal" method="get">
+                                <input type="hidden" name="GIDRef" value="@g.GID" />
+                                <input type="submit" value="Update" />
+                            </form>
+                        </td>
+                    </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div> <!--End Column-->
+            </div> <!--End Row-->
+        </div> <!--End Container-->
+    }
+    <!-- Active Goals -->
+    @if (Model.ActiveGoals.Count != 0)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Active Goals</h3>
+                    <table class="table table-bordered table-responsive table-condensed">
+                        <thead>
+                            <tr class="active">
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Progress</th>
+                                <th>Deadline</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>View</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var g in Model.ActiveGoals)
+                            {
+                                string approval = "";
+                                if (g.Status == "Pending")
+                                {
+                                    approval = "danger";
+                                }
+>>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
 
+                                else
+                                {
+                                    approval = "alert-info";
+                                }
+                                <tr class=@approval>
+                                    <td>@g.Title</td>
+                                    <td>@g.Category</td>
+                                    <td>@g.Progress</td>
+                                    <td>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                                    <td>@g.Description</td>
+                                    <td>@g.Status</td>
+                                    <td>
+                                        <form action="/Goal/ViewGoal" method="get">
+                                            <input type="hidden" name="GID" value="@g.GID" />
+                                            <input type="submit" value="View" />
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="/Goal/UpdateGoal" method="post">
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -132,15 +198,31 @@
                                 <td>@Department.Name</td>
                                 <td>@Department.Description</td>
                                 <td>@Department.Location</td>
+=======
+                                            <input type="hidden" name="GIDRef" value="@g.GID" />
+                                            @Html.AntiForgeryToken()
+                                            <input type="submit" value="Update" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                            <tr class="alert-info">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+>>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
                                 <td>
-                                    @*TODO: ViewReport(Department)*@
-                                    <!-- Trying a GET/POST in ReportController-->
-                                    <form action="/Report/ViewDepartmentReport" method="post">
-                                        <input type="hidden" name="DeptRefID" value="@Department.DID" />
-                                        <input type="submit" value="View Report" />
+                                    <form action="/Goal/CreateGoal" method="get">
+                                        <input type="hidden" name="uid" value="@Model.Goals.First().UID" />
+                                        <input type="submit" value="Create Goal" />
                                     </form>
                                 </td>
                             </tr>
+<<<<<<< HEAD
                         }
                     </tbody>
                 </table>
@@ -148,34 +230,264 @@
                       
       
             @*Managed Employees*@
+=======
+>>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
 
-            <h3>Managed Employees</h3>
-            if (Model.Employees.Count != 0)
-                {
-                <table class="table table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr class="active">
-                            <th>Name</th>
-                            <th>Title</th>           
-                            <th>Reports</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var Employee in Model.Employees)
+                        </tbody>
+                    </table>
+                </div> <!--End Column-->
+            </div> <!--End Row-->
+        </div> <!--End Container-->
+
+    }
+
+    <!-- Denied Goals -->
+    @if (Model.DeniedGoals.Count != 0)
     {
-                            <tr class="success">
-                                <td>@Employee.FirstName @Employee.LastName</td>
-                                <td>@Employee.Title</td>
-                                <td>
-                                    @*TODO: ViewReport(Employee)*@
-                                    <form action="/Report/ViewEmployeeReport" method="post">
-
-                                        <input type="hidden" name="EmployeeRefID" value="@Employee.UID" />
-                                        <input type="submit" value="View Report" />
-                                    </form>
-                                </td>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Denied Goals</h3>
+                    <table class="table table-bordered table-responsive table-condensed">
+                        <thead>
+                            <tr class="active">
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Progress</th>
+                                <th>Deadline</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>View</th>
                             </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var g in Model.DeniedGoals)
+                            {
+                                var approval = "";
+                                if (g.Status == "Denied")
+                                {
+                                    approval = "warning";
+                                }
+
+                                else
+                                {
+                                    approval = "success";
+                                }
+                                <tr class=@approval>
+                                    <td>@g.Title</td>
+                                    <td>@g.Category</td>
+                                    <td>@g.Progress</td>
+                                    <td>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                                    <td>@g.Description</td>
+                                    <td>@g.Status</td>
+                                    <td>
+                                        <form action="/Goal/ViewGoal" method="get">
+                                            <input type="hidden" name="GID" value="@g.GID" />
+                                            <input type="submit" value="View" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div> <!--End Column-->
+            </div> <!--End Row-->
+        </div> <!--End Container-->
+
+    }
+
+    <!-- Failed Goals -->
+    @if (Model.FailedGoals.Count != 0)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Failed Goals</h2>
+                    <table class="table table-bordered table-responsive table-condensed">
+                        <thead>
+                            <tr class="active">
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Progress</th>
+                                <th>Deadline</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>View Goal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            @foreach (var g in Model.FailedGoals)
+                            {
+                                var approval = "";
+                                if (g.Status == "Failed")
+                                {
+                                    approval = "danger";
+                                }
+
+                                else
+                                {
+                                    approval = "success";
+                                }
+                                <tr class=@approval>
+                                    <td>@g.Title</td>
+                                    <td>@g.Category</td>
+                                    <td>@g.Progress</td>
+                                    <td>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                                    <td>@g.Description</td>
+                                    <td>@g.Status</td>
+                                    <td>
+                                        <form action="/Goal/ViewGoal" method="get">
+                                            <input type="hidden" name="GID" value="@g.GID" />
+                                            <input type="submit" value="View" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div> <!--End Column-->
+            </div> <!--End Row-->
+        </div> <!--End Container-->
+    }
+    @if (Model.CompletedGoals.Count != 0)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Completed Goals</h3>
+                    <table class="table table-bordered table-responsive table-condensed">
+                        <thead>
+                            <tr class="active">
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Progress</th>
+                                <th>Deadline</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>View Goal</th>
+                                <th>Update Goal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            @foreach (var g in Model.CompletedGoals)
+                            {
+                                var approval = "";
+                                if (g.Status == "Success")
+                                {
+                                    approval = "Success";
+                                }
+
+                                else
+                                {
+                                    approval = "success";
+                                }
+                                <tr class=@approval>
+                                    <td>@g.Title</td>
+                                    <td>@g.Category</td>
+                                    <td>@g.Progress</td>
+                                    <td>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
+                                    <td>@g.Description</td>
+                                    <td>@g.Status</td>
+                                    <td>
+                                        <form action="/Goal/ViewGoal" method="get">
+                                            <input type="hidden" name="GID" value="@g.GID" />
+                                            <input type="submit" value="View" />
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="/Goal/UpdateGoal" method="get">
+                                            <input type="hidden" name="GIDRef" value="@g.GID" />
+                                            <input type="submit" value="Update" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div> <!--End Column-->
+            </div> <!--End Row-->
+        </div> <!--End Container-->
+    }
+
+    @*Managed Departments*@
+    <div class="container">
+        <div class="row">
+            @if (Model.Departments.Count != 0)
+            {
+
+                <div class="col-md-6">
+
+                    <h3>My Departments</h3>
+
+                    <table class="table table-responsive table-bordered table-hover">
+                        <thead>
+                            <tr class="active">
+                                <th>Department</th>
+                                <th>Description</th>
+                                <th>Location</th>
+                                <th>Reports</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+                            @foreach (var Department in Model.Departments)
+                            {
+                                <tr class="success">
+                                    <td>@Department.Name</td>
+                                    <td>@Department.Description</td>
+                                    <td>@Department.Location</td>
+                                    <td>
+                                        @*TODO: ViewReport(Department)*@
+                                        <!-- Trying a GET/POST in ReportController-->
+                                        <form action="/Report/ViewDepartmentReport" method="post">
+                                            <input type="hidden" name="DeptRefID" value="@Department.DID" />
+                                            <input type="submit" value="View Report" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div> <!--End Column-->
+            }
+            @*Managed Employees*@
+            @if (Model.Employees.Count != 0)
+            {
+                <div class="col-md-6">
+                    <h3>Managed Employees</h3>
+                    <table class="table table-bordered table-hover table-responsive">
+                        <thead>
+                            <tr class="active">
+                                <th>Name</th>
+                                <th>Title</th>
+                                <th>Reports</th>
+                            </tr>
+                        </thead>
+                        @foreach (var Employee in Model.Employees)
+                        {
+                            <tbody>
+
+                                <tr class="success">
+                                    <td>@Employee.FirstName @Employee.LastName</td>
+                                    <td>@Employee.Title</td>
+                                    <td>
+                                        @*TODO: ViewReport(Employee)*@
+                                        <form action="/Report/ViewEmployeeReport" method="post">
+
+                                            <input type="hidden" name="EmployeeRefID" value="@Employee.UID" />
+                                            <input type="submit" value="View Report" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
                         }
+<<<<<<< HEAD
                     </tbody>
                 </table>
 =======
@@ -217,3 +529,10 @@
         </table>
     }
     }
+=======
+                    </table>
+                </div> <!--End Column-->
+            }
+        </div> <!--End Row-->
+    </div> <!--End Container-->
+>>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed

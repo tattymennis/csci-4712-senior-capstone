@@ -6,28 +6,70 @@
     ViewBag.Title = "Update Goal";
 }
 
-@Html.ValidationSummary()
-<div>
-    <h1>@ViewBag.Title</h1>
-    <h2>Goal: @Model.Goal.Title</h2>
-    <h3>Start Date: @Model.Goal.StartDate.ToString("D")</h3>
-    <h3>End Date: @Model.Goal.EndDate.ToString("D")</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>@ViewBag.Title</h3>
+            <p>Goal: @Model.Goal.Title</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p><b>From</b>: @Model.Goal.StartDate.ToString("D") - <b>To</b>: @Model.Goal.EndDate.ToString("D")</p>
+        </div>
+    </div>
 </div>
 
-@Html.AntiForgeryToken()
-<form method="post">
-    <div class="form-group form-horizontal">
-        <label for="Subject">Reason for Update</label>
-        <input type="text" class="form-control" name="Subject" value="@Model.Subject"/>
-        <small class="form-text text-muted">Note: All users will see this for their respective Department criteria  </small>
-    </div>
-    <div class="form-group form-horizontal">
-        <label for="Progress">Progress</label>
-        <input type="number" class="form-control" name="Progress" value="@Model.Goal.Progress"/> <!--value="Model.Progress"-->
-    </div>
-    <div class="form-group form-horizontal">
-        <label for="Notes">Notes</label>
-        <textarea class="form-control" name="Notes" value="@Model.Notes" ></textarea>        
-    </div>
-<input type="submit"/>
-</form>
+<div class="text-danger">
+    @Html.ValidationSummary()
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <form method="post">
+                <div class="form-group form-horizontal">
+                    <label for="Subject">Subject</label>
+                    <input type="text" class="form-control" name="Subject" value="@Model.Subject" />
+                </div>
+                <div class="form-group form-horizontal">
+                    <label for="Progress">Progress</label>
+                    <input type="number" class="form-control" name="Progress" value="@Model.MinProgress" />
+                    <small>This update's progress must be between at least @Model.MinProgress to 100. </small>
+                </div>
+                <div class="form-group form-horizontal">
+                    <label for="Notes">Notes</label>
+                    <textarea class="form-control" name="Notes" value="@Model.Notes"></textarea>
+                </div>
+                <input type="hidden" name="GoalRef" value=@Model.GoalRef />
+                <input type="hidden" name="MinProgress" value=@Model.MinProgress />
+                @Html.AntiForgeryToken()
+                <input type="submit" />
+            </form>
+        </div><!--Ending Form Field-->
+        <div class="col-md-7">
+
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Progress</th>
+                        <th>Time of Update</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var Update in Model.Updates)
+                    {
+                        <tr>
+                            <td>@Update.Subject</td>
+                            <td>@Update.Progress</td>
+                            <td>@Update.Time</td>
+                            <td>@Update.Notes</td>
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div> <!--Ending List of Updates-->
+    </div> <!--Ending Row-->
+</div> <!--Ending Container-->

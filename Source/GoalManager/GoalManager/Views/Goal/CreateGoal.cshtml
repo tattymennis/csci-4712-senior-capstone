@@ -33,6 +33,16 @@
         <label for="QuarterTime">Quarter</label>
         @Html.DropDownListFor(x => x.QuarterTime, Model.QuartDropDown, new { Name = "QuarterTime", Class = "form-control" })
     </div>
+
+    @if (Model.Role == "Supervisor")
+    {
+        <div class="form-group form-horizontal">
+            <label for="PushToDept">Push to Department?</label>
+            @Html.CheckBoxFor(x => x.PushToDept, false)
+        </div>
+    }
+
+
     <input type="submit" />
 </form>
 
