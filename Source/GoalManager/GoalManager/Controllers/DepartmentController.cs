@@ -97,33 +97,42 @@ namespace GoalManager.Controllers
                         }
                     }
 
-                    // Category2Name
-                    foreach (char c in vm.Category2Name)
+                    if (!String.IsNullOrWhiteSpace(vm.Category2Name))
                     {
-                        if (Char.IsControl(c) || Char.IsControl(c))
+                        // Category2Name
+                        foreach (char c in vm.Category2Name)
                         {
-                            ModelState.AddModelError("Category2Name", "Invalid symbols in name of Category 1.");
-                            break;
+                            if (Char.IsControl(c) || Char.IsControl(c))
+                            {
+                                ModelState.AddModelError("Category2Name", "Invalid symbols in name of Category 1.");
+                                break;
+                            }
                         }
                     }
 
-                    // Category3Name
-                    foreach (char c in vm.Category3Name)
+                    if (!String.IsNullOrWhiteSpace(vm.Category2Name))
                     {
-                        if (Char.IsControl(c) || Char.IsControl(c))
+                        // Category3Name
+                        foreach (char c in vm.Category3Name)
                         {
-                            ModelState.AddModelError("Category3Name", "Invalid symbols in name of Category 1.");
-                            break;
+                            if (Char.IsControl(c) || Char.IsControl(c))
+                            {
+                                ModelState.AddModelError("Category3Name", "Invalid symbols in name of Category 1.");
+                                break;
+                            }
                         }
                     }
 
-                    // Category4Name
-                    foreach (char c in vm.Category4Name)
+                    if (!String.IsNullOrWhiteSpace(vm.Category2Name))
                     {
-                        if (Char.IsControl(c) || Char.IsControl(c))
+                        // Category4Name
+                        foreach (char c in vm.Category4Name)
                         {
-                            ModelState.AddModelError("Category3Name", "Invalid symbols in name of Category 1.");
-                            break;
+                            if (Char.IsControl(c) || Char.IsControl(c))
+                            {
+                                ModelState.AddModelError("Category4Name", "Invalid symbols in name of Category 1.");
+                                break;
+                            }
                         }
                     }
 
@@ -291,11 +300,10 @@ namespace GoalManager.Controllers
         }
 
         [Authorize]
-        public ActionResult ModifyDepartment(ModifyDepartmentViewModel vm)
+        public ActionResult ModifyDepartment(string IDRef)
         {
             ViewBag.Title = "Modify Department";
-            ModifyDepartmentViewModel nvm = new ModifyDepartmentViewModel();
-
+            ModifyDepartmentViewModel vm = new ModifyDepartmentViewModel();
             try
             {
                 var userSessionData = Session["UserSessionData"] as UserSessionData;
@@ -309,21 +317,134 @@ namespace GoalManager.Controllers
                     throw new ArgumentException();
                 }
 
+                int _did = -1;
+                if (!int.TryParse(IDRef, out _did))
+                {
+                    return RedirectToAction("MainView", "Home");
+                }
+
+                vm.IDRef = _did;
+                if (vm.IDRef > -1) // Reserved for inital entry in method.
+                {
+                    Department tempdep;
+                    using (var db = new UserDBEntities())
+                    {
+                        tempdep = db.Departments.Where(x => x.DID == vm.IDRef).FirstOrDefault();
+                        //Assigning individual values into viewmodel to be passed
+                        vm.Name = tempdep.Name;
+                        vm.Location = tempdep.Location;
+                        vm.Description = tempdep.Description;
+                        vm.DID = vm.IDRef;
+
+                        // Create drop down list of valid Supervisors
+                        List<SelectListItem> PotentialSupersList = new List<SelectListItem>();
+                        //PotentialSupersList.Add(new SelectListItem { Text = "Select a Supervisor", Selected = true });
+
+                        // Get all valid Supervisors
+                        var supers = db.Users.Where(u => u.Role == "Supervisor" && u.Username.ToLower() != "placeholder").ToList<User>();
+                        foreach (var u in supers)
+                        {
+                            if (u.UID == vm.IDRef)
+                            {
+                                PotentialSupersList.Add(new SelectListItem { Text = u.FirstName + " " + u.LastName, Value = u.UID.ToString(), Selected = true });
+                            }
+                            else
+                            {
+                                PotentialSupersList.Add(new SelectListItem { Text = u.FirstName + " " + u.LastName, Value = u.UID.ToString(), Selected = false });
+                            }
+                        }
+                        vm.SupervisorsDropDown = PotentialSupersList;
+                    }
+                    ModelState.Clear();
+                    return View(vm);
+                }
+
+                else
+                {
+                    return RedirectToAction("MainView", "Home");
+                }
+            }
+
+            catch (ArgumentNullException ex)
+            {
+                TempData["ErrorMessage"] = "Null argument exception";
+                return RedirectToAction("MainView", "Home");
+            }
+
+            catch (ArgumentException ex)
+            {
+                TempData["ErrorMessage"] = "Argument exception";
+                return RedirectToAction("MainView", "Home");
+            }
+
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Something went very, very, wrong.";
+                return RedirectToAction("MainView", "Home");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ModifyDepartment(ModifyDepartmentViewModel vm)
+        {
+            ViewBag.Title = "Modify Department";
+            ModifyDepartmentViewModel nvm = new ModifyDepartmentViewModel();
+            if (vm.SupervisorsDropDown != null)
+                nvm.SupervisorsDropDown = vm.SupervisorsDropDown;
+            try
+            {
+                var userSessionData = Session["UserSessionData"] as UserSessionData;
+                if (userSessionData == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                if (userSessionData.Role != "Administrator")
+                {
+                    throw new ArgumentException();
+                }
+
+                int _suid = -1;
+                if (String.IsNullOrEmpty(vm.SupervisorChoice))
+                {
+                    ModelState.AddModelError("SupervisorChoice", "Invalid Supervisor choice.");
+                }
+
+                else
+                {
+                    if (!int.TryParse(vm.SupervisorChoice, out _suid))
+                    {
+                        ModelState.AddModelError("SupervisorChoice", "Invalid entry for SUID.");
+                    }
+                }
+
                 if (vm.IDRef != 0) // Reserved for inital entry in method.
                 {
                     Department tempdep;
 
                     using (var db = new UserDBEntities())
+                    {
                         tempdep = db.Departments.Where(x => x.DID == vm.IDRef).FirstOrDefault();
+                        // Create drop down list of valid Supervisors
+                        List<SelectListItem> PotentialSupersList = new List<SelectListItem>();
+                        PotentialSupersList.Add(new SelectListItem { Text = "Select a Supervisor", Selected = true });
+
+                        var supers = db.Users.Where(u => u.Role == "Supervisor" && u.Username.ToLower() != "placeholder").ToList<User>();
+
+                        foreach (var u in supers)
+                        {
+                            PotentialSupersList.Add(new SelectListItem { Text = u.FirstName + " " + u.LastName, Value = u.UID.ToString(), Selected = false });
+                        }
+                        nvm.SupervisorsDropDown = PotentialSupersList;
+                    }
 
                     //Assigning individual values into viewmodel to be passed
                     nvm.Name = tempdep.Name;
                     nvm.Location = tempdep.Location;
                     nvm.Description = tempdep.Description;
                     nvm.DID = vm.IDRef;
-
-                    ModelState.Clear();
-                    return View(nvm);
                 }
 
                 if (ModelState.IsValid)
@@ -351,7 +472,7 @@ namespace GoalManager.Controllers
                     {
                         if (Char.IsControl(x) || Char.IsSymbol(x))
                         {
-                            ModelState.AddModelError("Description", "You have invlaid symbols in your Description");
+                            ModelState.AddModelError("Description", "You have invalid symbols in your Description");
                             break;
                         }
                     }
@@ -368,11 +489,23 @@ namespace GoalManager.Controllers
                         Department.Location = vm.Location;
                         Department.Description = vm.Description;
 
+                        User Super = db.Users.Where(u => u.UID == _suid).FirstOrDefault();
+                        Department.User = Super; // update Department's Supervisor
+                        Super.Department = Department; // update Supervisor's Department
+
+                        var managedEEs = db.Users.Where(u => u.DID == Department.DID).ToList<User>();
+                        foreach (var u in managedEEs)
+                        {
+                            u.User1 = Super; // set each EE's Super in this Dept
+                        }
+
                         db.SaveChanges();
                     }
                     return RedirectToAction("MainView", "Home");
                 }
-                nvm = vm;
+                nvm.IDRef = vm.IDRef;
+                nvm.SupervisorChoice = vm.SupervisorChoice;
+                ModelState.Clear();
                 return View(nvm);
             }
 

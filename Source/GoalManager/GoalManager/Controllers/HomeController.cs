@@ -186,14 +186,38 @@ namespace GoalManager.Controllers
             var vm = new AdminHomeViewModel();
             using (var db = new UserDBEntities())
             {
-                vm.Departments.AddRange(db.Departments);
-                vm.Employees.AddRange(db.Users);
-                vm.Employees = db.Users.Where(u => !u.Role.Equals("Administrator")).ToList<User>();
-                vm.Administrators = db.Users.Where(u => u.Role.Equals("Administrator")).ToList<User>();
-                foreach (Department d in vm.Departments)
+
+                List<User> users = db.Users.ToList<User>();
+
+                foreach (User u in users)
                 {
-                    User super = db.Users.Where(u => u.UID == d.SUID).FirstOrDefault();
-                    vm.SupervisorNames[super.UID] = super.FirstName + " " + super.LastName;
+                    if (!(u.Role == "Administrator"))
+                        vm.Employees.Add(u);
+                    if (u.Role == "Administrator")
+                        vm.Administrators.Add(u);
+                }
+
+                // check for placeholder Supervisor
+                User placeholderSuper = users.Where(u => u.Username == "placeholder").FirstOrDefault();
+
+                // get all Departments
+                List<Department> Departments = db.Departments.ToList<Department>();
+                foreach (Department d in Departments)
+                {
+                    // if Department does not have placeholder Super
+                    if (d.SUID != placeholderSuper.UID)
+                    {
+                        vm.Departments.Add(d);
+                        User super = db.Users.Where(u => u.UID == d.SUID).FirstOrDefault();
+                        vm.SupervisorNames[super.UID] = super.FirstName + " " + super.LastName;
+                    }
+
+                    else
+                    {
+                        // if there is a Dept with a placeholder Supervisor, add to list.
+                        if (d.SUID == placeholderSuper.UID)
+                            vm.PlaceholderDepartments.Add(d);
+                    }
                 }
             }
             return View(vm);
