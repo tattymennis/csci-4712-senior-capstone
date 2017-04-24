@@ -11,6 +11,12 @@ namespace GoalManager.Models
 {
     public class CreateDepartmentViewModel
     {
+        //References
+
+        //Display Fields
+        public IEnumerable<SelectListItem> SupervisorsDropDown { get; set; }
+
+        //Form Fields
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -22,9 +28,7 @@ namespace GoalManager.Models
         [Required]
         [StringLength(255)]
         public string Description { get; set; }
-
-        public IEnumerable<SelectListItem> SupervisorsDropDown { get; set; }
-
+        
         [Required]
         public string SupervisorChoice { get; set; }
 

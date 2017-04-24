@@ -10,7 +10,6 @@
     @Html.ValidationSummary()
 </div>
 <form method="post">
-    @Html.ValidationSummary()
     @Html.AntiForgeryToken()
     <div class="col-md-6">
         <div class="form-group form-horizontal">
@@ -35,6 +34,29 @@
         <input type="hidden" name="IDRef" value="@Model.IDRef" />
         <input type="hidden" name="DID" value="@Model.DID" />
         <input type="submit" />
+    </div>
+    <div class="col-md-6">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Quarter Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Quarter in Model.Quarters)
+                {
+                    <tr>
+                        <td>@Quarter.Name</td>
+                        <td>@Quarter.StartDate</td>
+                        <td>@Quarter.EndDate</td>
+                     
+                    </tr>
+                }
+            </tbody>
+
+        </table>
     </div>
     @*<div class="col-md-6">
         <label for="Quarter1">Quarter 1</label>
