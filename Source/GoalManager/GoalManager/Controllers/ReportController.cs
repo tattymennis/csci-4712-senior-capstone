@@ -38,6 +38,10 @@ namespace GoalManager.Controllers
                     vm.Department = db.Departments.Where(x => x.DID == DeptRefID).FirstOrDefault();
                     // TODO: Expand LINQ query to check Supervisor's UID/SUID
                     vm.Employees = db.Users.Where(x => x.DID == DeptRefID).ToList<User>();
+                    vm.TotalActiveGoals = 0;
+                    vm.TotalCompletedGoals = 0;
+                    vm.TotalDeniedGoals = 0;
+                    vm.TotalFailedGoals = 0;
                     if (vm.Employees.Count != 0)
                     {
                         // Get each managed Department's Employee's Goals
@@ -50,6 +54,19 @@ namespace GoalManager.Controllers
                                 foreach (Goal g in vm.EmployeeGoals[u.UID])
                                 {
                                     vm.GoalUpdates[g.GID] = db.Updates.Where(x => x.GID == g.GID).ToList<Update>();
+
+
+                                    if (g.Status == "Active" && g.Progress == 100)
+                                        vm.TotalCompletedGoals++;
+                                    else if (g.Status == "Denied")
+                                        vm.TotalDeniedGoals++;
+                                    else if (g.Status == "Failed")
+                                        vm.TotalFailedGoals++;
+                                    else if (g.Status == "Active")
+                                        vm.TotalActiveGoals++;
+
+
+
                                 }
                             }
                         }

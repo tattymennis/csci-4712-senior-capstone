@@ -15,6 +15,10 @@ namespace GoalManager.Models
         public User Supervisor { get; set; }
         public Department Department = new Department();
         public List<User> Employees = new List<User>();
+        public int TotalActiveGoals = new int();
+        public int TotalCompletedGoals = new int();
+        public int TotalDeniedGoals = new int();
+        public int TotalFailedGoals = new int();
         public Dictionary<int, List<Goal>> EmployeeGoals = new Dictionary<int, List<Goal>>();
         public Dictionary<int, List<Update>> GoalUpdates = new Dictionary<int, List<Update>>();
         public int DeptRefID { get; set; }

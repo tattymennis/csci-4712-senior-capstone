@@ -106,23 +106,28 @@
     @*Managed Departments*@
     @if (Model.Departments != null)
     {
-        <h3>My Departments</h3>
-        if (Model.Departments.Count != 0)
-        {
-            <table class="table table-responsive table-bordered table-hover">
-                <thead>
-                    <tr class="active">
-                        <th>Department</th>
-                        <th>Description</th>
-                        <th>Location</th>
-                        <th>Reports</th>
-                    </tr>
-                </thead>
+        <div>
+            <h3>My Departments</h3>
+            @if (Model.Departments.Count != 0)
+            {
+                <table class="table table-responsive table-bordered table-hover">
+                    <thead>
+                        <tr class="active">
+                            <th>Department</th>
+                            <th>Description</th>
+                            <th>Location</th>
+                            <th>Reports</th>
+                        </tr>
+                    </thead>
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> miguelsbranch
                     <tbody>
                         @foreach (var Department in Model.Departments)
-                        {
+                    {
                             <tr class="success">
                                 <td>@Department.Name</td>
                                 <td>@Department.Description</td>
@@ -139,6 +144,7 @@
                         }
                     </tbody>
                 </table>
+<<<<<<< HEAD
                       
       
             @*Managed Employees*@
@@ -172,6 +178,42 @@
                         }
                     </tbody>
                 </table>
+=======
+>>>>>>> miguelsbranch
             }
-        }
+        </div>
+    }
+
+    @*Managed Employees*@
+    <h3>Managed Employees</h3>
+    @if (Model.Employees.Count != 0)
+    {
+        <table class="table table-bordered table-hover table-responsive">
+            <thead>
+                <tr class="active">
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Reports</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model.Employees)
+                {
+                    <tr class="success">
+                        <td>@e.FirstName @e.LastName</td>
+                        <td>@e.Title</td>
+                        <td>
+                            @*TODO: ViewReport(Employee)*@
+                            <form action="/Report/ViewEmployeeReport" method="post">
+
+                                <input type="hidden" name="EmployeeRefID" value="@e.UID" />
+
+                                <input type="submit" value="View Report" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
     }
