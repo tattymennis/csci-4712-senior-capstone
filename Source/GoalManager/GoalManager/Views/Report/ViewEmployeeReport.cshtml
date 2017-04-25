@@ -27,7 +27,7 @@
 <div class="container">
     @if (Model.PendingGoals.Count > 0)
     {
-        <h5>Pending Goals</h5>
+        <h4>Pending Goals</h4>
         foreach (var g in Model.PendingGoals)
         {
             <table class="table table-bordered table-hover table-responsive table-condensed">
@@ -84,7 +84,7 @@
     <!-- Active goals -->
     @if (Model.ActiveGoals.Count > 0)
     {
-        <h5>Active Goals</h5>
+        <h4>Active Goals</h4>
         var goalStatus = "";
         foreach (var g in Model.ActiveGoals)
         {
@@ -157,7 +157,7 @@
     <!-- Denied goals -->
     @if (Model.DeniedGoals.Count > 0)
     {
-        <h5>Denied Goals</h5>
+        <h4>Denied Goals</h4>
 
         <table class="table table-bordered table-hover table-responsive table-condensed">
             <thead>
@@ -212,12 +212,10 @@
         </table>
     }
 
-
-
     <!-- Failed goals -->
     @if (Model.FailedGoals.Count > 0)
     {
-        <h5>Failed Goals</h5>
+        <h4>Failed Goals</h4>
         foreach (var g in Model.FailedGoals)
         {
             <table class="table table-bordered table-hover table-responsive table-condensed">
@@ -299,15 +297,14 @@
 
     <!-- Chart code -->
     <script>
-<<<<<<< HEAD
         var chart = AmCharts.makeChart("chartdiv", {
             "theme": "light",
             "type": "serial",
             "marginRight": 70,
             "dataProvider": [{
                 "country": "Completed",
-                "visits": 5,
-                "color": "#FF0F00"
+                "visits": @Model.CompletedGoals.Count,
+                "color": "#448e4d"
             }, {
                 "country": "Active",
                 "visits": @Model.ActiveGoals.Count,
@@ -327,19 +324,19 @@
                 "title": "Employee Goal Status Chart"
             }],
             "startDuration": 1,
-            "graphs": [{
-                "balloonText": "<b>[[category]]: [[value]]</b>",
-                "fillColorsField": "color",
-                "fillAlphas": 0.9,
-                "lineAlpha": 0.2,
-                "type": "column",
-                "valueField": "visits"
-            }],
-            "chartCursor": {
-                "categoryBalloonEnabled": false,
-                "cursorAlpha": 0,
-                "zoomable": false
-            },
+                "graphs": [{
+                    "balloonText": "<b>[[category]]: [[value]]</b>",
+                    "fillColorsField": "color",
+                    "fillAlphas": 0.9,
+                    "lineAlpha": 0.2,
+                    "type": "column",
+                    "valueField": "visits"
+                }],
+                "chartCursor": {
+                    "categoryBalloonEnabled": false,
+                    "cursorAlpha": 0,
+                    "zoomable": false
+                },
             "categoryField": "country",
             "categoryAxis": {
                 "gridPosition": "start",
@@ -350,64 +347,10 @@
                 "enabled": true
             }
         });
-=======
-            var chart = AmCharts.makeChart("chartdiv", {
-                "theme": "light",
-                "type": "serial",
-                "marginRight": 70,
-                "dataProvider": [{
-                    "country": "Completed",
-                    "visits": 5,
-                    "color": "#448e4d"
-                }, {
-                    "country": "Active",
-                    "visits": @Model.ActiveGoals.Count,
-                    "color": "#0D8ECF"
-                }, {
-                    "country": "Denied",
-                    "visits": @Model.DeniedGoals.Count,
-                    "color": "#FF9E01"
-                }, {
-                    "country": "Failed",
-                    "visits": @Model.FailedGoals.Count,
-                    "color": "#FF0F00"
-                }],
-                "valueAxes": [{
-                    "axisAlpha": 0,
-                    "position": "left",
-                    "title": "Employee Goal Status Chart"
-                }],
-                "startDuration": 1,
-                    "graphs": [{
-                        "balloonText": "<b>[[category]]: [[value]]</b>",
-                        "fillColorsField": "color",
-                        "fillAlphas": 0.9,
-                        "lineAlpha": 0.2,
-                        "type": "column",
-                        "valueField": "visits"
-                    }],
-                    "chartCursor": {
-                        "categoryBalloonEnabled": false,
-                        "cursorAlpha": 0,
-                        "zoomable": false
-                    },
-                "categoryField": "country",
-                "categoryAxis": {
-                    "gridPosition": "start",
-                    "labelRotation": 0,
-                    "position": "left"
-                },
-                "export": {
-                    "enabled": true
-                }
-            });
->>>>>>> miguelsbranch
 
         function sumGoals(goalStat, statusNumber) {
             if (statusNumber == 1) //status is Active
             {
-
-
                 return 50;
             }
         }

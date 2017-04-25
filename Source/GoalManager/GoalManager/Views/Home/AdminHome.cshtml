@@ -44,7 +44,7 @@
                             <td>@Department.Location</td>
                             <td>@Department.Description</td>
                             <td>
-                                <form action="/Department/ModifyDepartment" method="get">
+                                <form action="/Department/ModifyDepartment" method="post">
                                     <input type="hidden" name="IDRef" value="@Department.DID.ToString()" />
                                     @Html.AntiForgeryToken()
                                     <input type="submit" value="Modify" />

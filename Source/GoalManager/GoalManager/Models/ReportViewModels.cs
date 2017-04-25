@@ -32,6 +32,7 @@ namespace GoalManager.Models
         public List<Goal> FailedGoals = new List<Goal>();
         public List<Goal> DeniedGoals = new List<Goal>();
         public List<Goal> ActiveGoals = new List<Goal>();
+        public List<Goal> CompletedGoals = new List<Goal>();
         public Dictionary<int, List<Update>> EmployeeUpdates = new Dictionary<int, List<Update>>();
         public int EmployeeRefID { get; set; }
     }

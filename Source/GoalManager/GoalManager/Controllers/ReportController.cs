@@ -54,8 +54,6 @@ namespace GoalManager.Controllers
                                 foreach (Goal g in vm.EmployeeGoals[u.UID])
                                 {
                                     vm.GoalUpdates[g.GID] = db.Updates.Where(x => x.GID == g.GID).ToList<Update>();
-
-
                                     if (g.Status == "Active" && g.Progress == 100)
                                         vm.TotalCompletedGoals++;
                                     else if (g.Status == "Denied")
@@ -64,9 +62,6 @@ namespace GoalManager.Controllers
                                         vm.TotalFailedGoals++;
                                     else if (g.Status == "Active")
                                         vm.TotalActiveGoals++;
-
-
-
                                 }
                             }
                         }
@@ -96,8 +91,6 @@ namespace GoalManager.Controllers
             return View(vm);
         }
 
-
-
         [HttpPost]
         //[Authorize]
         public ActionResult ViewEmployeeReport(int EmployeeRefID)
@@ -117,11 +110,6 @@ namespace GoalManager.Controllers
                 {
                     return RedirectToAction("MainView", "Home");
                 }
-
-
-
-
-
 
                 using (UserDBEntities db = new UserDBEntities())
                 {
@@ -145,6 +133,8 @@ namespace GoalManager.Controllers
                             vm.FailedGoals.Add(g);
                         else if (g.Status == "Active")
                             vm.ActiveGoals.Add(g);
+                        else if (g.Status == "Completed")
+                            vm.CompletedGoals.Add(g);
                     }
                     vm.Employee = user;
                     vm.Department = db.Departments.Where(d => d.DID == vm.Employee.DID).FirstOrDefault();

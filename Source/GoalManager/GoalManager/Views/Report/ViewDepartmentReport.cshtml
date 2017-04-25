@@ -11,39 +11,21 @@
 
 <div class="container">
     <!-- HTML -->
+    <div id="chartdiv-pie"></div>
+</div>
+
+<div class="container">
+    <!-- HTML -->
     <div id="chartdiv"></div>
 </div>
 
 <div class="container">
-<<<<<<< HEAD
-     <!-- HTML -->
-<div id="chartdiv-pie"></div>
-</div>
-
-
-<div class="container">
-=======
->>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
     @if (Model.Department != null)
     {
         <h2>@Model.Department.Name</h2>
         <h3>Supervisor: @Model.Supervisor.FirstName @Model.Supervisor.LastName</h3>
         <h3>Title:  @Model.Department.User.Title</h3>
 
-<<<<<<< HEAD
-        if (Model.Employees.Count != 0)
-        {
-            foreach (var e in Model.Employees)
-            {
-                <table class="table table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Title</th>
-                            <th>Department</th>
-                            <th>    </th>
-                            <th>    </th>
-=======
         if(Model.Employees.Count != 0)
         {
             foreach(var e in Model.Employees)
@@ -70,38 +52,17 @@
                         <td>    </td>
                     </tr>
 
-                    @*@if (Model.EmployeeGoals.Count != 0)*@
                     @if (Model.EmployeeGoals.ContainsKey(e.UID))
                     {
-                        <!--Goal section-->
+                    <!--Goal section-->
                         <tr class="active">
->>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
                             <td>    </td>
+                            <th>Goal</th>
+                            <th>Description</th>
+                            <th>Progress</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
                         </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr class="alert-info">
-                            <td>@e.FirstName @e.LastName</td>
-                            <td>@e.Title</td>
-                            <td>@e.Department.Name</td>
-                            <td>    </td>
-                            <td>    </td>
-                            <td>    </td>
-                        </tr>
-
-                        @*@if (Model.EmployeeGoals.Count != 0)*@
-                        @if (Model.EmployeeGoals.ContainsKey(e.UID))
-                        {
-                        <!--Goal section-->
-                            <tr class="active">
-                                <td>    </td>
-                                <th>Goal</th>
-                                <th>Description</th>
-                                <th>Progress</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                            </tr>
                         <!--Iterate thru each list of Goals for each EE-->
                             foreach (var g in Model.EmployeeGoals[e.UID])
                             {
@@ -117,31 +78,32 @@
                                     </tr>
 
                                 <!-- Goal's Updates -->
-                                    if (Model.GoalUpdates.ContainsKey(g.GID))
+                                if (Model.GoalUpdates.ContainsKey(g.GID))
+                                {
+                                    <tr class="active">
+                                        <td>    </td>
+                                        <th>    </th>
+                                        <th>Update</th>
+                                        <th>Progress</th>
+                                        <th>Notes</th>
+                                        <th>Date</th>
+                                    </tr>
+                                }
+
+                                if (Model.GoalUpdates.Count != 0)
+                                {
+                                    // For each Update for this Goal
+                                    foreach (var u in Model.GoalUpdates[g.GID])
                                     {
-                                        <tr class="active">
+                                        <tr class="alert-warning">
                                             <td>    </td>
-                                            <th>    </th>
-                                            <th>Update</th>
-                                            <th>Progress</th>
-                                            <th>Notes</th>
-                                            <th>Date</th>
+                                            <td>    </td>
+                                            <td>@u.Subject</td>
+                                            <td>@u.Progress</td>
+                                            <td>@u.Notes</td>
+                                            <td>@u.Time.ToString("D")</td>
                                         </tr>
                                     }
-                                    if (Model.GoalUpdates.Count != 0)
-                                    {
-                                        // For each Update for this Goal
-                                        foreach (var u in Model.GoalUpdates[g.GID])
-                                        {
-                                            <tr class="alert-warning">
-                                                <td>    </td>
-                                                <td>    </td>
-                                                <td>@u.Subject</td>
-                                                <td>@u.Progress</td>
-                                                <td>@u.Notes</td>
-                                                <td>@u.Time.ToString("D")</td>
-                                            </tr>
-                                        }
                                     } <!-- End of Goal's Updates -->
                                 }
                             } <!-- End of Employee's Goals -->
@@ -178,7 +140,7 @@
     <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
     <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 
-    <!-- Chart code -->
+    <!-- Bar chart code -->
     <script>
         var chart = AmCharts.makeChart("chartdiv", {
             "type": "serial",
@@ -244,8 +206,6 @@
 
         function LoadViewReport(r) {
             var data = [];
-
-
             var index = "0";
             @{
                 int numEE = Model.Employees.Count;
@@ -253,23 +213,20 @@
                 for (int n = 0; n < numEE; n++)
                 {
                     @:data.push({ "year":  @Html.Raw(Json.Encode(Model.Employees.ElementAt(n).FirstName)), "completed": 5, "active":4, "denied": 6, "failed": 2 })
-                            }
+                }
             }
-
             return data;
-
         }
     </script>
 
-
-    <!-- Resources -->
+<!-- Resources -->
 <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script src="https://www.amcharts.com/lib/3/pie.js"></script>
 <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-
 <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
 
-<!-- Chart code -->
+<!-- Pie chart code -->
 <script>
 var chart = AmCharts.makeChart( "chartdiv-pie", {
   "type": "pie",
@@ -300,117 +257,3 @@ var chart = AmCharts.makeChart( "chartdiv-pie", {
 } );
 </script>  
 }
-
-<!-- Styles -->
-<style>
-    #chartdiv {
-        width: 100%;
-        height: 500px;
-    }
-</style>
-
-<!-- Resources -->
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-
-@section Scripts {
-    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
-    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-
-    <!-- Chart code -->
-    <script>
-        var chart = AmCharts.makeChart("chartdiv", {
-            "type": "serial",
-            "theme": "light",
-            "depth3D": 20,
-            "angle": 30,
-            "legend": {
-                "horizontalGap": 10,
-                "useGraphSettings": true,
-                "markerSize": 10
-            },
-            "dataProvider": LoadViewReport(),
-            "graphs": [ {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0.8,
-                "labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "Completed",
-                "type": "column",
-                "newStack":true,
-                "color": "#000000",
-                "valueField": "completed"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0.8,
-                "labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "Active",
-                "type": "column",
-                "newstack":true,
-                "color": "#000000",
-                "valueField": "active"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0.8,
-                "labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "Denied",
-                "type": "column",
-                "newStack": true,
-                "color": "#000000",
-                "valueField": "denied"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0.8,
-                "labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "Failed",
-                "type": "column",
-                "newstack":true,
-                "color": "#000000",
-                "valueField": "failed"
-            }],
-            "categoryField": "year",
-            "categoryAxis": {
-                "gridPosition": "start",
-                "axisAlpha": 0,
-                "gridAlpha": 0,
-                "position": "left"
-            },
-            "export": {
-                "enabled": true
-            }
-
-        });
-
-<<<<<<< HEAD
-
-
-
-    
-  
-    
-    
-=======
-        function LoadViewReport() {
-            var data = [];
-
-
-            var index = "0";
-            @{
-                int numEE = Model.Employees.Count;
-                //var u = Model.Supervisor.FirstName;
-                for (int n = 0; n < numEE; n++)
-                {
-                    @:data.push({ "year":  @Html.Raw(Json.Encode((Model.Employees.ElementAt(n).FirstName + ' ' + Model.Employees.ElementAt(n).LastName))), "completed": 5, "active":4, "denied": 1, "failed": 2 })
-                            }
-            }
-
-            return data;
-
-        }
-    </script>
-}
->>>>>>> 1b275cf86b878adbdf71436b32f9dded67b4f4ed
