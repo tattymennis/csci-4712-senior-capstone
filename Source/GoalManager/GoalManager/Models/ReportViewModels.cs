@@ -21,6 +21,8 @@ namespace GoalManager.Models
         public int TotalFailedGoals = new int();
         public Dictionary<int, List<Goal>> EmployeeGoals = new Dictionary<int, List<Goal>>();
         public Dictionary<int, List<Update>> GoalUpdates = new Dictionary<int, List<Update>>();
+        // Tuple :: <FirstName, LastName, Active, Completed, Denied, Failed>
+        public Dictionary<int, Tuple<string, string, int, int, int, int>> EmployeeGoalCounts = new Dictionary<int, Tuple<string, string, int, int, int, int>>();
         public int DeptRefID { get; set; }
     }
 

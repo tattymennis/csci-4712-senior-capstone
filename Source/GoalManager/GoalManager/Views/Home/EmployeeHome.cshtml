@@ -62,7 +62,7 @@
                             </form>
                         </td>
                         <td>
-                            <form action="/Goal/UpdateGoal" method="get">
+                            <form action="/Goal/UpdateGoal" method="post">
                                 <input type="hidden" name="GIDRef" value="@g.GID" />
                                 <input type="submit" value="Update" />
                             </form>
@@ -123,7 +123,6 @@
                                 </td>
                                 <td>
                                     <form action="/Goal/UpdateGoal" method="post">
-
                                         <input type="hidden" name="GIDRef" value="@g.GID" />
                                         @Html.AntiForgeryToken()
                                         <input type="submit" value="Update" />
@@ -172,13 +171,9 @@
                             <th>Description</th>
                             <th>Status</th>
                             <th>View</th>
-                            <th>Update</th>
                         </tr>
                     </thead>
                     <tbody>
-
-
-
                         @foreach (var g in Model.DeniedGoals)
                         {
                             var approval = "";
@@ -198,16 +193,10 @@
                                 <td>@g.EndDate.ToString("D")</td> <!--Must update Update table to support Date attribute-->
                                 <td>@g.Description</td>
                                 <td>@g.Status</td>
-                                <td>
+                                <td> 
                                     <form action="/Goal/ViewGoal" method="get">
                                         <input type="hidden" name="GID" value="@g.GID" />
                                         <input type="submit" value="View" />
-                                    </form>
-                                </td>
-                                <td>
-                                    <form action="/Goal/UpdateGoal" method="get">
-                                        <input type="hidden" name="GIDRef" value="@g.GID" />
-                                        <input type="submit" value="Update" />
                                     </form>
                                 </td>
                             </tr>
@@ -237,7 +226,6 @@
                             <th>Description</th>
                             <th>Status</th>
                             <th>View Goal</th>
-                            <th>Update Goal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -266,12 +254,6 @@
                                     <form action="/Goal/ViewGoal" method="get">
                                         <input type="hidden" name="GID" value="@g.GID" />
                                         <input type="submit" value="View" />
-                                    </form>
-                                </td>
-                                <td>
-                                    <form action="/Goal/UpdateGoal" method="get">
-                                        <input type="hidden" name="GIDRef" value="@g.GID" />
-                                        <input type="submit" value="Update" />
                                     </form>
                                 </td>
                             </tr>
@@ -329,7 +311,8 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form action="/Goal/UpdateGoal" method="get">
+                                    <form action="/Goal/UpdateGoal" method="post">
+                                        @Html.AntiForgeryToken()
                                         <input type="hidden" name="GIDRef" value="@g.GID" />
                                         <input type="submit" value="Update" />
                                     </form>

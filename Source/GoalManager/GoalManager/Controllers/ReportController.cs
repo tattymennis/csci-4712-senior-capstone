@@ -42,27 +42,54 @@ namespace GoalManager.Controllers
                     vm.TotalCompletedGoals = 0;
                     vm.TotalDeniedGoals = 0;
                     vm.TotalFailedGoals = 0;
+                    int active = 0;
+                    int completed = 0;
+                    int denied = 0;
+                    int failed = 0;
                     if (vm.Employees.Count != 0)
                     {
                         // Get each managed Department's Employee's Goals
                         foreach (User u in vm.Employees)
                         {
-                            vm.EmployeeGoals[u.UID] = db.Goals.Where(x => x.UID == u.UID).ToList<Goal>();
+                            List<Goal> goals = db.Goals.Where(x => x.UID == u.UID).ToList<Goal>();
+                            vm.EmployeeGoals[u.UID] = goals;
                             if (vm.EmployeeGoals[u.UID] != null)
                             {
+                                active = 0; completed = 0; denied = 0; failed = 0;
                                 // Get each Employee's Goal's Updates
                                 foreach (Goal g in vm.EmployeeGoals[u.UID])
                                 {
                                     vm.GoalUpdates[g.GID] = db.Updates.Where(x => x.GID == g.GID).ToList<Update>();
-                                    if (g.Status == "Active" && g.Progress == 100)
+                                    if (g.Status == "Completed")
+                                    {
+                                        completed++;
                                         vm.TotalCompletedGoals++;
+                                    }
+                                        
                                     else if (g.Status == "Denied")
+                                    {
+                                        denied++;
                                         vm.TotalDeniedGoals++;
+                                    }                                    
                                     else if (g.Status == "Failed")
+                                    {
+                                        failed++;
                                         vm.TotalFailedGoals++;
+                                    }
+                                        
                                     else if (g.Status == "Active")
+                                    {
+                                        active++;
                                         vm.TotalActiveGoals++;
+                                    }
+                                        
                                 }
+                                // Tuple :: <FirstName, LastName, Active, Completed, Denied, Failed>
+                                vm.EmployeeGoalCounts[u.UID] = 
+                                    new Tuple<string,string,int,int,int,int>(
+                                            u.FirstName, u.LastName, active,
+                                            completed, denied,
+                                            failed);
                             }
                         }
                     }
