@@ -63,6 +63,7 @@
                         </td>
                         <td>
                             <form action="/Goal/UpdateGoal" method="post">
+                                @Html.AntiForgeryToken()
                                 <input type="hidden" name="GIDRef" value="@g.GID" />
                                 <input type="submit" value="Update" />
                             </form>

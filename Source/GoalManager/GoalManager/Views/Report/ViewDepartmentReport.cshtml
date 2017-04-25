@@ -205,32 +205,18 @@
 
         });
 
-        function LoadViewReport(r) {
-            var data = [];
-            var index = "0";
-            @{
-                foreach (var key in Model.EmployeeGoalCounts.Keys)
-                {
-                    var tuple = Model.EmployeeGoalCounts[key];
-                    @:data.push({ "year": @Html.Raw(Json.Encode(tuple.Item1+" "+tuple.Item2)),"active": @Html.Raw(Json.Encode(tuple.Item3)), "completed": @Html.Raw(Json.Encode(tuple.Item4)), "denied": @Html.Raw(Json.Encode(tuple.Item5)), "failed": @Html.Raw(Json.Encode(tuple.Item6)) })
-                }
-                @*foreach (var employee in Model.Employees)
-                {
-                    int _uid = employee.UID;
-                    @:data.push({ "year":
-                        @Html.Raw(Json.Encode()), "completed": 5, "active":4, "denied": 6, "failed": 2 })
-
-                }
-
-                int numEE = Model.Employees.Count;
-                //var u = Model.Supervisor.FirstName;
-                for (int n = 0; n < numEE; n++)
-                {
-                    @:data.push({ "year":  @Html.Raw(Json.Encode(Model.Employees.ElementAt(n).FirstName)), "completed": 5, "active":4, "denied": 6, "failed": 2 })
-                }*@
+    function LoadViewReport(r) {
+        var data = [];
+        var index = "0";
+        @{
+            foreach (var key in Model.EmployeeGoalCounts.Keys)
+            {
+                var tuple = Model.EmployeeGoalCounts[key];
+                @:data.push({ "year": @Html.Raw(Json.Encode(tuple.Item1+" "+tuple.Item2)),"active": @Html.Raw(Json.Encode(tuple.Item3)), "completed": @Html.Raw(Json.Encode(tuple.Item4)), "denied": @Html.Raw(Json.Encode(tuple.Item5)), "failed": @Html.Raw(Json.Encode(tuple.Item6)) })
             }
-            return data;
         }
+        return data;
+    }
     </script>
 
     <!-- Resources -->
@@ -256,8 +242,7 @@
                 "value": @Model.TotalDeniedGoals,
             }, {
                 "country": "Failed",
-                "value" : 40,
-                //"value": @Model.TotalFailedGoals,
+                "value": @Model.TotalFailedGoals,
             }],
             "valueField": "value",
             "titleField": "country",
